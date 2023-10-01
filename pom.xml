@@ -5,10 +5,17 @@
     <artifactId>LaboratorioInterfaces2023</artifactId>
     <version>0.0.1</version>
     <packaging>jar</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.5.4</version>
+        </dependency>
+    </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>9</maven.compiler.source>
+        <maven.compiler.target>9</maven.compiler.target>
         <exec.mainClass>com.univalle.laboratoriointerfaces2023.LaboratorioInterfaces2023</exec.mainClass>
     </properties>
 </project>

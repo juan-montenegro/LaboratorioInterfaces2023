@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package com.univalle.laboratoriointerfaces2023.presentation;
+import org.jfree.chart.ChartFactory;  
 
 /**
  *
