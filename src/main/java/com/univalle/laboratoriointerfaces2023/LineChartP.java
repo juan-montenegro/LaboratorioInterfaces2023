@@ -4,10 +4,8 @@
  */
 package com.univalle.laboratoriointerfaces2023;
 
-import com.univalle.laboratoriointerfaces2023.presentation.MyGui;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
