@@ -23,14 +23,15 @@ import org.jfree.data.xy.DefaultXYDataset;
  *Juan Camilo Chavez 
  * Fecha: 4/10/2023
  */
-public class LineChartP extends JPanel{
+public final class LineChartP extends JPanel{
     
-    public static final int NUM_VALUES = 100;
+    private static final int NUM_VALUES = 100;
 
-    public static double[][] sineValues;
-    public static double[][] cosineValues;
+    private static double[][] sineValues;
+    private static double[][] cosineValues;
+    private DefaultXYDataset dataset;
 
-    static public DefaultXYDataset createDataset(double tiempoMues) {
+    public void createDataset(double tiempoMues) {
 
         sineValues = new double[2][NUM_VALUES];
         cosineValues = new double[2][NUM_VALUES];
@@ -47,21 +48,21 @@ public class LineChartP extends JPanel{
             cosineValues[1][i] = Math.cos(cosineValues[0][i]);
         }
 
-        DefaultXYDataset dataset = new DefaultXYDataset();
+        dataset = new DefaultXYDataset();
         dataset.addSeries("Sine", sineValues);
         dataset.addSeries("Cosine", cosineValues);
-        return dataset;
     }
 
     public LineChartP(double tiempoMues) {
         
         setLayout(new BorderLayout());
+        this.createDataset(tiempoMues);
         // Create the chart using the dataset
         JFreeChart lineChart = ChartFactory.createXYLineChart(
                 "Sine / Cosine Curves", // The chart title
                 "X", // x axis label
                 "Y", // y axis label
-                createDataset(tiempoMues), // The dataset for the chart
+                this.dataset, // The dataset for the chart
                 PlotOrientation.VERTICAL,
                 true, // Is a legend required?
                 false, // Use tooltips
@@ -82,4 +83,8 @@ public class LineChartP extends JPanel{
         add(chartPanel, BorderLayout.CENTER);
        
     }
+    
+     public DefaultXYDataset getDataset(){
+         return this.dataset;
+     }
 }

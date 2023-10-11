@@ -4,7 +4,11 @@
  */
 package com.univalle.laboratoriointerfaces2023.presentation;
 import com.univalle.laboratoriointerfaces2023.LineChartP;
+import com.univalle.laboratoriointerfaces2023.PrintPlainText;
 import java.awt.BorderLayout;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -283,6 +287,12 @@ public class MyGui extends javax.swing.JFrame {
         
         linePanel.setLayout(new BorderLayout());
         linePanel.add(newChart, BorderLayout.CENTER);
+        try {
+            PrintPlainText.saveToPlainText("seno", 0,newChart.getDataset());
+            PrintPlainText.saveToPlainText("coseno", 1,newChart.getDataset());
+        } catch (IOException ex) {
+            Logger.getLogger(MyGui.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
