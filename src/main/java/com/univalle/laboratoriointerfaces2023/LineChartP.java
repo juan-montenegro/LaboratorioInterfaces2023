@@ -25,10 +25,10 @@ import org.jfree.data.xy.DefaultXYDataset;
  */
 public final class LineChartP extends JPanel{
     
-    private static final int NUM_VALUES = 100;
+    private final int NUM_VALUES = 100;
 
-    private static double[][] sineValues;
-    private static double[][] cosineValues;
+    private double[][] sineValues;
+    private double[][] cosineValues;
     private DefaultXYDataset dataset;
 
     public void createDataset(double tiempoMues) {

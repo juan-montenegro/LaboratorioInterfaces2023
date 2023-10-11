@@ -17,7 +17,8 @@ import org.jfree.data.xy.DefaultXYDataset;
 public class PrintPlainText {
     
     public static void saveToPlainText(String fileName, int serie, DefaultXYDataset dataset) throws IOException {
-        BufferedWriter outputWriter =  new BufferedWriter(new FileWriter(fileName+".txt"));
+        BufferedWriter outputWriter;
+        outputWriter = new BufferedWriter(new FileWriter(fileName+".txt"));
         for (int i = 0; i < dataset.getItemCount(0); i++) {
             // Maybe:
             outputWriter.write(dataset.getX(serie, i)+"\t\t");
