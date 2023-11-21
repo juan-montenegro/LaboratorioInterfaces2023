@@ -36,8 +36,14 @@ public class LaboratorioInterfaces2023 {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> {
-            new MyGui().setVisible(true);
+        //java.awt.EventQueue.invokeLater(() -> {
+        //    new MyGui().setVisible(true);
+        //});
+        
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new MyGui().setVisible(true);
+            }
         });
     }
 }

@@ -14,6 +14,7 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.xy.DefaultXYDataset;
+import org.jfree.data.xy.XYSeriesCollection;
 
 /**
  *
@@ -25,13 +26,29 @@ import org.jfree.data.xy.DefaultXYDataset;
  */
 public final class LineChartP extends JPanel{
     
-    private final int NUM_VALUES = 100;
+    //private final int NUM_VALUES = 100;
 
-    private double[][] sineValues;
-    private double[][] cosineValues;
-    private DefaultXYDataset dataset;
+    //private double[][] sineValues;
+    //private double[][] cosineValues;
+    //private DefaultXYDataset dataset;
 
-    public void createDataset(double tiempoMues) {
+    /*public void createDataset(double tiempoMues, CircularBuffer buffer) {
+        double[][] chartData = new double[2][NUM_VALUES]; // Two rows: one for X, one for Y
+        double[] bufferData = buffer.getAllValues(); // The Y-axis data
+        double t = 0.0;
+
+        // Iterate over the buffer data to create the data points for the chart
+        for (int i = 0; i < bufferData.length; i++) {
+            chartData[0][i] = t;             // X-axis will be incremented by tiempoMues each time
+            chartData[1][i] = bufferData[i]; // Y-axis data from buffer
+            t += tiempoMues;
+        }
+
+        dataset = new DefaultXYDataset();
+        dataset.addSeries("COM Port Data", chartData);
+    }*/
+    
+   /*  public void createDataset(double tiempoMues) {
 
         sineValues = new double[2][NUM_VALUES];
         cosineValues = new double[2][NUM_VALUES];
@@ -51,18 +68,20 @@ public final class LineChartP extends JPanel{
         dataset = new DefaultXYDataset();
         dataset.addSeries("Sine", sineValues);
         dataset.addSeries("Cosine", cosineValues);
-    }
-
-    public LineChartP(double tiempoMues) {
+    }*/
+    public LineChartP(double tiempoMues, String tittle, XYSeriesCollection dataset) {
         
         setLayout(new BorderLayout());
-        this.createDataset(tiempoMues);
+        
+        //this.createDataset(tiempoMues, buffer);//HEY CUIDADO AQUI!!!
+        //this.createDataset(tiempoMues);
+        
         // Create the chart using the dataset
         JFreeChart lineChart = ChartFactory.createXYLineChart(
-                "Sine / Cosine Curves", // The chart title
-                "X", // x axis label
-                "Y", // y axis label
-                this.dataset, // The dataset for the chart
+                tittle, // The chart title
+                "Tiempo", // x axis label
+                "Amplitud", // y axis label
+                dataset, // The dataset for the chart
                 PlotOrientation.VERTICAL,
                 true, // Is a legend required?
                 false, // Use tooltips
@@ -74,17 +93,24 @@ public final class LineChartP extends JPanel{
         //... (otras personalizaciones)
         XYPlot plot = lineChart.getXYPlot();
         XYItemRenderer renderer = plot.getRenderer();
-        renderer.setSeriesPaint(0, Color.RED);   // Color rojo para "Sine"
-        renderer.setSeriesPaint(1, Color.BLUE);  // Color azul para "Cosine"
-        plot.setDomainGridlinePaint(Color.black);  // Color verde para las líneas de cuadrícula del dominio (eje X)
-        plot.setRangeGridlinePaint(Color.black);  // Color amarillo para las líneas de cuadrícula del rango (eje Y)
+        if(tittle.charAt(0)=='A'){
+            renderer.setSeriesPaint(0, Color.RED); 
+        } 
+        else if(tittle.charAt(0)=='D'){
+            renderer.setSeriesPaint(0, Color.BLUE); 
+        }else{
+            renderer.setSeriesPaint(0, Color.BLACK);
+        }
+        
+        plot.setDomainGridlinePaint(Color.black);  // Color negro para las líneas de cuadrícula del dominio (eje X)
+        plot.setRangeGridlinePaint(Color.black);  // Color negro para las líneas de cuadrícula del rango (eje Y)
         
        ChartPanel chartPanel = new ChartPanel(lineChart);
         add(chartPanel, BorderLayout.CENTER);
        
     }
     
-     public DefaultXYDataset getDataset(){
+     /*public DefaultXYDataset getDataset(){
          return this.dataset;
-     }
+     }*/
 }
