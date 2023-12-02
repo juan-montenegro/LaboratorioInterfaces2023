@@ -5,16 +5,12 @@
 package com.univalle.laboratoriointerfaces2023.presentation;
 import com.univalle.laboratoriointerfaces2023.Controller;
 import com.univalle.laboratoriointerfaces2023.LineChartP;
-import com.univalle.laboratoriointerfaces2023.PrintPlainText;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import org.jfree.data.xy.XYSeries;
@@ -26,7 +22,7 @@ import org.jfree.data.xy.XYSeriesCollection;
  */
 public class MyGui extends javax.swing.JFrame {
 
-    public double timeMues = 0.0;
+    public int timeMues = 0;
     public String señalAnSelect = "";
     public String señalDgSelect = "";
     public String tittleChart = "hola";
@@ -59,6 +55,8 @@ public class MyGui extends javax.swing.JFrame {
         
         dataset = new XYSeriesCollection();
         dataset.addSeries(grafica);
+        
+        esp32 = new Controller ("COM4");
         
         //LineChartP newChart = new LineChartP(timeMues,tittleChart, dataset );
     }
@@ -109,7 +107,7 @@ public class MyGui extends javax.swing.JFrame {
             }
         });
 
-        tiempoMuestreo.setText("0.1");
+        tiempoMuestreo.setText("100");
         tiempoMuestreo.setToolTipText("");
         tiempoMuestreo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -182,7 +180,7 @@ public class MyGui extends javax.swing.JFrame {
             }
         });
 
-        jLabel4.setText("s");
+        jLabel4.setText("ms");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -318,7 +316,8 @@ public class MyGui extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         
-        timeMues = getTiempoMuestreo();  
+        timeMues = (int) getTiempoMuestreo();  
+        
         System.out.println("Tiempo de Muestreo: " + timeMues);  // Imprime el valor
         
         linePanel.removeAll();   // 2. Elimina todos los componentes del linePanel
@@ -339,11 +338,12 @@ public class MyGui extends javax.swing.JFrame {
         }
         else{JOptionPane.showMessageDialog(null, "Error:  Seleccione una señal", "Señal Error", JOptionPane.ERROR_MESSAGE);}
         
-        esp32.enviarTexto("T"+timeMues+"|"+tittleChart);
-        System.out.println("T"+timeMues+"|"+tittleChart);
+        esp32.enviarTexto("T"+timeMues+","+tittleChart);
+        System.out.println("T"+timeMues+","+tittleChart);
         
         if(primero){
             grafica.remove(0);
+            
 
             scheduler = Executors.newScheduledThreadPool(1);
 
@@ -356,8 +356,11 @@ public class MyGui extends javax.swing.JFrame {
                             time.add(t);
 
                             if(tittleChart.charAt(0)=='A'){
+                                System.out.println("PLOT");
                                 signal.add((double)esp32.readAnalog);
                                 grafica.add( t ,(double)esp32.readAnalog);
+                                
+                                
                             }
 
                             else if(tittleChart.charAt(0)=='D'){
@@ -368,6 +371,7 @@ public class MyGui extends javax.swing.JFrame {
                             if (grafica.getItemCount() > NUM_VALUES) {
                                 grafica.remove(0); 
                             }
+                            newChart.updateDataset(tittleChart, dataset);
 
                             linePanel.repaint();
 
@@ -375,9 +379,10 @@ public class MyGui extends javax.swing.JFrame {
                             System.out.println(t);
 
                             if(tittleChart.charAt(0)=='A'){
-                            esp32.newAnalogData = false;}
-                            else if(tittleChart.charAt(0)=='D'){
-                            esp32.newDigitalByte = false;}
+                                esp32.newAnalogData = false;
+                            } else if(tittleChart.charAt(0)=='D'){
+                                esp32.newDigitalByte = false;
+                            }
 
                         }
                 }
@@ -421,8 +426,9 @@ public class MyGui extends javax.swing.JFrame {
               stateDo0 = 0;
         }
         
-        esp32.enviarTexto("o0"+stateDo0);
-        System.out.println("o0"+stateDo0);
+        System.out.println("s1"+stateDo0);
+        esp32.enviarTexto("s1"+stateDo0);
+        
     }//GEN-LAST:event_DO0ActionPerformed
 
     private void DO1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DO1ActionPerformed
@@ -438,8 +444,9 @@ public class MyGui extends javax.swing.JFrame {
               stateDo1 = 0;
         }// TODO add your handling code here:
         
-        esp32.enviarTexto("o1"+stateDo1);
-        System.out.println("o1"+stateDo1);
+        System.out.println("s2"+stateDo1);
+        esp32.enviarTexto("s2"+stateDo1);
+        
     }//GEN-LAST:event_DO1ActionPerformed
 
     private void DO2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DO2ActionPerformed
@@ -454,8 +461,10 @@ public class MyGui extends javax.swing.JFrame {
               DO2.setBackground(new Color(242, 80, 44));
               stateDo2 = 0;
         }// TODO add your handling code here:
-        esp32.enviarTexto("o2"+stateDo2);
-        System.out.println("o2"+stateDo2);
+        
+        System.out.println("s3"+stateDo2);
+        esp32.enviarTexto("s3"+stateDo2);
+        
     }//GEN-LAST:event_DO2ActionPerformed
 
     private void DO3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DO3ActionPerformed
@@ -471,8 +480,9 @@ public class MyGui extends javax.swing.JFrame {
               stateDo3 = 0;
         }// TODO add your handling code here:
         
-        esp32.enviarTexto("o3"+stateDo3);
-        System.out.println("o3"+stateDo3);
+        System.out.println("s4"+stateDo3);
+        esp32.enviarTexto("s4"+stateDo3);
+       
     }//GEN-LAST:event_DO3ActionPerformed
 
     private void DO0StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_DO0StateChanged

@@ -77,9 +77,9 @@ public class Controller implements Runnable, SerialPortDataListener
         if (spe.getEventType() == SerialPort.LISTENING_EVENT_DATA_RECEIVED)
         {
             myNewData = spe.getReceivedData();
+            
             for (int i = 0; i < myNewData.length; ++i){
-                fsmRX(myNewData[i]);
-                System.out.println((char)myNewData[i]);
+                fsmRX(myNewData[i]);                
             }
 
         } 
@@ -99,24 +99,29 @@ public class Controller implements Runnable, SerialPortDataListener
             case 0:
                 if(trama == HEADER1){
                     estadoFSM = 1;
+                    System.out.println("H1: " +trama);
                 }
                 break;
             case 1:
                 if(trama == HEADER2){
                     estadoFSM = 2;
+                    System.out.println("H2: " + trama);
                 }
                 break;
             case 2:
                 B1 = trama;
-                estadoFSM = 3;
+                System.out.println("B1: " + trama);
+                estadoFSM = 3; 
                 break;
             case 3:
                 if(trama == HEADER3){
+                    System.out.println("H3: " + trama);
                     estadoFSM = 0;
                     readDigital = B1;
                     newDigitalByte = true;
                 }
                 else{
+                    System.out.println("B2: " + trama);
                     B2 = trama;
                     estadoFSM = 4;
                 }   
@@ -130,11 +135,18 @@ public class Controller implements Runnable, SerialPortDataListener
                     readAnalog = (B1)<< 8 | ((B2) & 0xFF) ; 
                     newAnalogData = true;
                     newTime = true;
+                    
+                    System.out.println("readAnalog: " + readAnalog);
                 }
                 break;
           }
 
     }
+    
+    public String byteArrayToString(byte[] byteArray) {
+        return new String(byteArray);
+    }
+
     
     public static float byteArrayToFloat(byte[] bytes) {
         int intBits = 
@@ -142,13 +154,19 @@ public class Controller implements Runnable, SerialPortDataListener
         return Float.intBitsToFloat(intBits);  
     }
     
+    
+    
     public void enviarTexto(String data) {
-        myWrittingThread.start();
+        if (!myWrittingThread.isAlive()) {
+            myWrittingThread.start();
+        }
+
         if (puertoSerie.isOpen()) {
             try {
                 OutputStream out = puertoSerie.getOutputStream();
                 out.write(data.getBytes()); // Envía la cadena como un array de bytes
                 out.flush();
+               
             } catch (IOException e) {
                 e.printStackTrace();
             }

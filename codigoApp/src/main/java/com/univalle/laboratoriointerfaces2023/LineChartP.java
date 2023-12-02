@@ -13,7 +13,6 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
-import org.jfree.data.xy.DefaultXYDataset;
 import org.jfree.data.xy.XYSeriesCollection;
 
 /**
@@ -25,6 +24,7 @@ import org.jfree.data.xy.XYSeriesCollection;
  * Fecha: 4/10/2023
  */
 public final class LineChartP extends JPanel{
+    JFreeChart lineChart;
     
     //private final int NUM_VALUES = 100;
 
@@ -77,7 +77,7 @@ public final class LineChartP extends JPanel{
         //this.createDataset(tiempoMues);
         
         // Create the chart using the dataset
-        JFreeChart lineChart = ChartFactory.createXYLineChart(
+        lineChart = ChartFactory.createXYLineChart(
                 tittle, // The chart title
                 "Tiempo", // x axis label
                 "Amplitud", // y axis label
@@ -108,6 +108,29 @@ public final class LineChartP extends JPanel{
        ChartPanel chartPanel = new ChartPanel(lineChart);
         add(chartPanel, BorderLayout.CENTER);
        
+    }
+    
+    public void updateDataset(String title, XYSeriesCollection dataset){
+        // Add Chart Series
+        lineChart.getXYPlot().setDataset(dataset);
+        
+        lineChart.setTitle(title);
+        XYPlot plot = lineChart.getXYPlot();
+        
+        // Add Chart Series
+        //plot.setDataset(dataset);
+        
+        XYItemRenderer renderer = plot.getRenderer();
+        
+        if(title.startsWith("A")){
+            renderer.setSeriesPaint(0, Color.RED); 
+            
+        } 
+        else if(title.charAt(0)=='D'){
+            renderer.setSeriesPaint(0, Color.BLUE); 
+        }else{
+            renderer.setSeriesPaint(0, Color.BLACK);
+        }
     }
     
      /*public DefaultXYDataset getDataset(){
