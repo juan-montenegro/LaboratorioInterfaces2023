@@ -2,13 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.univalle.laboratoriointerfaces2023;
+package com.univalle.guiInterfacesLab2023;
 
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
@@ -17,11 +16,10 @@ import java.io.OutputStream;
  */
 public class Controller implements Runnable, SerialPortDataListener
 {
-	private SerialPort puertoSerie;
+	private final SerialPort puertoSerie;
 	private byte[] myNewData;
-	private InputStream myRxStream;
-	private Thread myReadingThread;
-        private Thread myWrittingThread;
+	private final Thread myReadingThread;
+        private final Thread myWrittingThread;
 	//private static String mySerialPortDesc = "COM2";
         private static int estadoFSM = 0;
 
@@ -42,11 +40,10 @@ public class Controller implements Runnable, SerialPortDataListener
     public Controller(String COM) {
         
         puertoSerie = SerialPort.getCommPort(COM);
-        //puertoSerie.setBaudRate(baudRate);
         puertoSerie.setComPortParameters(9600, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
         puertoSerie.openPort();
         
-        myRxStream = puertoSerie.getInputStream();
+        puertoSerie.getInputStream();
         
         //Registrar eventos
         puertoSerie.addDataListener(this);
@@ -87,10 +84,10 @@ public class Controller implements Runnable, SerialPortDataListener
     
     
    
-    public boolean conectado(){
+    public boolean isOpen(){
         return puertoSerie.isOpen();
     } 
-    public boolean desconectar() {
+    public boolean closePort() {
         return puertoSerie.closePort();
     }
     

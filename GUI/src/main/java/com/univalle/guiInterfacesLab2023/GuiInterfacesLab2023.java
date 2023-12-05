@@ -2,14 +2,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  */
 
-package com.univalle.laboratoriointerfaces2023;
-import com.univalle.laboratoriointerfaces2023.presentation.MyGui;
+package com.univalle.guiInterfacesLab2023;
+import com.univalle.guiInterfacesLab2023.presentation.MyGui;
 
 /**
  *
  * @author juane
  */
-public class LaboratorioInterfaces2023 {
+public class GuiInterfacesLab2023 {
     
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -40,10 +40,8 @@ public class LaboratorioInterfaces2023 {
         //    new MyGui().setVisible(true);
         //});
         
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new MyGui().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new MyGui().setVisible(true);
         });
     }
 }

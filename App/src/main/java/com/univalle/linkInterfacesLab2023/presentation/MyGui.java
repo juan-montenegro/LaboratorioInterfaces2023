@@ -2,9 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package com.univalle.laboratoriointerfaces2023.presentation;
-import com.univalle.laboratoriointerfaces2023.Controller;
-import com.univalle.laboratoriointerfaces2023.LineChartP;
+package com.univalle.linkInterfacesLab2023.presentation;
+import com.univalle.linkInterfacesLab2023.Controller;
+import com.univalle.linkInterfacesLab2023.LineChartP;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -21,7 +21,8 @@ import org.jfree.data.xy.XYSeriesCollection;
  * @author juane
  */
 public class MyGui extends javax.swing.JFrame {
-
+    
+    private final String COMM_PORT = "COM9";
     public int timeMues = 0;
     public String señalAnSelect = "";
     public String señalDgSelect = "";
@@ -29,7 +30,6 @@ public class MyGui extends javax.swing.JFrame {
     
     
     ScheduledExecutorService scheduler;
-    ScheduledExecutorService scheduler2;
     
     public Runnable ploteando;
     public Controller esp32;
@@ -56,7 +56,7 @@ public class MyGui extends javax.swing.JFrame {
         dataset = new XYSeriesCollection();
         dataset.addSeries(grafica);
         
-        esp32 = new Controller ("COM4");
+        esp32 = new Controller (COMM_PORT);
         
         //LineChartP newChart = new LineChartP(timeMues,tittleChart, dataset );
     }
@@ -347,46 +347,44 @@ public class MyGui extends javax.swing.JFrame {
 
             scheduler = Executors.newScheduledThreadPool(1);
 
-            ploteando = new Runnable (){
+            ploteando = new Runnable() {
                 @Override
                 public void run() {
-
                     if(esp32.newAnalogData || esp32.newDigitalByte){
-
-                            time.add(t);
-
-                            if(tittleChart.charAt(0)=='A'){
-                                System.out.println("PLOT");
-                                signal.add((double)esp32.readAnalog);
-                                grafica.add( t ,(double)esp32.readAnalog);
-                                
-                                
-                            }
-
-                            else if(tittleChart.charAt(0)=='D'){
-                                signal.add((double)esp32.readDigital);
-                                grafica.add( t ,(double)esp32.readDigital);
-                            }
-
-                            if (grafica.getItemCount() > NUM_VALUES) {
-                                grafica.remove(0); 
-                            }
-                            newChart.updateDataset(tittleChart, dataset);
-
-                            linePanel.repaint();
-
-                            t += timeMues;
-                            System.out.println(t);
-
-                            if(tittleChart.charAt(0)=='A'){
-                                esp32.newAnalogData = false;
-                            } else if(tittleChart.charAt(0)=='D'){
-                                esp32.newDigitalByte = false;
-                            }
-
+                        
+                        time.add(t);
+                        
+                        if(tittleChart.charAt(0)=='A'){
+                            System.out.println("PLOT");
+                            signal.add((double)esp32.readAnalog);
+                            grafica.add( t ,(double)esp32.readAnalog);
+                            
+                            
                         }
+                        
+                        else if(tittleChart.charAt(0)=='D'){
+                            signal.add((double)esp32.readDigital);
+                            grafica.add( t ,(double)esp32.readDigital);
+                        }
+                        
+                        if (grafica.getItemCount() > NUM_VALUES) {
+                            grafica.remove(0);
+                        }
+                        newChart.updateDataset(tittleChart, dataset);
+                        
+                        linePanel.repaint();
+                        
+                        t += timeMues;
+                        System.out.println(t);
+                        
+                        if(tittleChart.charAt(0)=='A'){
+                            esp32.newAnalogData = false;
+                        } else if(tittleChart.charAt(0)=='D'){
+                            esp32.newDigitalByte = false;
+                        }
+                        
+                    }
                 }
-
             };
             scheduler.scheduleAtFixedRate(ploteando, 0, 200, TimeUnit.MILLISECONDS);
             primero = false;

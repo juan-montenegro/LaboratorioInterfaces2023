@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.univalle</groupId>
-    <artifactId>LaboratorioInterfaces2023</artifactId>
+    <artifactId>LinkInterfacesLab2023</artifactId>
     <version>0.0.1</version>
     <packaging>jar</packaging>
     <dependencies>
@@ -10,25 +10,18 @@
             <groupId>org.jfree</groupId>
             <artifactId>jfreechart</artifactId>
             <version>1.5.4</version>
-            
-            
         </dependency>
         <dependency>
-            <groupId>lib</groupId>
+            <groupId>com.fazecast</groupId>
             <artifactId>jSerialComm</artifactId>
-            <version>2-10-3</version>
+            <version>[2.0.0,3.0.0)</version>
         </dependency>
     </dependencies>
-    <repositories>
-        <repository>
-            <id>lib</id>
-            <url>file://${project.basedir}/src/main/lib</url>
-        </repository>
-    </repositories>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>9</maven.compiler.source>
         <maven.compiler.target>9</maven.compiler.target>
-        <exec.mainClass>com.univalle.laboratoriointerfaces2023.LaboratorioInterfaces2023</exec.mainClass>
+        <exec.mainClass>com.univalle.linkInterfacesLab2023.LinkInterfacesLab2023</exec.mainClass>
     </properties>
+    <name>LinkInterfacesLab2023</name>
 </project>
