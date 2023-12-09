@@ -2,17 +2,23 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package com.univalle.guiInterfacesLab2023.presentation;
-import com.univalle.guiInterfacesLab2023.Controller;
-import com.univalle.guiInterfacesLab2023.LineChartP;
+package com.univalle.guiInterfacesLab2023.view;
+import com.univalle.guiInterfacesLab2023.controller.MainFrameController;
+import com.univalle.guiInterfacesLab2023.view.components.LineChartPanel;
+import com.univalle.guiInterfacesLab2023.controller.SerialController;
+import com.univalle.guiInterfacesLab2023.model.SignalData;
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
@@ -20,43 +26,50 @@ import org.jfree.data.xy.XYSeriesCollection;
  *
  * @author juane
  */
-public class MyGui extends javax.swing.JFrame {
-    
+public class MainView extends JFrame {
+    private final MainFrameController mainFrameController;
     private final String COMM_PORT = "COM9";
-    public int timeMues = 0;
-    public String señalAnSelect = "";
-    public String señalDgSelect = "";
-    public String tittleChart = "hola";
+    private int timeMues = 0;
+    private String selectedAnSignal = "";
+    private String selectedDgSignal = "";
+    private String tittleChart = "Signal";
+    private final SignalData data;
     
     
-    ScheduledExecutorService scheduler;
+    private ScheduledExecutorService scheduler;
     
-    public Runnable ploteando;
-    public Controller esp32;
-    public boolean primero = true;
+    private Runnable plotRunnable;
+    private final SerialController esp32;
+    private boolean primero = true;
     
-    public XYSeries grafica = new XYSeries("hola");
-    public XYSeriesCollection dataset;
-    public LineChartP newChart = new LineChartP(timeMues,tittleChart, dataset ); 
+    private final XYSeries grafica;
+    private XYSeriesCollection dataset;
+    private final LineChartPanel newChart; 
     private final int NUM_VALUES = 200;
     
-    public ArrayList<Double> signal = new ArrayList<>();
-    public ArrayList<Double> time = new ArrayList<>();
     double t = 0;
     
     /**
      * Creates new form myGui
      */
-    public MyGui() {
+    public MainView() {
         initComponents();
+        data = new SignalData();
+
+        newChart = new LineChartPanel(timeMues,tittleChart, dataset );
+        grafica = new XYSeries("Signal");
         
+        mainFrameController = new MainFrameController(this);
+        mainFrameController.addActionListeners();
+        mainFrameController.addItemListeners();
+        mainFrameController.setSerialCom();
         
         grafica.add(0,0);
         
         dataset = new XYSeriesCollection();
         dataset.addSeries(grafica);
         
-        esp32 = new Controller (COMM_PORT);
+        esp32 = new SerialController (COMM_PORT);
         
         //LineChartP newChart = new LineChartP(timeMues,tittleChart, dataset );
     }
@@ -74,11 +87,11 @@ public class MyGui extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         comboSignalD = new javax.swing.JComboBox<>();
         comboSignalA = new javax.swing.JComboBox<>();
-        tiempoMuestreo = new javax.swing.JTextField();
+        sampleRateTextField = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         signalD = new javax.swing.JRadioButton();
         signalA = new javax.swing.JRadioButton();
-        jButton1 = new javax.swing.JButton();
+        SelectButton = new javax.swing.JButton();
         DO0 = new javax.swing.JToggleButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -94,64 +107,29 @@ public class MyGui extends javax.swing.JFrame {
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         comboSignalD.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "D0", "D1", "D2", "D3" }));
-        comboSignalD.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                comboSignalDActionPerformed(evt);
-            }
-        });
 
         comboSignalA.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "A0", "A1", "A2", "A3", "A4", "A5", "A6", "A7" }));
-        comboSignalA.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                comboSignalAActionPerformed(evt);
-            }
-        });
 
-        tiempoMuestreo.setText("100");
-        tiempoMuestreo.setToolTipText("");
-        tiempoMuestreo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tiempoMuestreoActionPerformed(evt);
-            }
-        });
+        sampleRateTextField.setText("100");
+        sampleRateTextField.setToolTipText("");
 
         jLabel3.setText("Tiempo de muestreo");
 
         seleccionSenal.add(signalD);
         signalD.setText("Señales Digitales");
-        signalD.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                signalDActionPerformed(evt);
-            }
-        });
 
         seleccionSenal.add(signalA);
         signalA.setText("Señales Analógicas");
-        signalA.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                signalAActionPerformed(evt);
-            }
-        });
 
-        jButton1.setBackground(new java.awt.Color(204, 255, 204));
-        jButton1.setText("Seleccionar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        SelectButton.setBackground(new java.awt.Color(204, 255, 204));
+        SelectButton.setText("Seleccionar");
+        SelectButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                SelectButtonActionPerformed(evt);
             }
         });
 
         DO0.setText("DO0");
-        DO0.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                DO0StateChanged(evt);
-            }
-        });
-        DO0.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                DO0ActionPerformed(evt);
-            }
-        });
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 3, 12)); // NOI18N
         jLabel1.setText("Inputs Signals");
@@ -160,25 +138,10 @@ public class MyGui extends javax.swing.JFrame {
         jLabel2.setText("Outputs DIgital Signals");
 
         DO1.setText("DO1");
-        DO1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                DO1ActionPerformed(evt);
-            }
-        });
 
         DO2.setText("DO2");
-        DO2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                DO2ActionPerformed(evt);
-            }
-        });
 
         DO3.setText("DO3");
-        DO3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                DO3ActionPerformed(evt);
-            }
-        });
 
         jLabel4.setText("ms");
 
@@ -212,7 +175,7 @@ public class MyGui extends javax.swing.JFrame {
                         .addGap(0, 24, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(19, 19, 19)
-                        .addComponent(tiempoMuestreo)
+                        .addComponent(sampleRateTextField)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
@@ -220,7 +183,7 @@ public class MyGui extends javax.swing.JFrame {
                 .addContainerGap(12, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel2)
-                    .addComponent(jButton1))
+                    .addComponent(SelectButton))
                 .addGap(17, 17, 17))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -249,10 +212,10 @@ public class MyGui extends javax.swing.JFrame {
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tiempoMuestreo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(sampleRateTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4))
                 .addGap(12, 12, 12)
-                .addComponent(jButton1)
+                .addComponent(SelectButton)
                 .addGap(35, 35, 35)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -301,22 +264,11 @@ public class MyGui extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void tiempoMuestreoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tiempoMuestreoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tiempoMuestreoActionPerformed
+    private void SelectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SelectButtonActionPerformed
+        data.clear();
 
-    private void signalDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signalDActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_signalDActionPerformed
 
-    private void signalAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signalAActionPerformed
-            // TODO add your handling code here:
-            
-    }//GEN-LAST:event_signalAActionPerformed
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        
-        timeMues = (int) getTiempoMuestreo();  
+        timeMues = (int) getSampleRate();  
         
         System.out.println("Tiempo de Muestreo: " + timeMues);  // Imprime el valor
         
@@ -328,13 +280,13 @@ public class MyGui extends javax.swing.JFrame {
         linePanel.add(newChart, BorderLayout.CENTER);
 
         if(signalA.isSelected()){
-           System.out.println("Señal seleccionada: "+ señalAnSelect);
-           tittleChart = señalAnSelect;
+           System.out.println("Señal seleccionada: "+ selectedAnSignal);
+           tittleChart = selectedAnSignal;
                    
         }
         else if(signalD.isSelected()){
-            System.out.println("Señal seleccionada: "+ señalDgSelect);
-            tittleChart = señalDgSelect;
+            System.out.println("Señal seleccionada: "+ selectedDgSignal);
+            tittleChart = selectedDgSignal;
         }
         else{JOptionPane.showMessageDialog(null, "Error:  Seleccione una señal", "Señal Error", JOptionPane.ERROR_MESSAGE);}
         
@@ -347,46 +299,8 @@ public class MyGui extends javax.swing.JFrame {
 
             scheduler = Executors.newScheduledThreadPool(1);
 
-            ploteando = new Runnable() {
-                @Override
-                public void run() {
-                    if(esp32.newAnalogData || esp32.newDigitalByte){
-                        
-                        time.add(t);
-                        
-                        if(tittleChart.charAt(0)=='A'){
-                            System.out.println("PLOT");
-                            signal.add((double)esp32.readAnalog);
-                            grafica.add( t ,(double)esp32.readAnalog);
-                            
-                            
-                        }
-                        
-                        else if(tittleChart.charAt(0)=='D'){
-                            signal.add((double)esp32.readDigital);
-                            grafica.add( t ,(double)esp32.readDigital);
-                        }
-                        
-                        if (grafica.getItemCount() > NUM_VALUES) {
-                            grafica.remove(0);
-                        }
-                        newChart.updateDataset(tittleChart, dataset);
-                        
-                        linePanel.repaint();
-                        
-                        t += timeMues;
-                        System.out.println(t);
-                        
-                        if(tittleChart.charAt(0)=='A'){
-                            esp32.newAnalogData = false;
-                        } else if(tittleChart.charAt(0)=='D'){
-                            esp32.newDigitalByte = false;
-                        }
-                        
-                    }
-                }
-            };
-            scheduler.scheduleAtFixedRate(ploteando, 0, 200, TimeUnit.MILLISECONDS);
+            plotRunnable = new RunnableImpl();
+            scheduler.scheduleAtFixedRate(plotRunnable, 0, 200, TimeUnit.MILLISECONDS);
             primero = false;
         }
         
@@ -395,109 +309,10 @@ public class MyGui extends javax.swing.JFrame {
           //  PrintPlainText.saveToPlainText("seno", 0,newChart.getDataset());
           //  PrintPlainText.saveToPlainText("coseno", 1,newChart.getDataset());
         //} catch (IOException ex) {
-          //  Logger.getLogger(MyGui.class.getName()).log(Level.SEVERE, null, ex);
+          //  Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
         //}
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_SelectButtonActionPerformed
 
-    private void comboSignalAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboSignalAActionPerformed
-        // TODO add your handling code here:
-        JComboBox cb = (JComboBox)evt.getSource();
-        señalAnSelect = (String)cb.getSelectedItem();
-        
-    }//GEN-LAST:event_comboSignalAActionPerformed
-
-    private void comboSignalDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboSignalDActionPerformed
-        JComboBox cb = (JComboBox)evt.getSource();
-        señalDgSelect = (String)cb.getSelectedItem();// TODO add your handling code here:
-    }//GEN-LAST:event_comboSignalDActionPerformed
-
-    private void DO0ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DO0ActionPerformed
-        // TODO add your handling code here:
-        int stateDo0 = 0;
-        
-        if(DO0.isSelected()){
-            System.out.println("D0 ON");
-            stateDo0 = 1;
-            DO0.setBackground(new Color(251, 208, 62));
-        }else{System.out.println("D0 OFF");
-              DO0.setBackground(new Color(242, 80, 44));
-              stateDo0 = 0;
-        }
-        
-        System.out.println("s1"+stateDo0);
-        esp32.enviarTexto("s1"+stateDo0);
-        
-    }//GEN-LAST:event_DO0ActionPerformed
-
-    private void DO1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DO1ActionPerformed
-        
-        int stateDo1 = 0;
-        
-        if(DO1.isSelected()){
-            System.out.println("D1 ON");
-            DO1.setBackground(new Color(251, 208, 62));
-            stateDo1 = 1;
-        }else{System.out.println("D1 OFF");
-              DO1.setBackground(new Color(242, 80, 44));
-              stateDo1 = 0;
-        }// TODO add your handling code here:
-        
-        System.out.println("s2"+stateDo1);
-        esp32.enviarTexto("s2"+stateDo1);
-        
-    }//GEN-LAST:event_DO1ActionPerformed
-
-    private void DO2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DO2ActionPerformed
-        
-        int stateDo2 = 0;
-        
-        if(DO2.isSelected()){
-            System.out.println("D2 ON");
-            DO2.setBackground(new Color(251, 208, 62));
-            stateDo2 = 1;
-        }else{System.out.println("D2 OFF");
-              DO2.setBackground(new Color(242, 80, 44));
-              stateDo2 = 0;
-        }// TODO add your handling code here:
-        
-        System.out.println("s3"+stateDo2);
-        esp32.enviarTexto("s3"+stateDo2);
-        
-    }//GEN-LAST:event_DO2ActionPerformed
-
-    private void DO3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DO3ActionPerformed
-        
-        int stateDo3 = 0;
-        
-        if(DO3.isSelected()){
-            System.out.println("D3 ON");
-            DO3.setBackground(new Color(251, 208, 62));
-            stateDo3 = 1;
-        }else{System.out.println("D3 OFF");
-              DO3.setBackground(new Color(242, 80, 44));
-              stateDo3 = 0;
-        }// TODO add your handling code here:
-        
-        System.out.println("s4"+stateDo3);
-        esp32.enviarTexto("s4"+stateDo3);
-       
-    }//GEN-LAST:event_DO3ActionPerformed
-
-    private void DO0StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_DO0StateChanged
-        // TODO add your handling code here:
-    }//GEN-LAST:event_DO0StateChanged
-
-    public double getTiempoMuestreo() {
-        String timeS =tiempoMuestreo.getText();
-        double tiempoMues = 0.0;
-        try {
-            tiempoMues = Double.parseDouble(timeS);
-            
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(null, "Error: '" + timeS+ "' no es un número válido.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        return tiempoMues;
-    }
     /**
      * @param args the command line arguments
      */
@@ -508,18 +323,126 @@ public class MyGui extends javax.swing.JFrame {
     private javax.swing.JToggleButton DO1;
     private javax.swing.JToggleButton DO2;
     private javax.swing.JToggleButton DO3;
+    private javax.swing.JButton SelectButton;
     private javax.swing.JComboBox<String> comboSignalA;
     private javax.swing.JComboBox<String> comboSignalD;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel linePanel;
+    private javax.swing.JTextField sampleRateTextField;
     private javax.swing.ButtonGroup seleccionSenal;
     private javax.swing.JRadioButton signalA;
     private javax.swing.JRadioButton signalD;
-    private javax.swing.JTextField tiempoMuestreo;
     // End of variables declaration//GEN-END:variables
+    
+    
+    private double getSampleRate() {
+        String timeS = sampleRateTextField.getText();
+        double tiempoMues = 0.0;
+        try {
+            tiempoMues = Double.parseDouble(timeS);
+            
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Error: '" + timeS+ "' no es un número válido.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return tiempoMues;
+    }
+
+    public JToggleButton getDO0() {
+        return DO0;
+    }
+
+    public JToggleButton getDO1() {
+        return DO1;
+    }
+
+    public JToggleButton getDO2() {
+        return DO2;
+    }
+
+    public JToggleButton getDO3() {
+        return DO3;
+    }
+
+    public JButton getSelectButton() {
+        return SelectButton;
+    }
+
+    public JComboBox<String> getComboSignalA() {
+        return comboSignalA;
+    }
+
+    public JComboBox<String> getComboSignalD() {
+        return comboSignalD;
+    }
+
+    public JTextField getSampleRateTextField() {
+        return sampleRateTextField;
+    }
+
+    public ButtonGroup getSeleccionSenal() {
+        return seleccionSenal;
+    }
+
+    public JRadioButton getSignalA() {
+        return signalA;
+    }
+
+    public JRadioButton getSignalD() {
+        return signalD;
+    }
+    
+    public void setSelectedAnSignal(String selectedAnSignal){
+        this.selectedAnSignal = selectedAnSignal;
+    }
+    
+    public void setSelectedDgSignal(String selectedDgSignal){
+        this.selectedDgSignal = selectedDgSignal;
+    }
+
+    private class RunnableImpl implements Runnable {
+
+        public RunnableImpl() {}
+
+        @Override
+        public void run() {
+            if(esp32.newAnalogData || esp32.newDigitalByte){
+                
+                data.addTime(t);
+                
+                if(tittleChart.charAt(0)=='A'){
+                    System.out.println("PLOT");
+                    data.addSignal((double)esp32.readAnalog);
+                    grafica.add( t ,(double)esp32.readAnalog);
+                    
+                    
+                }
+                
+                else if(tittleChart.charAt(0)=='D'){
+                    data.addSignal((double)esp32.readDigital);
+                    grafica.add( t ,(double)esp32.readDigital);
+                }
+                
+                if (grafica.getItemCount() > NUM_VALUES) {
+                    grafica.remove(0);
+                }
+                newChart.updateDataset(tittleChart, dataset);
+                
+                linePanel.repaint();
+                
+                t += timeMues;
+                System.out.println(t);
+                
+                if(tittleChart.charAt(0)=='A'){
+                    esp32.newAnalogData = false;
+                } else if(tittleChart.charAt(0)=='D'){
+                    esp32.newDigitalByte = false;
+                }
+                
+            }
+        }
+    }
 }

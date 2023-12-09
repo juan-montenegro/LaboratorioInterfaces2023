@@ -3,13 +3,14 @@
  */
 
 package com.univalle.guiInterfacesLab2023;
-import com.univalle.guiInterfacesLab2023.presentation.MyGui;
+import com.univalle.guiInterfacesLab2023.view.MainView;
+import javax.swing.JFrame;
 
 /**
  *
  * @author juane
  */
-public class GuiInterfacesLab2023 {
+public class MainApp {
     
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -25,23 +26,27 @@ public class GuiInterfacesLab2023 {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MyGui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MainView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MyGui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MainView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MyGui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MainView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MyGui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MainView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         //java.awt.EventQueue.invokeLater(() -> {
-        //    new MyGui().setVisible(true);
+        //    new MainApp().setVisible(true);
         //});
         
         java.awt.EventQueue.invokeLater(() -> {
-            new MyGui().setVisible(true);
+            JFrame mainFrame = new MainView();
+            mainFrame.setVisible(true);
         });
     }
 }

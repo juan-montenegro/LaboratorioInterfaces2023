@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.univalle.guiInterfacesLab2023;
+package com.univalle.guiInterfacesLab2023.controller;
 
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
@@ -14,7 +14,7 @@ import java.io.OutputStream;
  *
  * @author camilo
  */
-public class Controller implements Runnable, SerialPortDataListener
+public class SerialController implements Runnable, SerialPortDataListener
 {
 	private final SerialPort puertoSerie;
 	private byte[] myNewData;
@@ -37,7 +37,7 @@ public class Controller implements Runnable, SerialPortDataListener
         public boolean newAnalogData = false;
         public boolean newTime = false;
         
-    public Controller(String COM) {
+    public SerialController(String COM) {
         
         puertoSerie = SerialPort.getCommPort(COM);
         puertoSerie.setComPortParameters(9600, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
