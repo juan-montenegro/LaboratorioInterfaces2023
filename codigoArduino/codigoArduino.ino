@@ -95,28 +95,28 @@ void loop() {
     Serial.println("PUERTO: " + lectura);
     
      
-     if(lectura=="s11"){
+     if(lectura=="DO01"){
       digitalWrite(Led1,HIGH);
       }
-     else if(lectura=="s10"){
+     else if(lectura=="DO00"){
       digitalWrite(Led1,LOW);
       } 
-      else if(lectura=="s21"){
+      else if(lectura=="DO11"){
       digitalWrite(Led2,HIGH);
       }
-     else if(lectura=="s20"){
+     else if(lectura=="DO10"){
       digitalWrite(Led2,LOW);
       }  
-      else if(lectura=="s31"){
+      else if(lectura=="DO21"){
       digitalWrite(Led3,HIGH);
       }
-      else if(lectura=="s30"){
+      else if(lectura=="DO20"){
       digitalWrite(Led3,LOW);
       } 
-      else if(lectura=="s41"){
+      else if(lectura=="DO31"){
       digitalWrite(Led4,HIGH);
       }
-      else if(lectura=="s40"){
+      else if(lectura=="DO30"){
       digitalWrite(Led4,LOW);
       } 
 
