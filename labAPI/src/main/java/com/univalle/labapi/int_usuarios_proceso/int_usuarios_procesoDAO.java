@@ -10,7 +10,9 @@ import java.util.List;
 
 /**
  *
- * @author juane
+ * @author Juan Camilo Chavez
+ * @author Juan Esteban Montenegro
+ * @author Juan David Beltran
  */
 public interface int_usuarios_procesoDAO {
     
@@ -28,13 +30,5 @@ public interface int_usuarios_procesoDAO {
         public int deleteRegister(int usario, int proceso, LocalDate fecha,LocalTime hora_inicio);
         public int deleteRegistersOfUser(int usuario);
         public int deleteRegistersOfProcess(int proceso);
-        public int deleteRegistersOfDate (LocalDate fecha);
-        
-        
-	public int_usuarios getUser(int idUser);
-	public int_usuarios getUser(String names, String lastNames);
-	public int insertUser(String name, String apellidos, String email, String pwd, int int_usuarios_tipo_id);
-	public int updateUser(int_usuarios user2Update);
-	public int deleteUser(int_usuarios userDB);
-	public int deleteUser(int userID);
+        public int deleteRegistersOfDate (LocalDate fecha);       
 }

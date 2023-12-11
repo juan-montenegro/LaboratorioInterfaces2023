@@ -4,6 +4,7 @@
  */
 package com.univalle.labapi.int_usuarios_proceso;
 
+import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 
 public class int_usuarios_procesoDAOImpl implements int_usuarios_procesoDAO {
 
+    private Connection conection = null;
     @Override
     public List<int_usuarios_proceso> getAllProcessForUser(int usuario) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
