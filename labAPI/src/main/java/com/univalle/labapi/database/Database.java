@@ -48,4 +48,7 @@ public class Database {
         return connection.isValid(5);
     }
     
+    public Connection getConnection(){
+        return this.connection;
+    }
 }

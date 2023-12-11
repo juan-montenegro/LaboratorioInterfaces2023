@@ -10,99 +10,125 @@ package com.univalle.labapi.int_proceso_refs;
  */
 public class int_proceso_refs {
     /**
-    Field id, primary key.
-    */
+     * Field id, primary key.
+     */
     private int idpk;
+    /**
+     * 
+     */
     private int int_proceso_id_fk;
+    /**
+     * 
+     */
     private String nombre;
+    /**
+     * 
+     */
     private String descripcion;
+    /**
+     * 
+     */
     private double max_2;
+    /**
+     * 
+     */
     private double min;
 
     /**
      *
+     * @param processId
+     * @param name
+     * @param description
+     * @param max
+     * @param min
      */
-    public int_proceso_refs() {
+    public int_proceso_refs(int processId, String name, 
+            String description, double max, double min) {    
+        this.int_proceso_id_fk = processId;
+        this.nombre = name;
+        this.descripcion = description;
+        this.max_2 = max;
+        this.min = min;
     }
 
     /**
      *
      * @return
      */
-    public int getIdpk() {
+    public int getId() {
         return idpk;
     }
 
     /**
      *
-     * @param idpk
+     * @param id
      */
-    public void setIdpk(int idpk) {
-        this.idpk = idpk;
+    public void setId(int id) {
+        this.idpk = id;
     }
 
     /**
      *
      * @return
      */
-    public int getInt_proceso_id_fk() {
+    public int getProcessId() {
         return int_proceso_id_fk;
     }
 
     /**
      *
-     * @param int_proceso_id_fk
+     * @param processId
      */
-    public void setInt_proceso_id_fk(int int_proceso_id_fk) {
-        this.int_proceso_id_fk = int_proceso_id_fk;
+    public void setProcessId(int processId) {
+        this.int_proceso_id_fk = processId;
     }
 
     /**
      *
      * @return
      */
-    public String getNombre() {
+    public String getName() {
         return nombre;
     }
 
     /**
      *
-     * @param nombre
+     * @param name
      */
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setName(String name) {
+        this.nombre = name;
     }
 
     /**
      *
      * @return
      */
-    public String getDescripcion() {
+    public String getDescription() {
         return descripcion;
     }
 
     /**
      *
-     * @param descripcion
+     * @param description
      */
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+    public void setDescription(String description) {
+        this.descripcion = description;
     }
 
     /**
      *
      * @return
      */
-    public double getMax_2() {
+    public double getMax() {
         return max_2;
     }
 
     /**
      *
-     * @param max_2
+     * @param max
      */
-    public void setMax_2(double max_2) {
-        this.max_2 = max_2;
+    public void setMax(double max) {
+        this.max_2 = max;
     }
 
     /**
