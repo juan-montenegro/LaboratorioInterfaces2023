@@ -12,11 +12,57 @@ import java.util.List;
  *
  */
 public interface int_usuariosDAO {
-	public List<int_usuarios> getAllUsers();
-	public int_usuarios getUser(int idUser);
-	public int_usuarios getUser(String names, String lastNames);
-	public int insertUser(String name, String apellidos, String email, String pwd, int int_usuarios_tipo_id);
-	public int updateUser(int_usuarios user2Update);
-	public int deleteUser(int_usuarios userDB);
-	public int deleteUser(int userID);
+
+    /**
+     *
+     * @return
+     */
+    public List<int_usuarios> getAllUsers();
+
+    /**
+     *
+     * @param idUser
+     * @return
+     */
+    public int_usuarios getUser(int idUser);
+
+    /**
+     *
+     * @param names
+     * @param lastNames
+     * @return
+     */
+    public int_usuarios getUser(String names, String lastNames);
+
+    /**
+     *
+     * @param name
+     * @param apellidos
+     * @param email
+     * @param pwd
+     * @param int_usuarios_tipo_id
+     * @return
+     */
+    public int insertUser(String name, String apellidos, String email, String pwd, int int_usuarios_tipo_id);
+
+    /**
+     *
+     * @param user2Update
+     * @return
+     */
+    public int updateUser(int_usuarios user2Update);
+
+    /**
+     *
+     * @param userDB
+     * @return
+     */
+    public int deleteUser(int_usuarios userDB);
+
+    /**
+     *
+     * @param userID
+     * @return
+     */
+    public int deleteUser(int userID);
 }

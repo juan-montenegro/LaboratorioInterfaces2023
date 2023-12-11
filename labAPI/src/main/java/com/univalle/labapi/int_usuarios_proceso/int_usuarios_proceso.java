@@ -12,24 +12,43 @@ import java.time.LocalTime;
  * @author juane
  */
 public class int_usuarios_proceso {
+    /**
+     * Field id, primary key.
+     */
     private int idpk;
+    /**
+     * Field int_usuarios_id, foreign key of table int_usuarios
+     */
     private int int_usuarios_id_fk;
+    /**
+     * Field int_proceso_id, foreign key of table int_proceso
+     */
     private int int_proceso_id_fk;
-    
+    /**
+     * 
+     */
     private LocalDate fecha;
+    /**
+     * 
+     */
     private LocalTime hora_inicio;
+    /**
+     * 
+     */
     private LocalTime hora_fin;
-    
+    /**
+     * 
+     */
     private int hits;
 
     /**
      *
-     * @param int_usuarios_id_fk
-     * @param int_proceso_id_fk
+     * @param userId
+     * @param processId
      */
-    public int_usuarios_proceso(int int_usuarios_id_fk, int int_proceso_id_fk) {
-        this.int_usuarios_id_fk = int_usuarios_id_fk;
-        this.int_proceso_id_fk = int_proceso_id_fk;
+    public int_usuarios_proceso(int userId, int processId) {
+        this.int_usuarios_id_fk = userId;
+        this.int_proceso_id_fk = processId;
     }
 
     /**
@@ -37,7 +56,7 @@ public class int_usuarios_proceso {
      * @return
      */
     public int getId() {
-        return idpk;
+        return this.idpk;
     }
 
     /**
@@ -53,7 +72,7 @@ public class int_usuarios_proceso {
      * @return
      */
     public int getUserId() {
-        return int_usuarios_id_fk;
+        return this.int_usuarios_id_fk;
     }
 
     /**
@@ -69,7 +88,7 @@ public class int_usuarios_proceso {
      * @return
      */
     public int getProcessId() {
-        return int_proceso_id_fk;
+        return this.int_proceso_id_fk;
     }
 
     /**
@@ -85,7 +104,7 @@ public class int_usuarios_proceso {
      * @return
      */
     public LocalDate getDate() {
-        return fecha;
+        return this.fecha;
     }
 
     /**
@@ -101,7 +120,7 @@ public class int_usuarios_proceso {
      * @return
      */
     public LocalTime getStartTime() {
-        return hora_inicio;
+        return this.hora_inicio;
     }
 
     /**
@@ -117,7 +136,7 @@ public class int_usuarios_proceso {
      * @return
      */
     public LocalTime getEndTime() {
-        return hora_fin;
+        return this.hora_fin;
     }
 
     /**
@@ -133,7 +152,7 @@ public class int_usuarios_proceso {
      * @return
      */
     public int getHits() {
-        return hits;
+        return this.hits;
     }
 
     /**

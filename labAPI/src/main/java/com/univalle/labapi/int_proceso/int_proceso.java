@@ -11,22 +11,43 @@ import java.sql.Blob;
  * @author juane
  */
 public class int_proceso {
+    /**
+     * Field id, primary key.
+     */
     private int idpk;
+    /**
+     * Field int_proceso_tipo_id, foreign key of table int_proceso_tipo
+     */
     private int int_proceso_tipo_id_fk;
+    /**
+     * 
+     */
     private String nombre;
+    /**
+     * 
+     */
     private String descripcion;
+    /**
+     * 
+     */
     private double tiempo_muestreo;
+    /**
+     * 
+     */
     private Blob archivo_especificacion;
+    /**
+     * 
+     */
     private Blob archivo_manual;
 
     /**
      *
-     * @param nombre
-     * @param int_proceso_tipo_id_fk
+     * @param name
+     * @param processTypeId
      */
-    public int_proceso(String nombre, int int_proceso_tipo_id_fk) {
-        this.nombre = nombre;
-        this.int_proceso_tipo_id_fk = int_proceso_tipo_id_fk;
+    public int_proceso(String name, int processTypeId) {
+        this.nombre = name;
+        this.int_proceso_tipo_id_fk = processTypeId;
     }
     
     
@@ -35,16 +56,16 @@ public class int_proceso {
      *
      * @return
      */
-    public int getIdpk() {
-        return idpk;
+    public int getId() {
+        return this.idpk;
     }
 
     /**
      *
-     * @param idpk
+     * @param id
      */
-    public void setIdpk(int idpk) {
-        this.idpk = idpk;
+    public void setId(int id) {
+        this.idpk = id;
     }
 
     /**
@@ -52,7 +73,7 @@ public class int_proceso {
      * @return
      */
     public int getProcessTypeId() {
-        return int_proceso_tipo_id_fk;
+        return this.int_proceso_tipo_id_fk;
     }
 
     /**
@@ -68,7 +89,7 @@ public class int_proceso {
      * @return
      */
     public String getNombre() {
-        return nombre;
+        return this.nombre;
     }
 
     /**
@@ -84,7 +105,7 @@ public class int_proceso {
      * @return
      */
     public String getDescripcion() {
-        return descripcion;
+        return this.descripcion;
     }
 
     /**
@@ -100,7 +121,7 @@ public class int_proceso {
      * @return
      */
     public double getSampleTime() {
-        return tiempo_muestreo;
+        return this.tiempo_muestreo;
     }
 
     /**
@@ -116,7 +137,7 @@ public class int_proceso {
      * @return
      */
     public Blob getArchivo_especificacion() {
-        return archivo_especificacion;
+        return this.archivo_especificacion;
     }
 
     /**
@@ -132,7 +153,7 @@ public class int_proceso {
      * @return
      */
     public Blob getArchivo_manual() {
-        return archivo_manual;
+        return this.archivo_manual;
     }
 
     /**
