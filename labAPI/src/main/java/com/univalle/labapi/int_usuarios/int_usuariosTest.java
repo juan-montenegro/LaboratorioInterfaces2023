@@ -1,35 +1,31 @@
-package com.univalle.guiInterfacesLab2023.model;
+package com.univalle.labapi.int_usuarios;
 
-import com.univalle.guiInterfacesLab2023.model.int_usuarios;
-import com.univalle.guiInterfacesLab2023.model.int_usuariosDAOImp;
+import java.io.IOException;
 import java.sql.*;
 
 public class int_usuariosTest {
-	public static void test()
-	{
-		String url = "jdbc:mariadb://localhost/interfacesdb";
+        @SuppressWarnings("empty-statement")
+	public static void test() {
+            String url = "jdbc:mariadb://localhost/interfacesdb";
 	    Connection conn = null;
 	    int_usuariosDAOImp intUsuariosDAO;
 	    
 	    // Connecting to database...
-	    try
-	    {
+	    try {
 	    	//String driver = "com.mysql.jdbc.Driver";
 	    	//Class.forName(driver).newInstance();
 	    	Class.forName("org.mariadb.jdbc.Driver");
 	    	
 	    	conn = DriverManager.getConnection(url, "intuser", "1234");
 	    }
-	    catch (Exception e)
-	    {
+	    catch (ClassNotFoundException | SQLException e) {
 	    	System.out.println("No se  puede cargar el Driver de MYSQL");
 	    	e.printStackTrace();
 	    	return;
 	    }
 	    
 	    // Main functionalities...
-	    try
-	    {
+	    try {
 	    	// int_usuariosDAOImp instance
 	    	intUsuariosDAO = new int_usuariosDAOImp(conn);
 	    	
@@ -48,7 +44,7 @@ public class int_usuariosTest {
 	    	System.out.println("STOP !, Verify the information using PHPMYADMIN, then press '1' and ENTER...");
 		 	try { while(!(System.in.read() == '1')); 
 		 		/*int myChar = System.in.read();*/ }
-		 	catch(Exception e) { }
+		 	catch(IOException e) { }
 	    	
 	    	// Getting a particular user, ID = 2
 	    	int_usuarios userID2 = intUsuariosDAO.getUser(2);
@@ -62,7 +58,7 @@ public class int_usuariosTest {
     		System.out.println("STOP !, Verify the information using PHPMYADMIN, then press '2' and ENTER...");
 		 	try { while(!(System.in.read() == '2')); 
 		 		/*int myChar = System.in.read();*/ }
-		 	catch(Exception e) { }
+		 	catch(IOException e) { }
     		
     		// Inserting a new user...
     		System.out.println("Inserting a new user ...");
@@ -74,7 +70,7 @@ public class int_usuariosTest {
     		System.out.println("STOP !, Verify the information using PHPMYADMIN, then press '3' and ENTER...");
 		 	try { while(!(System.in.read() == '3')); 
 		 		/*int myChar = System.in.read();*/ }
-		 	catch(Exception e) { }
+		 	catch(IOException e) { }
     		
     		// Updating a new user...
     		System.out.println("Updating last user inserted ...");
@@ -95,14 +91,14 @@ public class int_usuariosTest {
     		System.out.println("STOP !, Verify the information using PHPMYADMIN, then press '4' and ENTER...");
 		 	try { while(!(System.in.read() == '4')); 
 		 		/*int myChar = System.in.read();*/ }
-		 	catch(Exception e) { }
+		 	catch(IOException e) { }
     		
     		// Deleting user
     		System.out.println("Deleting last user inserted ...");
     		numRows = intUsuariosDAO.deleteUser(userLastInserted.getId());
     		System.out.println("Rows affected: "+numRows);
 	    }
-	    catch (Exception e)
+	    catch (SQLException e)
 	    {
 	    	e.printStackTrace();
 	    }
@@ -113,7 +109,9 @@ public class int_usuariosTest {
 	    	if (conn!=null)
 	    	{
 	    		try {conn.close();}
-	    		catch (Exception e) {e.printStackTrace();}
+	    		catch (SQLException e) {
+                            e.printStackTrace();
+                        }
 	    	}
 	    }
 	}

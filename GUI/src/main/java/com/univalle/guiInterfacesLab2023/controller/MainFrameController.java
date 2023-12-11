@@ -80,11 +80,11 @@ public class MainFrameController implements ActionListener, ItemListener {
     private void stateChanged(ItemEvent e, JToggleButton item, SerialController controller){
         if(e.getStateChange() == ItemEvent.SELECTED){
             item.setBackground(ON_COLOR);
-            controller.enviarTexto(item.getText()+"1");
+            controller.sendText(item.getText()+"1");
             System.out.println(item.getText()+"1");
         } else if (e.getStateChange() == ItemEvent.DESELECTED) {
             item.setBackground(OFF_COLOR);
-            controller.enviarTexto(item.getText()+"0");
+            controller.sendText(item.getText()+"0");
             System.out.println(item.getText()+"0");            
         }
     }

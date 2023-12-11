@@ -1,4 +1,4 @@
-package com.univalle.guiInterfacesLab2023.model;
+package com.univalle.labapi.int_usuarios;
 
 import java.util.List;
 

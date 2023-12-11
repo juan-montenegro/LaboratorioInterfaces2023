@@ -153,7 +153,7 @@ public class SerialController implements Runnable, SerialPortDataListener
     
     
     
-    public void enviarTexto(String data) {
+    public void sendText(String data) {
         if (!myWrittingThread.isAlive()) {
             myWrittingThread.start();
         }

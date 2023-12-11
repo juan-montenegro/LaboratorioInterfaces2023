@@ -36,10 +36,10 @@ public class MainView extends JFrame {
     private final SignalData data;
     
     
-    private ScheduledExecutorService scheduler;
+    private final ScheduledExecutorService scheduler;
     
     private Runnable plotRunnable;
-    private final SerialController esp32;
+    private final SerialController serialController;
     private boolean primero = true;
     
     private final XYSeries grafica;
@@ -55,7 +55,9 @@ public class MainView extends JFrame {
     public MainView() {
         initComponents();
         data = new SignalData();
-
+        
+        scheduler = Executors.newScheduledThreadPool(1);
+        
         newChart = new LineChartPanel(timeMues,tittleChart, dataset );
         grafica = new XYSeries("Signal");
         
@@ -69,7 +71,7 @@ public class MainView extends JFrame {
         dataset = new XYSeriesCollection();
         dataset.addSeries(grafica);
         
-        esp32 = new SerialController (COMM_PORT);
+        serialController = new SerialController (COMM_PORT);
         
         //LineChartP newChart = new LineChartP(timeMues,tittleChart, dataset );
     }
@@ -99,7 +101,7 @@ public class MainView extends JFrame {
         DO2 = new javax.swing.JToggleButton();
         DO3 = new javax.swing.JToggleButton();
         jLabel4 = new javax.swing.JLabel();
-        linePanel = new javax.swing.JPanel();
+        lineChartPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -229,14 +231,14 @@ public class MainView extends JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        javax.swing.GroupLayout linePanelLayout = new javax.swing.GroupLayout(linePanel);
-        linePanel.setLayout(linePanelLayout);
-        linePanelLayout.setHorizontalGroup(
-            linePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout lineChartPanelLayout = new javax.swing.GroupLayout(lineChartPanel);
+        lineChartPanel.setLayout(lineChartPanelLayout);
+        lineChartPanelLayout.setHorizontalGroup(
+            lineChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 547, Short.MAX_VALUE)
         );
-        linePanelLayout.setVerticalGroup(
-            linePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        lineChartPanelLayout.setVerticalGroup(
+            lineChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 436, Short.MAX_VALUE)
         );
 
@@ -248,7 +250,7 @@ public class MainView extends JFrame {
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(linePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lineChartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -257,7 +259,7 @@ public class MainView extends JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(linePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(lineChartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -266,18 +268,17 @@ public class MainView extends JFrame {
 
     private void SelectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SelectButtonActionPerformed
         data.clear();
-
-
+        
         timeMues = (int) getSampleRate();  
         
         System.out.println("Tiempo de Muestreo: " + timeMues);  // Imprime el valor
         
-        linePanel.removeAll();   // 2. Elimina todos los componentes del linePanel
-        linePanel.add(newChart); // 3. Añade la nueva instancia de LineChartP a linePanel
-        linePanel.revalidate();  // 4. Revalida el linePanel para que se tenga en cuenta cualquier cambio en la estructura de componentes.
-        linePanel.repaint();
-        linePanel.setLayout(new BorderLayout());
-        linePanel.add(newChart, BorderLayout.CENTER);
+        lineChartPanel.removeAll();   // 2. Elimina todos los componentes del lineChartPanel
+        lineChartPanel.add(newChart); // 3. Añade la nueva instancia de LineChartP a lineChartPanel
+        lineChartPanel.revalidate();  // 4. Revalida el lineChartPanel para que se tenga en cuenta cualquier cambio en la estructura de componentes.
+        lineChartPanel.repaint();
+        lineChartPanel.setLayout(new BorderLayout());
+        lineChartPanel.add(newChart, BorderLayout.CENTER);
 
         if(signalA.isSelected()){
            System.out.println("Señal seleccionada: "+ selectedAnSignal);
@@ -290,16 +291,48 @@ public class MainView extends JFrame {
         }
         else{JOptionPane.showMessageDialog(null, "Error:  Seleccione una señal", "Señal Error", JOptionPane.ERROR_MESSAGE);}
         
-        esp32.enviarTexto("T"+timeMues+","+tittleChart);
+        serialController.sendText("T"+timeMues+","+tittleChart);
         System.out.println("T"+timeMues+","+tittleChart);
         
         if(primero){
             grafica.remove(0);
-            
 
-            scheduler = Executors.newScheduledThreadPool(1);
-
-            plotRunnable = new RunnableImpl();
+            plotRunnable = () -> {
+                if(serialController.newAnalogData || serialController.newDigitalByte){
+                    
+                    data.addTime(t);
+                    
+                    if(tittleChart.charAt(0)=='A'){
+                        System.out.println("PLOT");
+                        data.addSignal((double)serialController.readAnalog);
+                        grafica.add(t ,(double)serialController.readAnalog);
+                        
+                        
+                    }
+                    
+                    else if(tittleChart.charAt(0)=='D'){
+                        data.addSignal((double)serialController.readDigital);
+                        grafica.add(t ,(double)serialController.readDigital);
+                    }
+                    
+                    if (grafica.getItemCount() > NUM_VALUES) {
+                        grafica.remove(0);
+                    }
+                    newChart.updateDataset(tittleChart, dataset);
+                    
+                    lineChartPanel.repaint();
+                    
+                    t += timeMues;
+                    System.out.println(t);
+                    
+                    if(tittleChart.charAt(0)=='A'){
+                        serialController.newAnalogData = false;
+                    } else if(tittleChart.charAt(0)=='D'){
+                        serialController.newDigitalByte = false;
+                    }
+                    
+                }
+            };
             scheduler.scheduleAtFixedRate(plotRunnable, 0, 200, TimeUnit.MILLISECONDS);
             primero = false;
         }
@@ -331,7 +364,7 @@ public class MainView extends JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel linePanel;
+    private javax.swing.JPanel lineChartPanel;
     private javax.swing.JTextField sampleRateTextField;
     private javax.swing.ButtonGroup seleccionSenal;
     private javax.swing.JRadioButton signalA;
@@ -401,48 +434,5 @@ public class MainView extends JFrame {
     
     public void setSelectedDgSignal(String selectedDgSignal){
         this.selectedDgSignal = selectedDgSignal;
-    }
-
-    private class RunnableImpl implements Runnable {
-
-        public RunnableImpl() {}
-
-        @Override
-        public void run() {
-            if(esp32.newAnalogData || esp32.newDigitalByte){
-                
-                data.addTime(t);
-                
-                if(tittleChart.charAt(0)=='A'){
-                    System.out.println("PLOT");
-                    data.addSignal((double)esp32.readAnalog);
-                    grafica.add( t ,(double)esp32.readAnalog);
-                    
-                    
-                }
-                
-                else if(tittleChart.charAt(0)=='D'){
-                    data.addSignal((double)esp32.readDigital);
-                    grafica.add( t ,(double)esp32.readDigital);
-                }
-                
-                if (grafica.getItemCount() > NUM_VALUES) {
-                    grafica.remove(0);
-                }
-                newChart.updateDataset(tittleChart, dataset);
-                
-                linePanel.repaint();
-                
-                t += timeMues;
-                System.out.println(t);
-                
-                if(tittleChart.charAt(0)=='A'){
-                    esp32.newAnalogData = false;
-                } else if(tittleChart.charAt(0)=='D'){
-                    esp32.newDigitalByte = false;
-                }
-                
-            }
-        }
     }
 }

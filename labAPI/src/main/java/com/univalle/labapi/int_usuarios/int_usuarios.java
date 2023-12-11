@@ -1,4 +1,4 @@
-package com.univalle.guiInterfacesLab2023.model;
+package com.univalle.labapi.int_usuarios;
 
 /**
 * <b> Description</b> <p align=justify>
