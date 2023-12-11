@@ -4,8 +4,6 @@ byte h2=0x7b;
 byte h3=0x7c;
 String lectura;
 
-String header1="T";
-String header2="M";
 int estadoFSM=0;
 const int SensorPin0=A0;
 const int SensorPin1=A1;
@@ -37,7 +35,6 @@ const int ledPin = 13;
 void leerTiempo(String trama) {
   String firstPart;
   String secondPart;
-  //String trama = Serial.readStringUntil(END_DELIMITER);
   
   if (trama.startsWith(String(START_DELIMITER))) {
     Serial.println("TRAMA: "+trama);
