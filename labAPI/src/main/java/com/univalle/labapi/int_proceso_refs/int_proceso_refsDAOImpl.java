@@ -23,18 +23,18 @@ public class int_proceso_refsDAOImpl implements int_proceso_refsDAO {
     private static final String MAX_2 = "max_2";
     private static final String MIN = "min";
     
-    private final String GET_ALL_PROCESS_REFS = "SELECT id, int_proceso_id,"
+    private static final String GET_ALL_PROCESS_REFS = "SELECT id, int_proceso_id,"
             + " nombre, descripcion, max_2, min FROM int_proceso_refs";
-    private final String GET_PROCESS_REFS_A = "SELECT id, int_proceso_id,"
+    private static final String GET_PROCESS_REFS_A = "SELECT id, int_proceso_id,"
             + " nombre, descripcion, max_2, min FROM int_proceso_refs WHERE id=?";    
-    private final String GET_PROCESS_REFS_B = "SELECT id, int_proceso_id,"
+    private static final String GET_PROCESS_REFS_B = "SELECT id, int_proceso_id,"
             + " nombre, descripcion, max_2, min FROM int_proceso_refs WHERE nombre=?";    
-    private final String INSERT_PROCESS_REFS = "INSERT INTO int_proceso_refs SET"
+    private static final String INSERT_PROCESS_REFS = "INSERT INTO int_proceso_refs SET"
             + " id=?, int_proceso_id=?, nombre=?, descripcion=?, max_2=?, min=?";
-    private final String UPDATE_PROCESS_REFS = "UPDATE int_proceso_refs SET"
+    private static final String UPDATE_PROCESS_REFS = "UPDATE int_proceso_refs SET"
             + " int_proceso_id=?, nombre=?, descripcion=?, max_2=?, min=?"
             + " WHERE id=?";        
-    private final String DELETE_PROCESS_REFS = "DELETE FROM int_proceso_refs"
+    private static final String DELETE_PROCESS_REFS = "DELETE FROM int_proceso_refs"
             + " WHERE ID=?";
     
     private Connection connection = null;
