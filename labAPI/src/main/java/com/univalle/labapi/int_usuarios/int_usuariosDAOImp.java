@@ -3,6 +3,8 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.ArrayList;
 import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The int_usuariosDAOImp class implements the int_usuariosDAO interface in order to implement
@@ -28,7 +30,7 @@ public class int_usuariosDAOImp implements int_usuariosDAO {
 	 * 
 	 * @param dbConn Database connection.
 	 */
-	int_usuariosDAOImp (Connection dbConn) throws SQLException {
+	int_usuariosDAOImp (Connection dbConn) {
 		this.Users = new ArrayList<>();
 		this.dbConn = dbConn;
 		
@@ -48,7 +50,6 @@ public class int_usuariosDAOImp implements int_usuariosDAO {
 		catch (SQLException e)
 		{
 			e.printStackTrace();
-                        throw e;
 		}
 	}
 	
@@ -142,8 +143,10 @@ public class int_usuariosDAOImp implements int_usuariosDAO {
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
-		}
+                    Logger.getLogger(int_usuariosDAOImp.class.getName())
+                            .log(Level.SEVERE, null, e);
+
+                }
 		
 		return this.Users;
 	}
