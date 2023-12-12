@@ -4,12 +4,12 @@
  */
 package com.univalle.labapi.int_proceso_refs;
 
-import com.univalle.labapi.int_usuarios.int_usuariosDAOImp;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,7 +30,12 @@ public class int_proceso_refsDAOImpl implements int_proceso_refsDAO {
     private final String GET_PROCESS_REFS_B = "SELECT id, int_proceso_id,"
             + " nombre, descripcion, max_2, min FROM int_proceso_refs WHERE nombre=?";    
     private final String INSERT_PROCESS_REFS = "INSERT INTO int_proceso_refs SET"
-            + " id=?, int_proceso_id=?, nombre=?, descripcion=?, max_2=?, min=?";    
+            + " id=?, int_proceso_id=?, nombre=?, descripcion=?, max_2=?, min=?";
+    private final String UPDATE_PROCESS_REFS = "UPDATE int_proceso_refs SET"
+            + " int_proceso_id=?, nombre=?, descripcion=?, max_2=?, min=?"
+            + " WHERE id=?";        
+    private final String DELETE_PROCESS_REFS = "DELETE FROM int_proceso_refs"
+            + " WHERE ID=?";
     
     private Connection connection = null;
     private final List<int_proceso_refs> procesosRefs;
@@ -90,12 +95,12 @@ public class int_proceso_refsDAOImpl implements int_proceso_refsDAO {
     }
 
     @Override
-    public int_proceso_refs getProcessRef(int processId) {
+    public int_proceso_refs getProcessRef(int refId) {
         int_proceso_refs processRef = null;
         try {
             PreparedStatement statement = this.connection
                     .prepareStatement(GET_PROCESS_REFS_A);
-            statement.setInt(1, processId);
+            statement.setInt(1, refId);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
                 int_proceso_refs tempRef = new int_proceso_refs(
@@ -144,8 +149,9 @@ public class int_proceso_refsDAOImpl implements int_proceso_refsDAO {
     }
 
     @Override
-    public void insertProcessRef(int processId, String name, 
+    public int insertProcessRef(int processId, String name, 
             String description, double max, double min) {
+        int resRows = 0;
         int id = (this.procesosRefs.size() + 1) + 1;
         try {
             PreparedStatement statement = this.connection
@@ -165,33 +171,86 @@ public class int_proceso_refsDAOImpl implements int_proceso_refsDAO {
             );
             tempRef.setId(id);
             this.procesosRefs.add(tempRef);
-            statement.execute();
+            resRows = statement.executeUpdate();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(int_proceso_refsDAOImpl.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        }
+        return resRows;
+        
+    }
+
+    @Override
+    public int updateProcessRef(int_proceso_refs processRef) {
+        int resRows = 0;
+        try {
+            PreparedStatement statement = this.connection
+                    .prepareStatement(UPDATE_PROCESS_REFS);
+            statement.setInt(1, processRef.getProcessId());
+            statement.setString(2, processRef.getName());
+            statement.setString(3, processRef.getDescription());
+            statement.setDouble(4, processRef.getMax());
+            statement.setDouble(5, processRef.getMin());
+            statement.setInt(6, processRef.getId());
+            this.procesosRefs.add(processRef);
+            resRows = statement.executeUpdate();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(int_proceso_refsDAOImpl.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        }
+        return resRows;
+    }
+
+    @Override
+    public int deleteProcessRef(int_proceso_refs processRef) {
+        int resRows = 0;
+        try {
+            PreparedStatement statement = this.connection
+                    .prepareStatement(DELETE_PROCESS_REFS);
+            statement.setInt(1, processRef.getId());
+            
+            int idRef = this.procesosRefs.indexOf(processRef);
+            this.procesosRefs.remove(idRef);
+            
+            resRows = statement.executeUpdate();
             
         } catch (SQLException ex) {
             Logger.getLogger(int_proceso_refsDAOImpl.class.getName())
                     .log(Level.SEVERE, null, ex);
         }
         
+        return resRows;
     }
 
     @Override
-    public void updateProcessRef(int_proceso_refs processRef) {
+    public int deleteProcessRef(int refId) {
+        int resRows = 0;
         try {
             PreparedStatement statement = this.connection
-                    .prepareStatement(INSERT_PROCESS_REFS);
-            statement.setInt(1, processRef.getId());
-            statement.setInt(2, processRef.getProcessId());
-            statement.setString(3, processRef.getName());
-            statement.setString(4, processRef.getDescription());
-            statement.setDouble(5, processRef.getMax());
-            statement.setDouble(6, processRef.getMin());
-            this.procesosRefs.add(processRef);
-            statement.execute();
+                    .prepareStatement(DELETE_PROCESS_REFS);
+            statement.setInt(1, refId);
+            
+            Iterator i = this.procesosRefs.iterator();
+            int refIndex = 0;
+            while (i.hasNext()) {
+                int idRefDB = ((int_proceso_refs) i.next()).getId();
+                if (idRefDB == refId) {
+                    this.procesosRefs.remove(refIndex);
+                    break;
+                }
+                refIndex++;
+            }
+            
+            resRows = statement.executeUpdate();
             
         } catch (SQLException ex) {
             Logger.getLogger(int_proceso_refsDAOImpl.class.getName())
                     .log(Level.SEVERE, null, ex);
         }
+        
+        return resRows;
     }
     
 }

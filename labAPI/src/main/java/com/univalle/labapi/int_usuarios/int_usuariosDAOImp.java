@@ -225,7 +225,7 @@ public class int_usuariosDAOImp implements int_usuariosDAO {
 		}
 		
 		return resRows;
-	}
+	}   
 	
 	/**
 	 * This method deletes a registry of int_usuarios table.
