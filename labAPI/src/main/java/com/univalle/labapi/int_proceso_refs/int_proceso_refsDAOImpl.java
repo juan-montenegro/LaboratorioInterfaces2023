@@ -32,10 +32,8 @@ public class int_proceso_refsDAOImpl implements int_proceso_refsDAO {
     private static final String INSERT_PROCESS_REFS = "INSERT INTO int_proceso_refs SET"
             + " id=?, int_proceso_id=?, nombre=?, descripcion=?, max_2=?, min=?";
     private static final String UPDATE_PROCESS_REFS = "UPDATE int_proceso_refs SET"
-            + " int_proceso_id=?, nombre=?, descripcion=?, max_2=?, min=?"
-            + " WHERE id=?";        
-    private static final String DELETE_PROCESS_REFS = "DELETE FROM int_proceso_refs"
-            + " WHERE ID=?";
+            + " int_proceso_id=?, nombre=?, descripcion=?, max_2=?, min=? WHERE id=?";        
+    private static final String DELETE_PROCESS_REFS = "DELETE FROM int_proceso_refs WHERE ID=?";
     
     private Connection connection = null;
     private final List<int_proceso_refs> procesosRefs;
@@ -252,5 +250,4 @@ public class int_proceso_refsDAOImpl implements int_proceso_refsDAO {
         
         return resRows;
     }
-    
 }
