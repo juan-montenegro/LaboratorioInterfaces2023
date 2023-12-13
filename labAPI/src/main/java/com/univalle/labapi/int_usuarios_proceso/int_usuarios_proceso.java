@@ -4,6 +4,8 @@
  */
 package com.univalle.labapi.int_usuarios_proceso;
 
+import java.sql.Date;
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -45,10 +47,18 @@ public class int_usuarios_proceso {
      *
      * @param userId
      * @param processId
+     * @param date
+     * @param tiempoIni
+     * @param tiempoFin
+     * @param hits
      */
-    public int_usuarios_proceso(int userId, int processId) {
+    public int_usuarios_proceso(int userId, int processId, Date date, Time tiempoIni, Time tiempoFin, int hits) {
         this.int_usuarios_id_fk = userId;
         this.int_proceso_id_fk = processId;
+        this.fecha = date.toLocalDate();
+        this.hora_inicio = tiempoIni.toLocalTime();
+        this.hora_fin = tiempoFin.toLocalTime(); 
+        this.hits = hits;
     }
 
     /**

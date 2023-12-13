@@ -16,15 +16,18 @@ import java.util.List;
  */
 public interface int_usuarios_procesoDAO {
     
-        public List <int_usuarios_proceso> getAllProcessForUser(int usuario);
-        public List <int_usuarios_proceso> getAllUserForProcess(int proceso);
-        public List <int_usuarios_proceso> getUserForHits(int umbralHits);
+        public List <int_usuarios_proceso> getAllProcessForUser(int usuarioId);
+        public List <int_usuarios_proceso> getAllUserForProcess(int procesoId);
+        //public List <int_usuarios_proceso> getUserForHits(int umbralHits);
+        //public //List <int_usuarios_proceso> getProcessForHits(int umbralHits);
         public List <int_usuarios_proceso> getProcessForDate(LocalDate fecha);
         public List <int_usuarios_proceso> getUserForDate(LocalDate fecha);
+        public List <int_usuarios_proceso> getAllOfUsariosProceso();
         
-        public int_usuarios_proceso getHitsForDate(LocalDate fecha);
+        public int getHitsForDate(LocalDate fecha);
        
-        public int insertNewRegister (int usuario, int proceso, LocalDate fecha, LocalTime hora_inicio, LocalTime hora_fin, int hits );
+        public int insertNewRegister (int usuarioId, int procesoId, LocalDate fecha, LocalTime hora_inicio, LocalTime hora_fin, int hits );
+        public int getLastRecordId();
         public int updateHoraFin(LocalTime hora_fin);
         
         public int deleteRegister(int usario, int proceso, LocalDate fecha,LocalTime hora_inicio);
