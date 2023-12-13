@@ -13,6 +13,9 @@ import com.univalle.labapi.int_proceso_vars_data.int_proceso_vars_dataDAOImpl;
 import com.univalle.labapi.int_usuarios.int_usuariosDAOImp;
 import com.univalle.labapi.int_usuarios_proceso.int_usuarios_procesoDAOImpl;
 import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -30,6 +33,11 @@ public class LabAPI {
 
     public LabAPI(String user, String password) {
         database = new Database(user, password);
+        try {
+            database.initConnection();
+        } catch (SQLException ex) {
+            Logger.getLogger(LabAPI.class.getName()).log(Level.SEVERE, null, ex);
+        }
         Connection connection = database.getConnection();
         usuarios = new int_usuariosDAOImp(connection);
         usuariosProcesos = new int_usuarios_procesoDAOImpl(connection);
@@ -44,8 +52,8 @@ public class LabAPI {
     
     
 
-    public static void main(String[] args) {
-        System.out.println("API START!");
-    }
+//    public static void main(String[] args) {
+//        System.out.println("API START!");
+//    }
     
 }

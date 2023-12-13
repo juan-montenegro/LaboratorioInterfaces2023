@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,7 +21,7 @@ import java.util.logging.Logger;
 public class int_usuarios_procesoDAOImpl implements int_usuarios_procesoDAO {
 
     private Connection conectionDb = null;
-    private String queryTotal = "SELECT `id`, `int_proceso_id`, `int_usuarios_id`, `fecha`, `hora_inicio`, `hora_fin`, `hits` FROM `int_usuarios_proceso`";
+    private String queryTotal = "SELECT id, int_proceso_id, int_usuarios_id, fecha, hora_inicio, hora_fin, hits FROM int_usuarios_proceso";
     private String queryInsert = "INSERT INTO `int_usuarios_proceso`(`id`, `int_proceso_id`, `int_usuarios_id`, `fecha`, `hora_inicio`, `hora_fin`, `hits`) VALUES (?, ?, ?, ?, ?, ?, ?)";
     private PreparedStatement stmP = null;
     private Statement stmS = null;
@@ -34,11 +35,16 @@ public class int_usuarios_procesoDAOImpl implements int_usuarios_procesoDAO {
     public int_usuarios_procesoDAOImpl(Connection conectionDb){
 		
         this.conectionDb = conectionDb;
-
+        this.UsersProcess = new ArrayList();
+        this.procesos= new ArrayList();
+        this.usuarios = new ArrayList();
+        this.procesosFecha = new ArrayList();
+        this.usuariosFecha = new ArrayList();
+                
         try
         {
             this.stmS = this.conectionDb.createStatement();
-            ResultSet rs = stmS.executeQuery(this.queryTotal+";");
+            ResultSet rs = stmS.executeQuery(this.queryTotal);
             while (rs.next())
             {
                 int_usuarios_proceso intRegister = new int_usuarios_proceso(rs.getInt("int_proceso_id"), rs.getInt("int_usuarios_id"), rs.getDate("fecha"), rs.getTime("hora_inicio"), rs.getTime("hora_fin"), rs.getInt("hits"));
@@ -46,6 +52,8 @@ public class int_usuarios_procesoDAOImpl implements int_usuarios_procesoDAO {
                 intRegister.setProcessId(rs.getInt("int_proceso_id"));
                 intRegister.setDate(rs.getDate("fecha").toLocalDate());
                 intRegister.setStartTime(rs.getTime("hora_inicio").toLocalTime());
+                
+                //System.out.println("userId: "+intRegister.getUserId());
 
                 this.UsersProcess.add(intRegister);
             }

@@ -43,6 +43,9 @@ public class int_proceso_varsDAOImpl implements int_proceso_varsDAO {
     private static final String DELETE_PROCESS_VARS 
             = "DELETE FROM int_proceso_vars "
             + "WHERE id=?";
+    private static final String GET_PROCESS_VARS_FLAG 
+            = "SELECT id, int_proceso_id, nombre, descripcion, max_2, min, flag "
+            + "FROM int_proceso_vars WHERE flag=?";  
     
     private Connection connection = null;
     private final List<int_proceso_vars> procesosVars;
@@ -270,7 +273,7 @@ public class int_proceso_varsDAOImpl implements int_proceso_varsDAO {
         int_proceso_vars processVar = null;
         try {
             PreparedStatement statement = this.connection
-                    .prepareStatement(GET_PROCESS_VARS_B);
+                    .prepareStatement(GET_PROCESS_VARS_FLAG);
             statement.setBoolean(1, flag);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {

@@ -17,7 +17,7 @@ import java.util.Properties;
 public class Database {
     private static final String DRIVER = "org.mariadb.jdbc.Driver";
     private static final String URL = "jdbc:mariadb://localhost/db2023-2";
-    private Connection connection;
+    private Connection connection = null;
     private final Properties props;
 
     public Database(String user, String password) {

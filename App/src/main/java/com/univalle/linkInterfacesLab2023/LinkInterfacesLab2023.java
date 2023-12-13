@@ -3,11 +3,16 @@
  */
 
 package com.univalle.linkInterfacesLab2023;
-import com.univalle.linkInterfacesLab2023.presentation.MyGui;
+import com.univalle.labapi.LabAPI;
+import com.univalle.labapi.int_proceso_vars.int_proceso_vars;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
- * @author juane
+ * @author Juan Camilo Chavez
  */
 public class LinkInterfacesLab2023 {
     
@@ -17,31 +22,35 @@ public class LinkInterfacesLab2023 {
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MyGui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MyGui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MyGui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MyGui.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+        
 
         /* Create and display the form */
         //java.awt.EventQueue.invokeLater(() -> {
         //    new MyGui().setVisible(true);
         //});
         
-        java.awt.EventQueue.invokeLater(() -> {
-            new MyGui().setVisible(true);
-        });
+        final String COMM_PORT = "COM9";
+        String señalSelected = "";
+        String tittle = "";
+        double timeMues = 0;
+        double t = 0;
+        ArrayList<String> salidasDigitales = new ArrayList<>();
+       // Controller arduino = new Controller(COMM_PORT);
+        
+        String user = "camilo";
+        String password = "docWHn9LCLk7N98@";
+        LabAPI labApi = new LabAPI(user, password);
+            
+        int_proceso_vars processVar = labApi.procesoVars.getProcessVars(true);
+        
+        if (processVar != null) {
+           señalSelected = processVar.getName(); // Asegúrate de que int_proceso_vars tiene un método toString() sobrescrito
+        }else {
+           señalSelected = "No hay registros con flag=true";
+        }
+        
+        System.out.println(señalSelected);
+        //java.awt.EventQueue.invokeLater(() -> {  
+        //});
     }
 }
