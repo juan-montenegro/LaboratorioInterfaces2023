@@ -4,8 +4,10 @@
  */
 package com.univalle.labapi.int_proceso_refs_data;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.sql.Date;
+import java.sql.Time;
+
+
 
 /**
  *
@@ -16,109 +18,120 @@ public class int_proceso_refs_data {
     private int int_proceso_refs_id_fk;
     private double valor;
     private double tiempo;
-    private LocalDate fecha;
-    private LocalTime time;
+    private Date fecha;
+    private Time hora;
 
     /**
      *
+     * @param processRefId
+     * @param value
+     * @param time
+     * @param date
+     * @param uploadTime
      */
-    public int_proceso_refs_data() {
+    public int_proceso_refs_data(int processRefId, double value, 
+            double time, Date date, Time uploadTime) {   
+        this.int_proceso_refs_id_fk = processRefId;
+        this.valor = value;
+        this.tiempo = time;
+        this.fecha = date;
+        this.hora = uploadTime;
     }
 
     /**
      *
      * @return
      */
-    public int getIdpk() {
+    public int getId() {
         return idpk;
     }
 
     /**
      *
-     * @param idpk
+     * @param id
      */
-    public void setIdpk(int idpk) {
-        this.idpk = idpk;
+    public void setId(int id) {
+        this.idpk = id;
     }
 
     /**
      *
      * @return
      */
-    public int getInt_proceso_refs_id_fk() {
+    public int getProcessRefId() {
         return int_proceso_refs_id_fk;
     }
 
     /**
      *
-     * @param int_proceso_refs_id_fk
+     * @param processRefId
      */
-    public void setInt_proceso_refs_id_fk(int int_proceso_refs_id_fk) {
-        this.int_proceso_refs_id_fk = int_proceso_refs_id_fk;
+    public void getProcessVarId(int processRefId) {
+        this.int_proceso_refs_id_fk = processRefId;
     }
 
     /**
      *
      * @return
      */
-    public double getValor() {
+    public double getValue() {
         return valor;
     }
 
     /**
      *
-     * @param valor
+     * @param value
      */
-    public void setValor(double valor) {
-        this.valor = valor;
+    public void setValue(double value) {
+        this.valor = value;
     }
 
     /**
      *
      * @return
      */
-    public double getTiempo() {
+    public double getTime() {
         return tiempo;
-    }
-
-    /**
-     *
-     * @param tiempo
-     */
-    public void setTiempo(double tiempo) {
-        this.tiempo = tiempo;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public LocalDate getFecha() {
-        return fecha;
-    }
-
-    /**
-     *
-     * @param fecha
-     */
-    public void setFecha(LocalDate fecha) {
-        this.fecha = fecha;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public LocalTime getTime() {
-        return time;
     }
 
     /**
      *
      * @param time
      */
-    public void setTime(LocalTime time) {
-        this.time = time;
+    public void setTime(double time) {
+        this.tiempo = time;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Date getDate() {
+        return fecha;
+    }
+
+    /**
+     *
+     * @param date
+     */
+    public void setDate(Date date) {
+        this.fecha = date;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Time getClockTime() {
+        return hora;
+    }
+
+    /**
+     *
+     * @param time
+     */
+    public void setClockTime(Time time) {
+        this.hora = time;
     }
         
 }

@@ -19,53 +19,115 @@ public class int_proceso_vars {
     private double max_2;
     private double min;
 
-    public int_proceso_vars() {
+    /**
+     *
+     * @param processId
+     * @param name
+     * @param description
+     * @param max
+     * @param min
+     */
+    public int_proceso_vars(int processId, String name, 
+            String description, double max, double min) {    
+        this.int_proceso_id_fk = processId;
+        this.nombre = name;
+        this.descripcion = description;
+        this.max_2 = max;
+        this.min = min;
     }
 
-    public int getIdpk() {
+    /**
+     *
+     * @return
+     */
+    public int getId() {
         return idpk;
     }
 
-    public void setIdpk(int idpk) {
+    /**
+     *
+     * @param idpk
+     */
+    public void setId(int idpk) {
         this.idpk = idpk;
     }
 
-    public int getInt_proceso_id_fk() {
+    /**
+     *
+     * @return
+     */
+    public int getProcessId() {
         return int_proceso_id_fk;
     }
 
-    public void setInt_proceso_id_fk(int int_proceso_id_fk) {
-        this.int_proceso_id_fk = int_proceso_id_fk;
+    /**
+     *
+     * @param processId
+     */
+    public void setProcessId(int processId) {
+        this.int_proceso_id_fk = processId;
     }
 
-    public String getNombre() {
+    /**
+     *
+     * @return
+     */
+    public String getName() {
         return nombre;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    /**
+     *
+     * @param name
+     */
+    public void setName(String name) {
+        this.nombre = name;
     }
 
-    public String getDescripcion() {
+    /**
+     *
+     * @return
+     */
+    public String getDescription() {
         return descripcion;
     }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+    /**
+     *
+     * @param description
+     */
+    public void setDescription(String description) {
+        this.descripcion = description;
     }
 
-    public double getMax_2() {
+    /**
+     *
+     * @return
+     */
+    public double getMax() {
         return max_2;
     }
 
-    public void setMax_2(double max_2) {
-        this.max_2 = max_2;
+    /**
+     *
+     * @param max
+     */
+    public void setMax(double max) {
+        this.max_2 = max;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getMin() {
         return min;
     }
 
+    /**
+     *
+     * @param min
+     */
     public void setMin(double min) {
         this.min = min;
     }
