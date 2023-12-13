@@ -13,6 +13,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.sql.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class int_usuarios_procesoDAOImpl implements int_usuarios_procesoDAO {
@@ -29,7 +31,7 @@ public class int_usuarios_procesoDAOImpl implements int_usuarios_procesoDAO {
     private List <int_usuarios_proceso> usuariosFecha;
     private int hitsForDate = 0;
     
-    int_usuarios_procesoDAOImpl(Connection conectionDb) throws SQLException {
+    public int_usuarios_procesoDAOImpl(Connection conectionDb){
 		
         this.conectionDb = conectionDb;
 
@@ -48,10 +50,10 @@ public class int_usuarios_procesoDAOImpl implements int_usuarios_procesoDAO {
                 this.UsersProcess.add(intRegister);
             }
         }
-        catch (SQLException e)
+        catch (SQLException ex)
         {
-            e.printStackTrace();
-            throw e;
+            Logger.getLogger(int_usuarios_procesoDAOImpl.class.getName())
+                    .log(Level.SEVERE, null, ex);
         }
     }
     @Override

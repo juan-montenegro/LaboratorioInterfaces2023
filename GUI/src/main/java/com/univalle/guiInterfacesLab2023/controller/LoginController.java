@@ -5,6 +5,7 @@
 package com.univalle.guiInterfacesLab2023.controller;
 
 import com.univalle.guiInterfacesLab2023.view.LoginView;
+import com.univalle.labapi.LabAPI;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -22,8 +23,10 @@ public class LoginController implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); 
-        // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        String user = "camilo";
+        String password = "1234";
+        LabAPI labApi = new LabAPI(user, password);
+        labApi.usuarios.getUser(user, "pepito");
     }
     
     private void addActionListeners(){

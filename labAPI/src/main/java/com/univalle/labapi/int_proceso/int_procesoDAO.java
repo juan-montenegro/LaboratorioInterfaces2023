@@ -4,7 +4,7 @@
  */
 package com.univalle.labapi.int_proceso;
 
-import java.util.List;
+import java.sql.Blob;
 
 /**
  *
@@ -12,11 +12,11 @@ import java.util.List;
  */
 public interface int_procesoDAO {
 
-    /**
-     *
-     * @return
-     */
-    public List<int_proceso> getAllProcess();
+//    /**
+//     *
+//     * @return
+//     */
+//    public List<int_proceso> getAllProcess();
 
     /**
      *
@@ -40,8 +40,8 @@ public interface int_procesoDAO {
      * @param processTypeId
      * @return
      */
-    public int insertProcess(String name, String description,
-            String sampleTime, int processTypeId);
+    public int insertProcess(int processTypeId, String name, String description,
+            double sampleTime, Blob textFile, Blob manualFile);
 
     /**
      *

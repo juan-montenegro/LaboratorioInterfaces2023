@@ -34,7 +34,7 @@ public class int_proceso {
     /**
      * 
      */
-    private Blob archivo_especificacion;
+    private Blob archivo_especificaciones;
     /**
      * 
      */
@@ -45,9 +45,24 @@ public class int_proceso {
      * @param name
      * @param processTypeId
      */
-    public int_proceso(String name, int processTypeId) {
-        this.nombre = name;
+    public int_proceso(int processTypeId, String name) {
         this.int_proceso_tipo_id_fk = processTypeId;
+        this.nombre = name;
+        this.descripcion = "";
+        this.tiempo_muestreo = 100;
+        this.archivo_especificaciones = null;
+        this.archivo_manual = null;
+        
+    }
+    
+    public int_proceso(int processTypeId, String name, String description, 
+            double sampleTime, Blob textFile, Blob manualFile) {
+        this.int_proceso_tipo_id_fk = processTypeId;
+        this.nombre = name;
+        this.descripcion = description;
+        this.tiempo_muestreo = sampleTime;
+        this.archivo_especificaciones = textFile;
+        this.archivo_manual = manualFile;
     }
     
     
@@ -137,7 +152,7 @@ public class int_proceso {
      * @return
      */
     public Blob getArchivo_especificacion() {
-        return this.archivo_especificacion;
+        return this.archivo_especificaciones;
     }
 
     /**
@@ -145,7 +160,7 @@ public class int_proceso {
      * @param archivo_especificacion
      */
     public void setArchivo_especificacion(Blob archivo_especificacion) {
-        this.archivo_especificacion = archivo_especificacion;
+        this.archivo_especificaciones = archivo_especificacion;
     }
 
     /**

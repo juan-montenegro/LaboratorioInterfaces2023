@@ -37,7 +37,7 @@ public class int_proceso_refsDAOImpl implements int_proceso_refsDAO {
             + "WHERE nombre=?";    
     private static final String INSERT_PROCESS_REFS 
             = "INSERT INTO int_proceso_refs "
-            + "SET id=?, int_proceso_id=?, nombre=?, descripcion=?, max_2=?, min=?, flag=?";
+            + "SET int_proceso_id=?, nombre=?, descripcion=?, max_2=?, min=?, flag=?";
     private static final String UPDATE_PROCESS_REFS 
             = "UPDATE int_proceso_refs "
             + "SET int_proceso_id=?, nombre=?, descripcion=?, max_2=?, min=?, flag=? "
@@ -172,17 +172,17 @@ public class int_proceso_refsDAOImpl implements int_proceso_refsDAO {
     public int insertProcessRef(int processId, String name, 
             String description, double max, double min) {
         int resRows = 0;
-        int id = (this.procesosRefs.size() + 1) + 1;
+        int index = this.procesosRefs.size();
+        int id = this.procesosRefs.get(index).getId() + 1;
         try {
             PreparedStatement statement = this.connection
                     .prepareStatement(INSERT_PROCESS_REFS);
-            statement.setInt(1, id);
-            statement.setInt(2, processId);
-            statement.setString(3, name);
-            statement.setString(4, description);
-            statement.setDouble(5, max);
-            statement.setDouble(6, min);
-            statement.setBoolean(7, false);
+            statement.setInt(1, processId);
+            statement.setString(2, name);
+            statement.setString(3, description);
+            statement.setDouble(4, max);
+            statement.setDouble(5, min);
+            statement.setBoolean(6, false);
             int_proceso_refs tempRef = new int_proceso_refs(
                     processId,
                     name,

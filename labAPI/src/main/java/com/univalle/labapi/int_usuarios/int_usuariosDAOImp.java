@@ -30,7 +30,7 @@ public class int_usuariosDAOImp implements int_usuariosDAO {
 	 * 
 	 * @param dbConn Database connection.
 	 */
-	int_usuariosDAOImp (Connection dbConn) {
+	public int_usuariosDAOImp (Connection dbConn) {
 		this.Users = new ArrayList<>();
 		this.dbConn = dbConn;
 		
