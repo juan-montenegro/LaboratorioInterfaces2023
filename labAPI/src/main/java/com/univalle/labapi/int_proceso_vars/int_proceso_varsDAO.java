@@ -30,6 +30,8 @@ public interface int_proceso_varsDAO {
      * @return
      */
     public int_proceso_vars getProcessVar(String name);
+    
+    public int_proceso_vars getProcessVars(boolean flag);
 
     /**
      *

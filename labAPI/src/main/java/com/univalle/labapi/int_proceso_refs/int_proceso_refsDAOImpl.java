@@ -46,8 +46,14 @@ public class int_proceso_refsDAOImpl implements int_proceso_refsDAO {
             = "DELETE FROM int_proceso_refs "
             + "WHERE ID=?";
     
+    private static final String GET_PROCESS_REFS_FLAG 
+            = "SELECT id, int_proceso_id, nombre, descripcion, max_2, min, flag "
+            + "FROM int_proceso_refs "
+            + "WHERE flag=?";   
+    
     private Connection connection = null;
     private final List<int_proceso_refs> procesosRefs;
+    private final List<int_proceso_refs> procesoRefsFlag;
     
     /**
      *
@@ -56,6 +62,7 @@ public class int_proceso_refsDAOImpl implements int_proceso_refsDAO {
     public int_proceso_refsDAOImpl(Connection connection) {
         this.connection = connection;
         this.procesosRefs = new ArrayList<>();
+        this.procesoRefsFlag = new ArrayList<>();
         
         try {
             PreparedStatement statement = this.connection
@@ -266,5 +273,33 @@ public class int_proceso_refsDAOImpl implements int_proceso_refsDAO {
         }
         
         return resRows;
+    }
+
+    @Override
+    public List<int_proceso_refs> getNamesFlags(boolean flag) {
+     
+      this.procesoRefsFlag.clear();
+        try {
+            PreparedStatement statement = this.connection
+                    .prepareStatement(GET_PROCESS_REFS_FLAG);
+            statement.setBoolean(1, flag);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                int_proceso_refs processRef = new int_proceso_refs(
+                        rs.getInt(INT_PROCESO_ID), 
+                        rs.getString(NOMBRE),
+                        rs.getString(DESCRIPCION), 
+                        rs.getInt(MAX_2),
+                        rs.getInt(MIN),
+                        rs.getBoolean(FLAG)
+                );
+                processRef.setName(rs.getString(NOMBRE));
+                this.procesoRefsFlag.add(processRef);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(int_proceso_refsDAOImpl.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        }
+        return this.procesoRefsFlag;  
     }
 }

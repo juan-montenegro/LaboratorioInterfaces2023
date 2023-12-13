@@ -31,6 +31,8 @@ public interface int_proceso_refsDAO {
      * @return
      */
     public int_proceso_refs getProcessRef(String name);
+    
+    public List<int_proceso_refs> getNamesFlags(boolean flag);
 
     /**
      *

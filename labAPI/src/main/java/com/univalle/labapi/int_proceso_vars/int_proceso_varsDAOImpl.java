@@ -264,4 +264,32 @@ public class int_proceso_varsDAOImpl implements int_proceso_varsDAO {
         
         return resRows;
     }
+
+    @Override
+    public int_proceso_vars getProcessVars(boolean flag) {
+        int_proceso_vars processVar = null;
+        try {
+            PreparedStatement statement = this.connection
+                    .prepareStatement(GET_PROCESS_VARS_B);
+            statement.setBoolean(1, flag);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                int_proceso_vars tempVar = new int_proceso_vars(
+                        rs.getInt(INT_PROCESO_ID), 
+                        rs.getString(NOMBRE),
+                        rs.getString(DESCRIPCION), 
+                        rs.getInt(MAX_2),
+                        rs.getInt(MIN),
+                        rs.getBoolean(FLAG)
+                );
+                tempVar.setName(rs.getString(NOMBRE));
+                processVar = tempVar;
+                break;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(int_proceso_varsDAOImpl.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        }
+        return processVar;
+    }
 }

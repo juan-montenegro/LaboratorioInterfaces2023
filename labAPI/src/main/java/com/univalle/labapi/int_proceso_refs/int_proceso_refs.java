@@ -176,7 +176,7 @@ public class int_proceso_refs {
      * @return
      */
     public boolean isFlag() {
-        return flag;
+        return this.flag;
     }
 
     /**
