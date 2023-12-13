@@ -22,18 +22,29 @@ public class int_proceso_refsDAOImpl implements int_proceso_refsDAO {
     private static final String DESCRIPCION = "descripcion";
     private static final String MAX_2 = "max_2";
     private static final String MIN = "min";
+    private static final String FLAG = "flag";
     
-    private static final String GET_ALL_PROCESS_REFS = "SELECT id, int_proceso_id,"
-            + " nombre, descripcion, max_2, min FROM int_proceso_refs";
-    private static final String GET_PROCESS_REFS_A = "SELECT id, int_proceso_id,"
-            + " nombre, descripcion, max_2, min FROM int_proceso_refs WHERE id=?";    
-    private static final String GET_PROCESS_REFS_B = "SELECT id, int_proceso_id,"
-            + " nombre, descripcion, max_2, min FROM int_proceso_refs WHERE nombre=?";    
-    private static final String INSERT_PROCESS_REFS = "INSERT INTO int_proceso_refs SET"
-            + " id=?, int_proceso_id=?, nombre=?, descripcion=?, max_2=?, min=?";
-    private static final String UPDATE_PROCESS_REFS = "UPDATE int_proceso_refs SET"
-            + " int_proceso_id=?, nombre=?, descripcion=?, max_2=?, min=? WHERE id=?";        
-    private static final String DELETE_PROCESS_REFS = "DELETE FROM int_proceso_refs WHERE ID=?";
+    private static final String GET_ALL_PROCESS_REFS 
+            = "SELECT id, int_proceso_id, nombre, descripcion, max_2, min, flag "
+            + "FROM int_proceso_refs";
+    private static final String GET_PROCESS_REFS_A 
+            = "SELECT id, int_proceso_id, nombre, descripcion, max_2, min, flag "
+            + "FROM int_proceso_refs "
+            + "WHERE id=?";    
+    private static final String GET_PROCESS_REFS_B 
+            = "SELECT id, int_proceso_id, nombre, descripcion, max_2, min, flag "
+            + "FROM int_proceso_refs "
+            + "WHERE nombre=?";    
+    private static final String INSERT_PROCESS_REFS 
+            = "INSERT INTO int_proceso_refs "
+            + "SET id=?, int_proceso_id=?, nombre=?, descripcion=?, max_2=?, min=?, flag=?";
+    private static final String UPDATE_PROCESS_REFS 
+            = "UPDATE int_proceso_refs "
+            + "SET int_proceso_id=?, nombre=?, descripcion=?, max_2=?, min=?, flag=? "
+            + "WHERE id=?";        
+    private static final String DELETE_PROCESS_REFS 
+            = "DELETE FROM int_proceso_refs "
+            + "WHERE ID=?";
     
     private Connection connection = null;
     private final List<int_proceso_refs> procesosRefs;
@@ -56,7 +67,8 @@ public class int_proceso_refsDAOImpl implements int_proceso_refsDAO {
                         rs.getString(NOMBRE),
                         rs.getString(DESCRIPCION), 
                         rs.getInt(MAX_2),
-                        rs.getInt(MIN)
+                        rs.getInt(MIN),
+                        rs.getBoolean(FLAG)
                 );
                 this.procesosRefs.add(processRef);
             }
@@ -80,7 +92,8 @@ public class int_proceso_refsDAOImpl implements int_proceso_refsDAO {
                         rs.getString(NOMBRE),
                         rs.getString(DESCRIPCION), 
                         rs.getInt(MAX_2),
-                        rs.getInt(MIN)
+                        rs.getInt(MIN),
+                        rs.getBoolean(FLAG)
                 );
                 processRef.setId(rs.getInt(ID));
                 this.procesosRefs.add(processRef);
@@ -106,7 +119,8 @@ public class int_proceso_refsDAOImpl implements int_proceso_refsDAO {
                         rs.getString(NOMBRE),
                         rs.getString(DESCRIPCION), 
                         rs.getInt(MAX_2),
-                        rs.getInt(MIN)
+                        rs.getInt(MIN),
+                        rs.getBoolean(FLAG)
                 );
                 tempRef.setId(rs.getInt(ID));
                 processRef = tempRef;
@@ -133,7 +147,8 @@ public class int_proceso_refsDAOImpl implements int_proceso_refsDAO {
                         rs.getString(NOMBRE),
                         rs.getString(DESCRIPCION), 
                         rs.getInt(MAX_2),
-                        rs.getInt(MIN)
+                        rs.getInt(MIN),
+                        rs.getBoolean(FLAG)
                 );
                 tempRef.setId(rs.getInt(ID));
                 processRef = tempRef;
@@ -160,6 +175,7 @@ public class int_proceso_refsDAOImpl implements int_proceso_refsDAO {
             statement.setString(4, description);
             statement.setDouble(5, max);
             statement.setDouble(6, min);
+            statement.setBoolean(7, false);
             int_proceso_refs tempRef = new int_proceso_refs(
                     processId,
                     name,
@@ -190,7 +206,8 @@ public class int_proceso_refsDAOImpl implements int_proceso_refsDAO {
             statement.setString(3, processRef.getDescription());
             statement.setDouble(4, processRef.getMax());
             statement.setDouble(5, processRef.getMin());
-            statement.setInt(6, processRef.getId());
+            statement.setBoolean(6, processRef.isFlag());
+            statement.setInt(7, processRef.getId());
             this.procesosRefs.add(processRef);
             resRows = statement.executeUpdate();
             

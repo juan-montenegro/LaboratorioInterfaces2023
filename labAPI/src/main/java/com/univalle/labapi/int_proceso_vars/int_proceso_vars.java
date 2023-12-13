@@ -18,6 +18,7 @@ public class int_proceso_vars {
     private String descripcion;
     private double max_2;
     private double min;
+    private boolean flag;
 
     /**
      *
@@ -34,6 +35,17 @@ public class int_proceso_vars {
         this.descripcion = description;
         this.max_2 = max;
         this.min = min;
+        this.flag = false;
+    }
+    
+    public int_proceso_vars(int processId, String name, 
+            String description, double max, double min, boolean flag) {    
+        this.int_proceso_id_fk = processId;
+        this.nombre = name;
+        this.descripcion = description;
+        this.max_2 = max;
+        this.min = min;
+        this.flag = flag;
     }
 
     /**
@@ -130,6 +142,14 @@ public class int_proceso_vars {
      */
     public void setMin(double min) {
         this.min = min;
+    }
+
+    public boolean isFlag() {
+        return flag;
+    }
+
+    public void setFlag(boolean flag) {
+        this.flag = flag;
     }
     
     

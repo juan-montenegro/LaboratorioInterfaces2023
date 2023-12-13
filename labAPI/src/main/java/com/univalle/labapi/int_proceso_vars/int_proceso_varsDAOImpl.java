@@ -22,22 +22,23 @@ public class int_proceso_varsDAOImpl implements int_proceso_varsDAO {
     private static final String DESCRIPCION = "descripcion";
     private static final String MAX_2 = "max_2";
     private static final String MIN = "min";
+    private static final String FLAG = "flag";
     
     private static final String GET_ALL_PROCESS_VARS 
-            = "SELECT id, int_proceso_id, nombre, descripcion, max_2, min "
+            = "SELECT id, int_proceso_id, nombre, descripcion, max_2, min, flag "
             + "FROM int_proceso_vars";
     private static final String GET_PROCESS_VARS_A 
-            = "SELECT id, int_proceso_id, nombre, descripcion, max_2, min "
+            = "SELECT id, int_proceso_id, nombre, descripcion, max_2, min, flag "
             + "FROM int_proceso_vars WHERE id=?";    
     private static final String GET_PROCESS_VARS_B 
-            = "SELECT id, int_proceso_id, nombre, descripcion, max_2, min "
+            = "SELECT id, int_proceso_id, nombre, descripcion, max_2, min, flag "
             + "FROM int_proceso_vars WHERE nombre=?";    
     private static final String INSERT_PROCESS_VARS 
             = "INSERT INTO int_proceso_vars "
-            + "SET int_proceso_id=?, nombre=?, descripcion=?, max_2=?, min=?";
+            + "SET int_proceso_id=?, nombre=?, descripcion=?, max_2=?, min=?, flag=?";
     private static final String UPDATE_PROCESS_VARS 
             = "UPDATE int_proceso_vars "
-            + "SET int_proceso_id=?, nombre=?, descripcion=?, max_2=?, min=? "
+            + "SET int_proceso_id=?, nombre=?, descripcion=?, max_2=?, min=? , flag=?"
             + "WHERE id=?";        
     private static final String DELETE_PROCESS_VARS 
             = "DELETE FROM int_proceso_vars "
@@ -64,7 +65,8 @@ public class int_proceso_varsDAOImpl implements int_proceso_varsDAO {
                         rs.getString(NOMBRE),
                         rs.getString(DESCRIPCION), 
                         rs.getInt(MAX_2),
-                        rs.getInt(MIN)
+                        rs.getInt(MIN),
+                        rs.getBoolean(FLAG)
                 );
                 this.procesosVars.add(processVar);
             }
@@ -88,7 +90,8 @@ public class int_proceso_varsDAOImpl implements int_proceso_varsDAO {
                         rs.getString(NOMBRE),
                         rs.getString(DESCRIPCION), 
                         rs.getInt(MAX_2),
-                        rs.getInt(MIN)
+                        rs.getInt(MIN),
+                        rs.getBoolean(FLAG)
                 );
                 processVar.setId(rs.getInt(ID));
                 this.procesosVars.add(processVar);
@@ -114,7 +117,8 @@ public class int_proceso_varsDAOImpl implements int_proceso_varsDAO {
                         rs.getString(NOMBRE),
                         rs.getString(DESCRIPCION), 
                         rs.getInt(MAX_2),
-                        rs.getInt(MIN)
+                        rs.getInt(MIN),
+                        rs.getBoolean(FLAG)
                 );
                 processVar = tempVars;
                 break;
@@ -140,7 +144,8 @@ public class int_proceso_varsDAOImpl implements int_proceso_varsDAO {
                         rs.getString(NOMBRE),
                         rs.getString(DESCRIPCION), 
                         rs.getInt(MAX_2),
-                        rs.getInt(MIN)
+                        rs.getInt(MIN),
+                        rs.getBoolean(FLAG)
                 );
                 tempVar.setId(rs.getInt(ID));
                 processVar = tempVar;
@@ -167,6 +172,7 @@ public class int_proceso_varsDAOImpl implements int_proceso_varsDAO {
             statement.setString(3, description);
             statement.setDouble(4, max);
             statement.setDouble(5, min);
+            statement.setBoolean(6, false);
             int_proceso_vars tempVar = new int_proceso_vars(
                     processId,
                     name,
@@ -197,7 +203,8 @@ public class int_proceso_varsDAOImpl implements int_proceso_varsDAO {
             statement.setString(3, processVar.getDescription());
             statement.setDouble(4, processVar.getMax());
             statement.setDouble(5, processVar.getMin());
-            statement.setInt(6, processVar.getId());
+            statement.setBoolean(6, processVar.isFlag());
+            statement.setInt(7, processVar.getId());
             this.procesosVars.add(processVar);
             resRows = statement.executeUpdate();
             
