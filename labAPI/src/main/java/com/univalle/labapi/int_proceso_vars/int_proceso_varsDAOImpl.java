@@ -23,17 +23,25 @@ public class int_proceso_varsDAOImpl implements int_proceso_varsDAO {
     private static final String MAX_2 = "max_2";
     private static final String MIN = "min";
     
-    private static final String GET_ALL_PROCESS_VARS = "SELECT id, int_proceso_id,"
-            + " nombre, descripcion, max_2, min FROM int_proceso_vars";
-    private static final String GET_PROCESS_VARS_A = "SELECT id, int_proceso_id,"
-            + " nombre, descripcion, max_2, min FROM int_proceso_vars WHERE id=?";    
-    private static final String GET_PROCESS_VARS_B = "SELECT id, int_proceso_id,"
-            + " nombre, descripcion, max_2, min FROM int_proceso_vars WHERE nombre=?";    
-    private static final String INSERT_PROCESS_VARS = "INSERT INTO int_proceso_vars SET"
-            + " id=?, int_proceso_id=?, nombre=?, descripcion=?, max_2=?, min=?";
-    private static final String UPDATE_PROCESS_VARS = "UPDATE int_proceso_refs SET"
-            + " int_proceso_id=?, nombre=?, descripcion=?, max_2=?, min=? WHERE id=?";        
-    private static final String DELETE_PROCESS_VARS = "DELETE FROM int_proceso_refs WHERE ID=?";
+    private static final String GET_ALL_PROCESS_VARS 
+            = "SELECT id, int_proceso_id, nombre, descripcion, max_2, min "
+            + "FROM int_proceso_vars";
+    private static final String GET_PROCESS_VARS_A 
+            = "SELECT id, int_proceso_id, nombre, descripcion, max_2, min "
+            + "FROM int_proceso_vars WHERE id=?";    
+    private static final String GET_PROCESS_VARS_B 
+            = "SELECT id, int_proceso_id, nombre, descripcion, max_2, min "
+            + "FROM int_proceso_vars WHERE nombre=?";    
+    private static final String INSERT_PROCESS_VARS 
+            = "INSERT INTO int_proceso_vars "
+            + "SET int_proceso_id=?, nombre=?, descripcion=?, max_2=?, min=?";
+    private static final String UPDATE_PROCESS_VARS 
+            = "UPDATE int_proceso_vars "
+            + "SET int_proceso_id=?, nombre=?, descripcion=?, max_2=?, min=? "
+            + "WHERE id=?";        
+    private static final String DELETE_PROCESS_VARS 
+            = "DELETE FROM int_proceso_vars "
+            + "WHERE id=?";
     
     private Connection connection = null;
     private final List<int_proceso_vars> procesosVars;
@@ -68,7 +76,7 @@ public class int_proceso_varsDAOImpl implements int_proceso_varsDAO {
     
     
     @Override
-    public List<int_proceso_vars> getAllProcessRefs() {
+    public List<int_proceso_vars> getAllProcessVars() {
         this.procesosVars.clear();
         try {
             PreparedStatement statement = this.connection
@@ -93,35 +101,34 @@ public class int_proceso_varsDAOImpl implements int_proceso_varsDAO {
     }
 
     @Override
-    public int_proceso_vars getProcessRef(int refId) {
-        int_proceso_vars processRef = null;
+    public int_proceso_vars getProcessVar(int varId) {
+        int_proceso_vars processVar = null;
         try {
             PreparedStatement statement = this.connection
                     .prepareStatement(GET_PROCESS_VARS_A);
-            statement.setInt(1, refId);
+            statement.setInt(1, varId);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                int_proceso_vars tempRef = new int_proceso_vars(
+                int_proceso_vars tempVars = new int_proceso_vars(
                         rs.getInt(INT_PROCESO_ID), 
                         rs.getString(NOMBRE),
                         rs.getString(DESCRIPCION), 
                         rs.getInt(MAX_2),
                         rs.getInt(MIN)
                 );
-                tempRef.setId(rs.getInt(ID));
-                processRef = tempRef;
+                processVar = tempVars;
                 break;
             }
         } catch (SQLException ex) {
             Logger.getLogger(int_proceso_varsDAOImpl.class.getName())
                     .log(Level.SEVERE, null, ex);
         }
-        return processRef;        
+        return processVar;        
     }
 
     @Override
-    public int_proceso_vars getProcessRef(String name) {
-        int_proceso_vars processRef = null;
+    public int_proceso_vars getProcessVar(String name) {
+        int_proceso_vars processVar = null;
         try {
             PreparedStatement statement = this.connection
                     .prepareStatement(GET_PROCESS_VARS_B);
@@ -136,30 +143,30 @@ public class int_proceso_varsDAOImpl implements int_proceso_varsDAO {
                         rs.getInt(MIN)
                 );
                 tempVar.setId(rs.getInt(ID));
-                processRef = tempVar;
+                processVar = tempVar;
                 break;
             }
         } catch (SQLException ex) {
             Logger.getLogger(int_proceso_varsDAOImpl.class.getName())
                     .log(Level.SEVERE, null, ex);
         }
-        return processRef;
+        return processVar;
     }
 
     @Override
-    public int insertProcessRef(int processId, String name, 
+    public int insertProcessVar(int processId, String name, 
             String description, double max, double min) {
         int resRows = 0;
-        int id = (this.procesosVars.size() + 1) + 1;
+        int index = this.procesosVars.size();
+        int id = this.procesosVars.get(index).getId() + 1;
         try {
             PreparedStatement statement = this.connection
                     .prepareStatement(INSERT_PROCESS_VARS);
-            statement.setInt(1, id);
-            statement.setInt(2, processId);
-            statement.setString(3, name);
-            statement.setString(4, description);
-            statement.setDouble(5, max);
-            statement.setDouble(6, min);
+            statement.setInt(1, processId);
+            statement.setString(2, name);
+            statement.setString(3, description);
+            statement.setDouble(4, max);
+            statement.setDouble(5, min);
             int_proceso_vars tempVar = new int_proceso_vars(
                     processId,
                     name,
@@ -180,7 +187,7 @@ public class int_proceso_varsDAOImpl implements int_proceso_varsDAO {
     }
 
     @Override
-    public int updateProcessRef(int_proceso_vars processVar) {
+    public int updateProcessVar(int_proceso_vars processVar) {
         int resRows = 0;
         try {
             PreparedStatement statement = this.connection
@@ -202,15 +209,15 @@ public class int_proceso_varsDAOImpl implements int_proceso_varsDAO {
     }
 
     @Override
-    public int deleteProcessRef(int_proceso_vars processVar) {
+    public int deleteProcessVar(int_proceso_vars processVar) {
         int resRows = 0;
         try {
             PreparedStatement statement = this.connection
                     .prepareStatement(DELETE_PROCESS_VARS);
             statement.setInt(1, processVar.getId());
             
-            int idRef = this.procesosVars.indexOf(processVar);
-            this.procesosVars.remove(idRef);
+            int idVar = this.procesosVars.indexOf(processVar);
+            this.procesosVars.remove(idVar);
             
             resRows = statement.executeUpdate();
             
@@ -223,22 +230,22 @@ public class int_proceso_varsDAOImpl implements int_proceso_varsDAO {
     }
 
     @Override
-    public int deleteProcessRef(int refId) {
+    public int deleteProcessVar(int varId) {
         int resRows = 0;
         try {
             PreparedStatement statement = this.connection
                     .prepareStatement(DELETE_PROCESS_VARS);
-            statement.setInt(1, refId);
+            statement.setInt(1, varId);
             
             Iterator i = this.procesosVars.iterator();
-            int refIndex = 0;
+            int varIndex = 0;
             while (i.hasNext()) {
-                int idRefDB = ((int_proceso_vars) i.next()).getId();
-                if (idRefDB == refId) {
-                    this.procesosVars.remove(refIndex);
+                int idVarDB = ((int_proceso_vars) i.next()).getId();
+                if (idVarDB == varId) {
+                    this.procesosVars.remove(varIndex);
                     break;
                 }
-                refIndex++;
+                varIndex++;
             }
             
             resRows = statement.executeUpdate();

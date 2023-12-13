@@ -15,21 +15,21 @@ public interface int_proceso_varsDAO {
      *
      * @return
      */
-    public List<int_proceso_vars> getAllProcessRefs();
+    public List<int_proceso_vars> getAllProcessVars();
 
     /**
      *
      * @param refId
      * @return
      */
-    public int_proceso_vars getProcessRef(int refId);
+    public int_proceso_vars getProcessVar(int refId);
 
     /**
      *
      * @param name
      * @return
      */
-    public int_proceso_vars getProcessRef(String name);
+    public int_proceso_vars getProcessVar(String name);
 
     /**
      *
@@ -40,7 +40,7 @@ public interface int_proceso_varsDAO {
      * @param min
      * @return
      */
-    public int insertProcessRef(int processId, String name, 
+    public int insertProcessVar(int processId, String name, 
             String description, double max, double min);
 
     /**
@@ -48,20 +48,20 @@ public interface int_proceso_varsDAO {
      * @param processRef
      * @return
      */
-    public int updateProcessRef(int_proceso_vars processRef);
+    public int updateProcessVar(int_proceso_vars processRef);
 
     /**
      *
      * @param processRef
      * @return
      */
-    public int deleteProcessRef(int_proceso_vars processRef);
+    public int deleteProcessVar(int_proceso_vars processRef);
 
     /**
      *
      * @param refId
      * @return
      */
-    public int deleteProcessRef(int refId);
+    public int deleteProcessVar(int refId);
     
 }
