@@ -81,8 +81,8 @@ public class int_proceso_vars_dataDAOImpl implements int_proceso_vars_dataDAO {
     }
 
     @Override
-    public int_proceso_vars_data getVarDataForProcess(int processId) {
-        int_proceso_vars_data processVar = null;
+    public List<int_proceso_vars_data> getVarDataForProcess(int processId) {
+        this.processVarsData.clear();
         try {
             PreparedStatement statement = this.connection
                     .prepareStatement(GET_PROCESS_VARS_DATA_B);
@@ -97,14 +97,13 @@ public class int_proceso_vars_dataDAOImpl implements int_proceso_vars_dataDAO {
                         rs.getTime(HORA)
                 );
                 tempVar.setId(rs.getInt(ID));
-                processVar = tempVar;
-                break;
+                this.processVarsData.add(tempVar);
             }
         } catch (SQLException ex) {
             Logger.getLogger(int_proceso_vars_dataDAOImpl.class.getName())
                     .log(Level.SEVERE, null, ex);
         }
-        return processVar;
+        return this.processVarsData;
     }
 
     @Override

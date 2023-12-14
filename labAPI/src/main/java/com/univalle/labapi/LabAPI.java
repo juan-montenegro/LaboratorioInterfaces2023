@@ -31,12 +31,13 @@ public class LabAPI {
     public int_proceso_varsDAOImpl procesoVars;
     public int_proceso_vars_dataDAOImpl procesoVarsData;
 
-    public LabAPI(String user, String password) {
+    public LabAPI(String user, String password) throws SQLException {
         database = new Database(user, password);
         try {
             database.initConnection();
         } catch (SQLException ex) {
             Logger.getLogger(LabAPI.class.getName()).log(Level.SEVERE, null, ex);
+            throw ex;
         }
         Connection connection = database.getConnection();
         usuarios = new int_usuariosDAOImp(connection);

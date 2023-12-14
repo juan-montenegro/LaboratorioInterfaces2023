@@ -25,14 +25,14 @@ public interface int_usuariosDAO {
      * @return
      */
     public int_usuarios getUser(int idUser);
-
+    
     /**
      *
-     * @param names
-     * @param lastNames
+     * @param email
+     * @param password
      * @return
      */
-    public int_usuarios getUser(String names, String lastNames);
+    public int_usuarios getLoginUser(String email, String password);
 
     /**
      *

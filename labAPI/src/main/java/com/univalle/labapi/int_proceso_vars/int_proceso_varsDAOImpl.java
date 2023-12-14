@@ -38,7 +38,7 @@ public class int_proceso_varsDAOImpl implements int_proceso_varsDAO {
             + "SET int_proceso_id=?, nombre=?, descripcion=?, max_2=?, min=?, flag=?";
     private static final String UPDATE_PROCESS_VARS 
             = "UPDATE int_proceso_vars "
-            + "SET int_proceso_id=?, nombre=?, descripcion=?, max_2=?, min=? , flag=?"
+            + "SET int_proceso_id=?, nombre=?, descripcion=?, max_2=?, min=? , flag=? "
             + "WHERE id=?";        
     private static final String DELETE_PROCESS_VARS 
             = "DELETE FROM int_proceso_vars "
@@ -210,7 +210,7 @@ public class int_proceso_varsDAOImpl implements int_proceso_varsDAO {
             statement.setInt(7, processVar.getId());
             this.procesosVars.add(processVar);
             resRows = statement.executeUpdate();
-            
+            statement.close();
         } catch (SQLException ex) {
             Logger.getLogger(int_proceso_varsDAOImpl.class.getName())
                     .log(Level.SEVERE, null, ex);

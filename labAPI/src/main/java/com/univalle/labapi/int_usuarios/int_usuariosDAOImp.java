@@ -20,6 +20,7 @@ public class int_usuariosDAOImp implements int_usuariosDAO {
 	 * List of all users in the int_usuarios table.
 	 */
 	private List<int_usuarios> Users;
+        private int_usuarios currentUser;
 	/**
 	 * dbConn is an instance of the database connection.
 	 */
@@ -31,26 +32,22 @@ public class int_usuariosDAOImp implements int_usuariosDAO {
 	 * @param dbConn Database connection.
 	 */
 	public int_usuariosDAOImp (Connection dbConn) {
-		this.Users = new ArrayList<>();
-		this.dbConn = dbConn;
-		
-		try
-		{
-			Statement stm = this.dbConn.createStatement();
-			ResultSet rs = stm.executeQuery("select id, nombres, apellidos, email, clave, int_usuarios_tipo_id from int_usuarios");
-			while (rs.next())
-			{
-				int_usuarios intUser = new int_usuarios(rs.getString("nombres"), rs.getString("apellidos"), rs.getInt("int_usuarios_tipo_id"));
-				intUser.setClave(rs.getString("clave"));
-				intUser.setEmail(rs.getString("email"));
-				
-				this.Users.add(intUser);
-			}
-		}
-		catch (SQLException e)
-		{
-			e.printStackTrace();
-		}
+            this.Users = new ArrayList<>();
+            this.dbConn = dbConn;
+            try {
+                Statement stm = this.dbConn.createStatement();
+                ResultSet rs = stm.executeQuery("select id, nombres, apellidos, email, clave, int_usuarios_tipo_id from int_usuarios");
+                while (rs.next())
+                {
+                    int_usuarios intUser = new int_usuarios(rs.getString("nombres"), rs.getString("apellidos"), rs.getInt("int_usuarios_tipo_id"));
+                    intUser.setClave(rs.getString("clave"));
+                    intUser.setEmail(rs.getString("email"));
+                    
+                    this.Users.add(intUser);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(int_usuariosDAOImp.class.getName()).log(Level.SEVERE, null, ex);
+            }
 	}
 	
 	/**
@@ -77,7 +74,7 @@ public class int_usuariosDAOImp implements int_usuariosDAO {
 			}
 		}
 		catch (SQLException e) {
-			e.printStackTrace();
+                    Logger.getLogger(int_usuariosDAOImp.class.getName()).log(Level.SEVERE, null, e);
 		}
 		
 		return resUser;
@@ -87,34 +84,35 @@ public class int_usuariosDAOImp implements int_usuariosDAO {
 	 * This method gets an instance of int_usuarios class corresponding to a particular registry of the 
 	 * int_usuarios table using the names and last names.
 	 * 
-	 * @param names String with the names of the user to get from the int_usuarios table.
-	 * @param lastNames String with the last names of the user to get from the int_usuarios table.
-     * @return 
+	 * @param email String with the email of the user to get from the int_usuarios table.
+	 * @param password String with the password of the user to get from the int_usuarios table.
+         * @return 
 	 */
         @Override
-	public int_usuarios getUser(String names, String lastNames)
-	{
-		int_usuarios resUser = null;
-		
-		try
-		{
-			Statement stm = this.dbConn.createStatement();
-			ResultSet rs = stm.executeQuery("select id, nombres, apellidos, email, clave, int_usuarios_tipo_id from int_usuarios where nombres='"+names+"' AND apellidos='"+lastNames+"'");
-			while(rs.next())
-			{
-				resUser = new int_usuarios(rs.getString("nombres"), rs.getString("apellidos"), rs.getInt("int_usuarios_tipo_id"));
-				resUser.setClave(rs.getString("clave"));
-				resUser.setEmail(rs.getString("email"));
-				resUser.setId(rs.getInt("id"));
-				break;
-			}
-		}
-		catch (SQLException e)
-		{
-			e.printStackTrace();
-		}
-		
-		return resUser;
+	public int_usuarios getLoginUser(String email, String password) {
+            int_usuarios resUser = null;
+
+            try {
+                Statement stm = this.dbConn.createStatement();
+                ResultSet rs = stm.executeQuery("select id, nombres, apellidos, email, clave, int_usuarios_tipo_id from int_usuarios where email='"+email+"' AND clave='"+password+"'");
+                while(rs.next()) {
+                    resUser = new int_usuarios(
+                            rs.getString("nombres"), 
+                            rs.getString("apellidos"), 
+                            rs.getInt("int_usuarios_tipo_id"),
+                            rs.getString("email"),
+                            rs.getString("clave"),
+                            rs.getInt("id")
+                    );
+                    this.currentUser = resUser;
+                    break;
+                }
+            }
+            catch (SQLException e) {
+                Logger.getLogger(int_usuariosDAOImp.class.getName()).log(Level.SEVERE, null, e);                                
+            }
+
+            return resUser;
 	}
 	
 	/**
@@ -174,9 +172,8 @@ public class int_usuariosDAOImp implements int_usuariosDAO {
 			int_usuarios newUser = new int_usuarios(name, apellidos, int_usuarios_tipo_id);
 			this.Users.add(newUser);
 		}
-		catch (SQLException e)
-		{
-			e.printStackTrace();
+		catch (SQLException e) {
+                    Logger.getLogger(int_usuariosDAOImp.class.getName()).log(Level.SEVERE, null, e);
 		}
 		
 		return resRows;
@@ -219,9 +216,8 @@ public class int_usuariosDAOImp implements int_usuariosDAO {
 				usersIndex++;
 			}
 		}
-		catch (SQLException e)
-		{
-			e.printStackTrace();
+		catch (SQLException e) {
+                    Logger.getLogger(int_usuariosDAOImp.class.getName()).log(Level.SEVERE, null, e);
 		}
 		
 		return resRows;
@@ -248,7 +244,7 @@ public class int_usuariosDAOImp implements int_usuariosDAO {
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
+                    Logger.getLogger(int_usuariosDAOImp.class.getName()).log(Level.SEVERE, null, e);
 		}
 		
 		return resRows;
@@ -261,34 +257,42 @@ public class int_usuariosDAOImp implements int_usuariosDAO {
          * @return 
 	 */
         @Override
-	public int deleteUser(int userID)
-	{
-		int resRows = 0;
-		
-		try
-		{
-			Statement stm = this.dbConn.createStatement();
-			resRows = stm.executeUpdate("delete from int_usuarios where id="+userID);
-			
-			Iterator i = this.Users.iterator();
-			int usersIndex = 0;
-			while (i.hasNext())
-			{
-				int idUserDB = ((int_usuarios) i.next()).getId();
-				if (idUserDB == userID)
-				{
-					this.Users.remove(usersIndex);
-					break;
-				}
-				
-				usersIndex++;
-			}
-		}
-		catch (SQLException e)
-		{
-			e.printStackTrace();
-		}
-		
-		return resRows;
-	}
+    public int deleteUser(int userID)
+    {
+        int resRows = 0;
+
+        try
+        {
+                Statement stm = this.dbConn.createStatement();
+                resRows = stm.executeUpdate("delete from int_usuarios where id="+userID);
+
+                Iterator i = this.Users.iterator();
+                int usersIndex = 0;
+                while (i.hasNext())
+                {
+                        int idUserDB = ((int_usuarios) i.next()).getId();
+                        if (idUserDB == userID)
+                        {
+                                this.Users.remove(usersIndex);
+                                break;
+                        }
+
+                        usersIndex++;
+                }
+        }
+        catch (SQLException e)
+        {
+            Logger.getLogger(int_usuariosDAOImp.class.getName()).log(Level.SEVERE, null, e);
+        }
+
+        return resRows;
+
+    }
+
+    public int_usuarios getCurrentUser() {
+        return currentUser;
+    }
+    
+        
+    
 }

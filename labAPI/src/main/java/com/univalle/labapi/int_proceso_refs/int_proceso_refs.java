@@ -187,6 +187,17 @@ public class int_proceso_refs {
         this.flag = flag;
     }
     
-       
+    @Override
+    public String toString(){
+        return "int_proceso_refs("
+                + this.idpk + ", "
+                + this.int_proceso_id_fk + ", " 
+                + this.nombre + ", "
+                + this.descripcion + ", "
+                + this.max_2 + ", "
+                + this.min + ", "
+                + this.flag
+                + ")";
+    }
     
 }

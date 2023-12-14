@@ -5,33 +5,65 @@
 package com.univalle.guiInterfacesLab2023.controller;
 
 import com.univalle.guiInterfacesLab2023.view.LoginView;
+import com.univalle.guiInterfacesLab2023.view.MainView;
 import com.univalle.labapi.LabAPI;
+import com.univalle.labapi.int_usuarios.int_usuarios;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author juane
  */
 public class LoginController implements ActionListener {
-    private LoginView loginView;
+    private final LoginView loginView;
+    private final MainView mainView;
     
-    public LoginController(LoginView loginView){
+    private final String userDB = "watz";
+    private final String passwordDB = "LbMzojJXDx_ZYWEq";
+    
+    public LoginController(LoginView loginView, MainView mainView){
         this.loginView = loginView;
+        this.mainView = mainView;
         
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        String user = "camilo";
-        String password = "1234";
-        LabAPI labApi = new LabAPI(user, password);
-        labApi.usuarios.getUser(user, "pepito");
+    public void actionPerformed(ActionEvent evt) {
+        if(evt.getSource() == loginView.getLoginButton()){
+            String user = loginView.getUserField().getText();
+            String password = String.valueOf(loginView.getPasswordField().getPassword());
+            int_usuarios usuario = doLogin(user, password);
+            if (usuario != null) {
+                DatabaseController.setCurrentUser(usuario);                
+                loginView.setVisible(false);
+                mainView.setVisible(true);
+            }
+        }
+        
     }
     
-    private void addActionListeners(){
+    public void addActionListeners(){
         loginView.getLoginButton().addActionListener(this);
     }
     
+    private int_usuarios doLogin(String user, String password){
+        LabAPI labAPI;
+        int_usuarios usuario = null;
+        try {
+            labAPI = new LabAPI(userDB, passwordDB);
+            DatabaseController.initController(labAPI);
+            usuario = labAPI.usuarios.getLoginUser(user, password);
+        } catch (SQLException ex) {
+            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(loginView, "Error al iniciar sesión.");
+        }
+        
+        return usuario;
+    }
     
 }

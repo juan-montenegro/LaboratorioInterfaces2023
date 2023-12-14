@@ -173,4 +173,15 @@ public class int_usuarios_proceso {
         this.hits = hits;
     }
     
+    @Override
+    public String toString(){
+        return "int_usuarios_proceso("
+                + this.idpk + ", "
+                + this.int_usuarios_id_fk +", " 
+                + this.int_proceso_id_fk +", "
+                + this.fecha.toString() +", "
+                + this.hora_inicio.toString() +", "
+                + this.hora_fin.toString()
+                +")";
+    }
 }

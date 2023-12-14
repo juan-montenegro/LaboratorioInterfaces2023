@@ -3,11 +3,18 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package com.univalle.guiInterfacesLab2023.view;
-import com.univalle.guiInterfacesLab2023.controller.MainFrameController;
+import com.univalle.guiInterfacesLab2023.controller.DatabaseController;
+import com.univalle.guiInterfacesLab2023.controller.MainViewController;
 import com.univalle.guiInterfacesLab2023.view.components.LineChartPanel;
-import com.univalle.guiInterfacesLab2023.controller.SerialController;
+//import com.univalle.guiInterfacesLab2023.controller.SerialController;
 import com.univalle.guiInterfacesLab2023.model.SignalData;
+import com.univalle.labapi.LabAPI;
+import com.univalle.labapi.int_proceso.int_proceso;
+import com.univalle.labapi.int_proceso_vars.int_proceso_vars;
+import com.univalle.labapi.int_proceso_vars_data.int_proceso_vars_data;
 import java.awt.BorderLayout;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -27,8 +34,8 @@ import org.jfree.data.xy.XYSeriesCollection;
  * @author juane
  */
 public class MainView extends JFrame {
-    private final MainFrameController mainFrameController;
-    private final String COMM_PORT = "COM9";
+    private final MainViewController mainFrameController;
+//    private final String COMM_PORT = "COM9";
     private int timeMues = 0;
     private String selectedAnSignal = "";
     private String selectedDgSignal = "";
@@ -39,7 +46,7 @@ public class MainView extends JFrame {
     private final ScheduledExecutorService scheduler;
     
     private Runnable plotRunnable;
-    private final SerialController serialController;
+//    private final SerialController serialController;
     private boolean primero = true;
     
     private final XYSeries grafica;
@@ -61,17 +68,21 @@ public class MainView extends JFrame {
         newChart = new LineChartPanel(timeMues,tittleChart, dataset );
         grafica = new XYSeries("Signal");
         
-        mainFrameController = new MainFrameController(this);
+        mainFrameController = new MainViewController(this);
         mainFrameController.addActionListeners();
         mainFrameController.addItemListeners();
-        mainFrameController.setSerialCom();
+        comboSignalA.setSelectedIndex(1);
+        comboSignalD.setSelectedIndex(1);
+        comboSignalA.setSelectedIndex(0);
+        comboSignalD.setSelectedIndex(0);
+//        mainFrameController.setSerialCom();
         
         grafica.add(0,0);
         
         dataset = new XYSeriesCollection();
         dataset.addSeries(grafica);
         
-        serialController = new SerialController (COMM_PORT);
+//        serialController = new SerialController (COMM_PORT);
         
         //LineChartP newChart = new LineChartP(timeMues,tittleChart, dataset );
     }
@@ -109,8 +120,14 @@ public class MainView extends JFrame {
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         comboSignalD.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "D0", "D1", "D2", "D3" }));
+        comboSignalD.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboSignalDActionPerformed(evt);
+            }
+        });
 
         comboSignalA.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "A0", "A1", "A2", "A3", "A4", "A5", "A6", "A7" }));
+        comboSignalA.setSelectedItem(comboSignalA);
 
         sampleRateTextField.setText("100");
         sampleRateTextField.setToolTipText("");
@@ -228,7 +245,7 @@ public class MainView extends JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(DO2, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(DO3, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(39, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout lineChartPanelLayout = new javax.swing.GroupLayout(lineChartPanel);
@@ -268,6 +285,7 @@ public class MainView extends JFrame {
 
     private void SelectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SelectButtonActionPerformed
         data.clear();
+        LabAPI api = DatabaseController.getAPI();
         
         timeMues = (int) getSampleRate();  
         
@@ -289,53 +307,81 @@ public class MainView extends JFrame {
             System.out.println("Señal seleccionada: "+ selectedDgSignal);
             tittleChart = selectedDgSignal;
         }
-        else{JOptionPane.showMessageDialog(null, "Error:  Seleccione una señal", "Señal Error", JOptionPane.ERROR_MESSAGE);}
-        
-        serialController.sendText("T"+timeMues+","+tittleChart);
-        System.out.println("T"+timeMues+","+tittleChart);
-        
-        if(primero){
-            grafica.remove(0);
-
-            plotRunnable = () -> {
-                if(serialController.newAnalogData || serialController.newDigitalByte){
-                    
-                    data.addTime(t);
-                    
-                    if(tittleChart.charAt(0)=='A'){
-                        System.out.println("PLOT");
-                        data.addSignal((double)serialController.readAnalog);
-                        grafica.add(t ,(double)serialController.readAnalog);
-                        
-                        
-                    }
-                    
-                    else if(tittleChart.charAt(0)=='D'){
-                        data.addSignal((double)serialController.readDigital);
-                        grafica.add(t ,(double)serialController.readDigital);
-                    }
-                    
-                    if (grafica.getItemCount() > NUM_VALUES) {
-                        grafica.remove(0);
-                    }
-                    newChart.updateDataset(tittleChart, dataset);
-                    
-                    lineChartPanel.repaint();
-                    
-                    t += timeMues;
-                    System.out.println(t);
-                    
-                    if(tittleChart.charAt(0)=='A'){
-                        serialController.newAnalogData = false;
-                    } else if(tittleChart.charAt(0)=='D'){
-                        serialController.newDigitalByte = false;
-                    }
-                    
-                }
-            };
-            scheduler.scheduleAtFixedRate(plotRunnable, 0, 200, TimeUnit.MILLISECONDS);
-            primero = false;
+        else{
+            JOptionPane.showMessageDialog(
+                    null, 
+                    "Error:  Seleccione una señal", 
+                    "Señal Error", 
+                    JOptionPane.ERROR_MESSAGE
+            );
         }
+        
+        if (api == null){
+            System.out.println("API IS NULL!!!");           
+            return;
+        }
+        int_proceso proceso = api.proceso.getProcess(3);
+        proceso.setSampleTime(timeMues);
+        api.proceso.updateProcess(proceso);
+        System.out.println(proceso.toString());
+        
+        int_proceso_vars vars = api.procesoVars.getProcessVar(tittleChart);
+        System.out.println(vars.toString());
+        
+        api.procesoVars.updateProcessVar(vars);
+        
+        List<int_proceso_vars_data> varsData = api.procesoVarsData.getVarDataForProcess(vars.getId());
+        
+        for (int_proceso_vars_data data : varsData) {
+            System.out.println(data.toString());   
+        }
+        
+       
+//        serialController.sendText("T"+timeMues+","+tittleChart);
+        System.out.println("T"+timeMues+","+tittleChart);
+//        
+//        if(primero){
+//            grafica.remove(0);
+//
+//            plotRunnable = () -> {
+//                if(serialController.newAnalogData || serialController.newDigitalByte){
+//                    
+//                    data.addTime(t);
+//                    
+//                    if(tittleChart.charAt(0)=='A'){
+//                        System.out.println("PLOT");
+//                        data.addSignal((double)serialController.readAnalog);
+//                        grafica.add(t ,(double)serialController.readAnalog);
+//                        
+//                        
+//                    }
+//                    
+//                    else if(tittleChart.charAt(0)=='D'){
+//                        data.addSignal((double)serialController.readDigital);
+//                        grafica.add(t ,(double)serialController.readDigital);
+//                    }
+//                    
+//                    if (grafica.getItemCount() > NUM_VALUES) {
+//                        grafica.remove(0);
+//                    }
+//                    newChart.updateDataset(tittleChart, dataset);
+//                    
+//                    lineChartPanel.repaint();
+//                    
+//                    t += timeMues;
+//                    System.out.println(t);
+//                    
+//                    if(tittleChart.charAt(0)=='A'){
+//                        serialController.newAnalogData = false;
+//                    } else if(tittleChart.charAt(0)=='D'){
+//                        serialController.newDigitalByte = false;
+//                    }
+//                    
+//                }
+//            };
+//            scheduler.scheduleAtFixedRate(plotRunnable, 0, 200, TimeUnit.MILLISECONDS);
+//            primero = false;
+//        }
         
         
         //try {
@@ -345,6 +391,10 @@ public class MainView extends JFrame {
           //  Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
         //}
     }//GEN-LAST:event_SelectButtonActionPerformed
+
+    private void comboSignalDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboSignalDActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_comboSignalDActionPerformed
 
     /**
      * @param args the command line arguments

@@ -42,11 +42,19 @@ public class int_usuarios {
 	 * @param apellidos User last names to be initialized.
 	 * @param int_usuarios_tipo_id ID of the user profile.
 	 */
-	int_usuarios(String nombres, String apellidos, int int_usuarios_tipo_id)
-	{
+	public int_usuarios(String nombres, String apellidos, int int_usuarios_tipo_id){
 		this.nombres = nombres;
 		this.apellidos = apellidos;
 		this.int_usuarios_tipo_id_fk = int_usuarios_tipo_id;
+	}
+	
+        public int_usuarios(String nombres, String apellidos, int int_usuarios_tipo_id, String email, String password, int id){
+		this.nombres = nombres;
+		this.apellidos = apellidos;
+		this.int_usuarios_tipo_id_fk = int_usuarios_tipo_id;
+                this.email = email;
+                this.clave = password;
+                this.idpk = id;
 	}
 	
 	/**
@@ -168,4 +176,14 @@ public class int_usuarios {
 	{
 		this.clave = clave;
 	}
+        
+        @Override
+        public String toString(){
+            return "int_usuarios("
+                    + this.idpk + ","
+                    + this.nombres +"," 
+                    + this.apellidos +","
+                    + this.email +","
+                    +")";
+        }
 }

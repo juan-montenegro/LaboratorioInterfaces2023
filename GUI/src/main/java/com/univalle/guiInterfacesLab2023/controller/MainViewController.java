@@ -17,7 +17,7 @@ import javax.swing.JToggleButton;
  *
  * @author juane
  */
-public class MainFrameController implements ActionListener, ItemListener {
+public class MainViewController implements ActionListener, ItemListener {
     private final Color OFF_COLOR = new Color(187,187,187);
     private final Color ON_COLOR = new Color(251, 208, 62);
     private final String COMM_PORT = "COM9";
@@ -25,7 +25,7 @@ public class MainFrameController implements ActionListener, ItemListener {
     private final MainView mainView;
     private SerialController controller;
     
-    public MainFrameController(MainView mainView){
+    public MainViewController(MainView mainView){
         this.mainView = mainView;
     }
 

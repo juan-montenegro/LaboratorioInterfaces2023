@@ -4,6 +4,7 @@
  */
 package com.univalle.guiInterfacesLab2023.view;
 
+import com.univalle.guiInterfacesLab2023.controller.LoginController;
 import java.awt.Frame;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -15,15 +16,18 @@ import javax.swing.JTextField;
  * @author juane
  */
 public class LoginView extends JDialog {
+    private final LoginController loginController;
 
     /**
      * Creates new form NewJDialog
      * @param parent
      * @param modal
      */
-    public LoginView(Frame parent, boolean modal) {
+    public LoginView(MainView parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        loginController = new LoginController(this, parent);
+        loginController.addActionListeners();
     }
 
     /**
@@ -50,11 +54,6 @@ public class LoginView extends JDialog {
         loginLabel.setText("Password");
 
         loginButton.setText("Login");
-        loginButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loginButtonActionPerformed(evt);
-            }
-        });
 
         passwordField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
@@ -66,8 +65,8 @@ public class LoginView extends JDialog {
         LoginPanel.setLayout(LoginPanelLayout);
         LoginPanelLayout.setHorizontalGroup(
             LoginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, LoginPanelLayout.createSequentialGroup()
-                .addContainerGap(23, Short.MAX_VALUE)
+            .addGroup(LoginPanelLayout.createSequentialGroup()
+                .addContainerGap(38, Short.MAX_VALUE)
                 .addGroup(LoginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(loginButton)
                     .addGroup(LoginPanelLayout.createSequentialGroup()
@@ -78,12 +77,12 @@ public class LoginView extends JDialog {
                         .addGroup(LoginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(passwordField)
                             .addComponent(userField, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap())
+                .addContainerGap(48, Short.MAX_VALUE))
         );
         LoginPanelLayout.setVerticalGroup(
             LoginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, LoginPanelLayout.createSequentialGroup()
-                .addContainerGap(31, Short.MAX_VALUE)
+            .addGroup(LoginPanelLayout.createSequentialGroup()
+                .addContainerGap(51, Short.MAX_VALUE)
                 .addGroup(LoginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(userField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(userLabel))
@@ -93,32 +92,28 @@ public class LoginView extends JDialog {
                     .addComponent(loginLabel))
                 .addGap(18, 18, 18)
                 .addComponent(loginButton)
-                .addGap(18, 18, 18))
+                .addContainerGap(51, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(80, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap(49, Short.MAX_VALUE)
                 .addComponent(LoginPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(77, Short.MAX_VALUE))
+                .addContainerGap(51, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(61, Short.MAX_VALUE)
+                .addContainerGap(37, Short.MAX_VALUE)
                 .addComponent(LoginPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(65, Short.MAX_VALUE))
+                .addContainerGap(36, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_loginButtonActionPerformed
 
     /**
      * @param args the command line arguments

@@ -23,14 +23,14 @@ public class int_procesoDAOImpl implements int_procesoDAO {
     private static final String ARCHIVO_MANUAL = "archivo_manual";
     
 //    private static final String GET_ALL_PROCESS_ 
-//            = "SELECT id, int_proceso_tipo_id, nombre, descripcion, tiempo_muestreo, archivo_especificacion, archivo_manual "
+//            = "SELECT id, int_proceso_tipo_id, nombre, descripcion, tiempo_muestreo, archivo_especificaciones, archivo_manual "
 //            + "FROM int_proceso";
     private static final String GET_PROCESS_A 
-            = "SELECT id, int_proceso_tipo_id, nombre, descripcion, tiempo_muestreo, archivo_especificacion, archivo_manual "
+            = "SELECT id, int_proceso_tipo_id, nombre, descripcion, tiempo_muestreo, archivo_especificaciones, archivo_manual "
             + "FROM int_proceso "
             + "WHERE id=?";    
     private static final String GET_PROCESS_B 
-            = "SELECT id, int_proceso_id, nombre, descripcion, max_2, min, flag "
+            = "SELECT id, int_proceso_tipo_id, nombre, descripcion, tiempo_muestreo, archivo_especificaciones, archivo_manual "
             + "FROM int_proceso "
             + "WHERE nombre=?";
     private static final String INSERT_PROCESS
@@ -51,9 +51,6 @@ public class int_procesoDAOImpl implements int_procesoDAO {
         this.connection = connection;
         
     }
-    
-    
-    
 
 //    @Override
 //    public List<int_proceso> getAllProcess() {
@@ -64,24 +61,35 @@ public class int_procesoDAOImpl implements int_procesoDAO {
     public int_proceso getProcess(int id) {
         int_proceso process = null;
         try {
+            System.out.println("PREPARE STATEMENT = " + GET_PROCESS_A);
             PreparedStatement statement = this.connection
                     .prepareStatement(GET_PROCESS_A);
+            System.out.println("ID = " + id);
             statement.setInt(1, id);
+            System.out.println("GET RESULT");
+            
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                int_proceso tempRef = new int_proceso(
-                        rs.getInt(INT_PROCESO_TIPO_ID),
-                        rs.getString(NOMBRE)
-                        
+                process = new int_proceso(
+                    rs.getInt(INT_PROCESO_TIPO_ID),
+                    rs.getString(NOMBRE)                    
                 );
-                tempRef.setId(rs.getInt(ID));
-                process = tempRef;
+                process.setDescripcion(rs.getString(DESCRIPCION));
+                process.setSampleTime(rs.getDouble(TIEMPO_MUESTREO));
+                process.setArchivo_especificacion(rs.getBlob(ARCHIVO_ESPECIFICACIONES));
+                process.setArchivo_manual(rs.getBlob(ARCHIVO_MANUAL));
+
+                process.setId(rs.getInt(ID));
+                System.out.println(process.toString());
                 break;
+                
             }
+
         } catch (SQLException ex) {
             Logger.getLogger(int_procesoDAOImpl.class.getName())
                     .log(Level.SEVERE, null, ex);
         }
+        this.currentProcess = process;
         return process;  
     }
 
@@ -151,6 +159,7 @@ public class int_procesoDAOImpl implements int_procesoDAO {
             statement.setDouble(4, process2Update.getSampleTime());
             statement.setBlob(5, process2Update.getArchivo_especificacion());
             statement.setBlob(6, process2Update.getArchivo_manual());
+            statement.setInt(7, process2Update.getId());
             int_proceso tempRef = new int_proceso(
                     process2Update.getProcessTypeId(),
                     process2Update.getNombre()
