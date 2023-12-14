@@ -272,5 +272,11 @@ public class int_procesoDAOImpl implements int_procesoDAO {
         }
         return resRows;  
     }
+
+    public int_proceso getCurrentProcess() {
+        return currentProcess;
+    }
+    
+    
     
 }

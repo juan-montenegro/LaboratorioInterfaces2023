@@ -175,16 +175,19 @@ public class int_usuarios_proceso {
     public void setHits(int hits) {
         this.hits = hits;
     }
-    
+
     @Override
-    public String toString(){
-        return "int_usuarios_proceso("
-                + this.idpk + ", "
-                + this.int_usuarios_id_fk +", " 
-                + this.int_proceso_id_fk +", "
-                + this.fecha.toString() +", "
-                + this.hora_inicio.toString() +", "
-                + this.hora_fin.toString()
-                +")";
+    public String toString() {
+        return "int_usuarios_proceso{" 
+                + "idpk=" + idpk 
+                + ", int_usuarios_id_fk=" + int_usuarios_id_fk 
+                + ", int_proceso_id_fk=" + int_proceso_id_fk 
+                + ", fecha=" + fecha 
+                + ", hora_inicio=" + hora_inicio 
+                + ", hora_fin=" + hora_fin 
+                + ", hits=" + hits 
+                + '}';
     }
+    
+    
 }

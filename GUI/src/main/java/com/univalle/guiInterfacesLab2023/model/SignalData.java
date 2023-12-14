@@ -4,27 +4,32 @@
  */
 package com.univalle.guiInterfacesLab2023.model;
 
+import com.univalle.labapi.int_proceso_vars_data.int_proceso_vars_data;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  *
  * @author camilo, montenegro
+ * 
  */
 public class SignalData {
     
     private final ArrayList<Double> signal;
     private final ArrayList<Double> time;
+    private final ArrayList<int_proceso_vars_data> dataDB;
 
     public SignalData(){
         signal = new ArrayList<>();
         time = new ArrayList<>();
+        dataDB = new ArrayList<>();
     }
 
 
     public void clear(){
         signal.clear();
         time.clear();
+        dataDB.clear();
     }
     
     public ArrayList<Double> getSubArrayList(int fromIndex, int toIndex){
@@ -48,6 +53,14 @@ public class SignalData {
         time.add(t_value);
     }
 
+    public ArrayList<int_proceso_vars_data> getDataDB() {
+        return dataDB;
+    }
+    
+    public void addDataDB(int_proceso_vars_data dataDB){
+        this.dataDB.add(dataDB);
+    }
+    
     
     
 }

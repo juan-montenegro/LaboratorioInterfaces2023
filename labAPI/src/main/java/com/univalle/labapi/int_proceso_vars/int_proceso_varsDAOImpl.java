@@ -245,9 +245,9 @@ public class int_proceso_varsDAOImpl implements int_proceso_varsDAO {
             statement.setDouble(5, processVar.getMin());
             statement.setBoolean(6, processVar.isFlag());
             statement.setInt(7, processVar.getId());
+            statement.toString();
             this.procesosVars.add(processVar);
             resRows = statement.executeUpdate();
-            statement.close();
         } catch (SQLException ex) {
             Logger.getLogger(int_proceso_varsDAOImpl.class.getName())
                     .log(Level.SEVERE, null, ex);
@@ -338,6 +338,7 @@ public class int_proceso_varsDAOImpl implements int_proceso_varsDAO {
                         rs.getBoolean(FLAG)
                 );
                 tempVar.setName(rs.getString(NOMBRE));
+                tempVar.setId(rs.getInt(ID));
                 processVar = tempVar;
                 break;
             }

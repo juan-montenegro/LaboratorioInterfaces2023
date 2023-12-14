@@ -176,14 +176,18 @@ public class int_usuarios {
 	{
 		this.clave = clave;
 	}
+
+    @Override
+    public String toString() {
+        return "int_usuarios{" 
+                + "idpk=" + idpk 
+                + ", int_usuarios_tipo_id_fk=" + int_usuarios_tipo_id_fk 
+                + ", nombres=" + nombres 
+                + ", apellidos=" + apellidos 
+                + ", email=" + email 
+                + ", clave=" + clave 
+                + '}';
+    }
         
-        @Override
-        public String toString(){
-            return "int_usuarios("
-                    + this.idpk + ","
-                    + this.nombres +"," 
-                    + this.apellidos +","
-                    + this.email +","
-                    +")";
-        }
+        
 }

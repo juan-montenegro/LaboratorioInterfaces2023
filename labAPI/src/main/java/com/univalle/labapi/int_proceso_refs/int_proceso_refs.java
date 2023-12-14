@@ -123,19 +123,19 @@ public class int_proceso_refs {
         return nombre;
     }
 
-      /**
-     * Obtiene la descripción del proceso.
+    /**
+     * Establece la el nombre del proceso.
      *
-     * @return La descripción del proceso.
+     * @param name nombre del proceso.
      */
     public void setName(String name) {
         this.nombre = name;
     }
 
     /**
-     * Establece la descripción del proceso.
+     * Obtiene la descripción del proceso.
      *
-     * @param description La nueva descripción del proceso.
+     * @return La descripción del proceso.
      */
     public String getDescription() {
         return descripcion;

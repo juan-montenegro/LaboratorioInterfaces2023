@@ -11,6 +11,8 @@ import com.univalle.labapi.int_usuarios.int_usuarios;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -39,7 +41,17 @@ public class LoginController implements ActionListener {
             String password = String.valueOf(loginView.getPasswordField().getPassword());
             int_usuarios usuario = doLogin(user, password);
             if (usuario != null) {
-                DatabaseController.setCurrentUser(usuario);                
+                DatabaseController.setCurrentUser(usuario);
+                DatabaseController.getAPI()
+                        .usuariosProcesos.insertNewRegister(
+                                usuario.getId(), 
+                                3, 
+                                LocalDate.now(), 
+                                LocalTime.now(), 
+                                LocalTime.now(), 
+                                1
+                        );
+                
                 loginView.setVisible(false);
                 mainView.setVisible(true);
             }

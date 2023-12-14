@@ -11,16 +11,6 @@ package com.univalle.labapi.int_proceso_vars;
 
 public class int_proceso_vars {
     
-    /**
-     * Constructor para crear una instancia de int_proceso_vars con valores iniciales.
-     *
-     * @param processId    Identificador del proceso asociado.
-     * @param name         Nombre de la variable del proceso.
-     * @param description  Descripción de la variable del proceso.
-     * @param max          Valor máximo permitido para la variable.
-     * @param min          Valor mínimo permitido para la variable.
-     */
-    
     private int idpk;
     private int int_proceso_id_fk;
     private String nombre;
@@ -29,6 +19,24 @@ public class int_proceso_vars {
     private double min;
     private boolean flag;
 
+    /**
+     * Constructor para crear una instancia de int_proceso_vars con valores iniciales.
+     *
+     * @param processId    Identificador del proceso asociado.
+     * @param name         Nombre de la variable del proceso.
+     * @param description  Descripción de la variable del proceso.
+     * @param max          Valor máximo permitido para la variable.
+     * @param min          Valor mínimo permitido para la variable.
+     */   
+    public int_proceso_vars(int processId, String name, 
+            String description, double max, double min) {    
+        this.int_proceso_id_fk = processId;
+        this.nombre = name;
+        this.descripcion = description;
+        this.max_2 = max;
+        this.min = min;
+        this.flag = false;
+    }
     /**
      * Constructor completo para crear una instancia de int_proceso_vars con un indicador de estado.
      *
@@ -39,17 +47,6 @@ public class int_proceso_vars {
      * @param min          Valor mínimo permitido para la variable.
      * @param flag         Indicador de estado o bandera para la variable.
      */
-    
-    public int_proceso_vars(int processId, String name, 
-            String description, double max, double min) {    
-        this.int_proceso_id_fk = processId;
-        this.nombre = name;
-        this.descripcion = description;
-        this.max_2 = max;
-        this.min = min;
-        this.flag = false;
-    }
-    
     public int_proceso_vars(int processId, String name, 
             String description, double max, double min, boolean flag) {    
         this.int_proceso_id_fk = processId;
@@ -65,7 +62,6 @@ public class int_proceso_vars {
      *
      * @return El identificador único.
      */
-    
     public int getId() {
         return idpk;
     }
@@ -79,12 +75,11 @@ public class int_proceso_vars {
         this.idpk = idpk;
     }
 
-       /**
+    /**
      * Obtiene el identificador del proceso asociado.
      *
      * @return El identificador del proceso.
      */
-    
     public int getProcessId() {
         return int_proceso_id_fk;
     }
@@ -94,7 +89,6 @@ public class int_proceso_vars {
      *
      * @param processId El nuevo identificador del proceso.
      */
-    
     public void setProcessId(int processId) {
         this.int_proceso_id_fk = processId;
     }
@@ -104,7 +98,6 @@ public class int_proceso_vars {
      *
      * @return El nombre de la variable.
      */
-    
     public String getName() {
         return nombre;
     }
@@ -124,7 +117,6 @@ public class int_proceso_vars {
      *
      * @return La descripción de la variable.
      */
-    
     public String getDescription() {
         return descripcion;
     }
@@ -134,7 +126,6 @@ public class int_proceso_vars {
      *
      * @param description La nueva descripción de la variable.
      */
-    
     public void setDescription(String description) {
         this.descripcion = description;
     }
@@ -154,7 +145,6 @@ public class int_proceso_vars {
      *
      * @param max El nuevo valor máximo.
      */
-    
     public void setMax(double max) {
         this.max_2 = max;
     }
@@ -164,7 +154,6 @@ public class int_proceso_vars {
      *
      * @return El valor mínimo.
      */
-    
     public double getMin() {
         return min;
     }
@@ -174,7 +163,6 @@ public class int_proceso_vars {
      *
      * @param min El nuevo valor mínimo.
      */
-    
     public void setMin(double min) {
         this.min = min;
     }
@@ -184,32 +172,31 @@ public class int_proceso_vars {
      *
      * @return El estado del indicador.
      */
-    
     public boolean isFlag() {
         return flag;
     }
 
-        /**
+    /**
      * Establece el indicador de estado o bandera para la variable del proceso.
      *
      * @param flag El nuevo estado del indicador.
      */
-    
     public void setFlag(boolean flag) {
         this.flag = flag;
     }
-    
+
     @Override
-    public String toString(){
-        return "int_proceso_vars("
-                + this.idpk + ", "
-                + this.int_proceso_id_fk + ", " 
-                + this.nombre + ", "
-                + this.descripcion + ", "
-                + this.max_2 + ", "
-                + this.min + ", "
-                + this.flag
-                + ")";
+    public String toString() {
+        return "int_proceso_vars{" 
+                + "idpk=" + idpk 
+                + ", int_proceso_id_fk=" + int_proceso_id_fk 
+                + ", nombre=" + nombre 
+                + ", descripcion=" + descripcion 
+                + ", max_2=" + max_2 
+                + ", min=" + min 
+                + ", flag=" + flag 
+                + '}';
     }
     
+        
 }

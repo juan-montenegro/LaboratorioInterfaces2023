@@ -26,7 +26,7 @@ public interface int_proceso_vars_dataDAO {
      * @param processId
      * @return
      */
-    public List<int_proceso_vars_data> getVarDataForProcess(int processId);
+    public int_proceso_vars_data getVarDataForProcess(int processId);
 
     /**
      *

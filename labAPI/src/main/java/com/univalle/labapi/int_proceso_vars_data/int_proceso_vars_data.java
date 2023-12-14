@@ -148,16 +148,18 @@ public class int_proceso_vars_data {
     public void setClockTime(Time time) {
         this.hora = time;
     }
-    
+
     @Override
-    public String toString(){
-        return "int_proceso_vars_data("
-                + this.idpk + ", "
-                + this.int_proceso_vars_id_fk +", " 
-                + this.valor +", "
-                + this.tiempo +", "
-                + this.fecha.toString() +", "
-                + this.hora.toString()
-                + ")";
+    public String toString() {
+        return "int_proceso_vars_data{" 
+                + "idpk=" + idpk 
+                + ", int_proceso_vars_id_fk=" + int_proceso_vars_id_fk 
+                + ", valor=" + valor 
+                + ", tiempo=" + tiempo 
+                + ", fecha=" + fecha 
+                + ", hora=" + hora
+                + '}';
     }
+    
+    
 }

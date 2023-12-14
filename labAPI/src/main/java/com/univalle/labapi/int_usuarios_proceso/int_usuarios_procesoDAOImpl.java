@@ -26,7 +26,8 @@ public class int_usuarios_procesoDAOImpl implements int_usuarios_procesoDAO {
 
     private Connection conectionDb = null; // Conexión a la base de datos.
     private String queryTotal = "SELECT id, int_proceso_id, int_usuarios_id, fecha, hora_inicio, hora_fin, hits FROM int_usuarios_proceso";// Consulta para obtener todos los registros.
-    private String queryInsert = "INSERT INTO `int_usuarios_proceso`(`id`, `int_proceso_id`, `int_usuarios_id`, `fecha`, `hora_inicio`, `hora_fin`, `hits`) VALUES (?, ?, ?, ?, ?, ?, ?)";// Consulta para insertar un nuevo registro.
+//    private String queryInsert = "INSERT INTO `int_usuarios_proceso`(`id`, `int_proceso_id`, `int_usuarios_id`, `fecha`, `hora_inicio`, `hora_fin`, `hits`) VALUES (?, ?, ?, ?, ?, ?, ?)";// Consulta para insertar un nuevo registro.
+    private String queryInsert = "INSERT INTO `int_usuarios_proceso`(`int_proceso_id`, `int_usuarios_id`, `fecha`, `hora_inicio`, `hora_fin`, `hits`) VALUES (?, ?, ?, ?, ?, ?)";// Consulta para insertar un nuevo registro.
     private PreparedStatement stmP = null;// Declaración preparada para ejecución de consultas.
     private Statement stmS = null;// Declaración para ejecución de consultas.
     private List <int_usuarios_proceso> UsersProcess;// Lista de registros de procesos de usuarios.
@@ -233,8 +234,8 @@ public class int_usuarios_procesoDAOImpl implements int_usuarios_procesoDAO {
         try{
             this.stmP = this.conectionDb.prepareStatement(this.queryInsert);
             // Estableciendo los valores de los parámetros
-            stmP.setInt(1, usuario);
-            stmP.setInt(2, proceso);
+            stmP.setInt(1, proceso);
+            stmP.setInt(2, usuario);
             stmP.setDate(3, java.sql.Date.valueOf(fecha));
             stmP.setTime(4, java.sql.Time.valueOf(hora_inicio));
             stmP.setTime(5, java.sql.Time.valueOf(hora_fin));

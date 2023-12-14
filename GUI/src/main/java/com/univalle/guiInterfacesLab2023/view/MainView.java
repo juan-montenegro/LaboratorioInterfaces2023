@@ -3,31 +3,16 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package com.univalle.guiInterfacesLab2023.view;
-import com.univalle.guiInterfacesLab2023.controller.DatabaseController;
+
 import com.univalle.guiInterfacesLab2023.controller.MainViewController;
-import com.univalle.guiInterfacesLab2023.view.components.LineChartPanel;
-//import com.univalle.guiInterfacesLab2023.controller.SerialController;
-import com.univalle.guiInterfacesLab2023.model.SignalData;
-import com.univalle.labapi.LabAPI;
-import com.univalle.labapi.int_proceso.int_proceso;
-import com.univalle.labapi.int_proceso_vars.int_proceso_vars;
-import com.univalle.labapi.int_proceso_vars_data.int_proceso_vars_data;
-import java.awt.BorderLayout;
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
 
 /**
  *
@@ -35,56 +20,23 @@ import org.jfree.data.xy.XYSeriesCollection;
  */
 public class MainView extends JFrame {
     private final MainViewController mainFrameController;
-//    private final String COMM_PORT = "COM9";
-    private int timeMues = 0;
-    private String selectedAnSignal = "";
-    private String selectedDgSignal = "";
-    private String tittleChart = "Signal";
-    private final SignalData data;
-    
-    
-    private final ScheduledExecutorService scheduler;
-    
-    private Runnable plotRunnable;
-//    private final SerialController serialController;
-    private boolean primero = true;
-    
-    private final XYSeries grafica;
-    private XYSeriesCollection dataset;
-    private final LineChartPanel newChart; 
-    private final int NUM_VALUES = 200;
-    
-    double t = 0;
-    
+        
     /**
      * Creates new form myGui
      */
     public MainView() {
         initComponents();
-        data = new SignalData();
-        
-        scheduler = Executors.newScheduledThreadPool(1);
-        
-        newChart = new LineChartPanel(timeMues,tittleChart, dataset );
-        grafica = new XYSeries("Signal");
         
         mainFrameController = new MainViewController(this);
+        
         mainFrameController.addActionListeners();
         mainFrameController.addItemListeners();
+        
         comboSignalA.setSelectedIndex(1);
         comboSignalD.setSelectedIndex(1);
         comboSignalA.setSelectedIndex(0);
         comboSignalD.setSelectedIndex(0);
-//        mainFrameController.setSerialCom();
         
-        grafica.add(0,0);
-        
-        dataset = new XYSeriesCollection();
-        dataset.addSeries(grafica);
-        
-//        serialController = new SerialController (COMM_PORT);
-        
-        //LineChartP newChart = new LineChartP(timeMues,tittleChart, dataset );
     }
 
     /**
@@ -97,7 +49,7 @@ public class MainView extends JFrame {
     private void initComponents() {
 
         seleccionSenal = new javax.swing.ButtonGroup();
-        jPanel1 = new javax.swing.JPanel();
+        signalPanel = new javax.swing.JPanel();
         comboSignalD = new javax.swing.JComboBox<>();
         comboSignalA = new javax.swing.JComboBox<>();
         sampleRateTextField = new javax.swing.JTextField();
@@ -117,14 +69,9 @@ public class MainView extends JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        signalPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         comboSignalD.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "D0", "D1", "D2", "D3" }));
-        comboSignalD.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                comboSignalDActionPerformed(evt);
-            }
-        });
 
         comboSignalA.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "A0", "A1", "A2", "A3", "A4", "A5", "A6", "A7" }));
         comboSignalA.setSelectedItem(comboSignalA);
@@ -142,11 +89,6 @@ public class MainView extends JFrame {
 
         SelectButton.setBackground(new java.awt.Color(204, 255, 204));
         SelectButton.setText("Seleccionar");
-        SelectButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                SelectButtonActionPerformed(evt);
-            }
-        });
 
         DO0.setText("DO0");
 
@@ -164,59 +106,59 @@ public class MainView extends JFrame {
 
         jLabel4.setText("ms");
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout signalPanelLayout = new javax.swing.GroupLayout(signalPanel);
+        signalPanel.setLayout(signalPanelLayout);
+        signalPanelLayout.setHorizontalGroup(
+            signalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(signalPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(signalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(signalPanelLayout.createSequentialGroup()
+                        .addGroup(signalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(signalD, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGroup(signalPanelLayout.createSequentialGroup()
                                 .addGap(21, 21, 21)
                                 .addComponent(comboSignalA, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGroup(signalPanelLayout.createSequentialGroup()
                                 .addGap(13, 13, 13)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(signalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(signalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                         .addComponent(jLabel3)
                                         .addComponent(comboSignalD, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addGroup(signalPanelLayout.createSequentialGroup()
                                         .addComponent(DO2)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(DO3))
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addGroup(signalPanelLayout.createSequentialGroup()
                                         .addComponent(DO0)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(DO1)))))
                         .addGap(0, 24, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, signalPanelLayout.createSequentialGroup()
                         .addGap(19, 19, 19)
                         .addComponent(sampleRateTextField)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(12, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, signalPanelLayout.createSequentialGroup()
+                .addContainerGap(13, Short.MAX_VALUE)
+                .addGroup(signalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel2)
                     .addComponent(SelectButton))
                 .addGap(17, 17, 17))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(signalPanelLayout.createSequentialGroup()
+                .addGroup(signalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(signalPanelLayout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(signalA))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGroup(signalPanelLayout.createSequentialGroup()
                         .addGap(30, 30, 30)
                         .addComponent(jLabel1)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+        signalPanelLayout.setVerticalGroup(
+            signalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, signalPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -230,7 +172,7 @@ public class MainView extends JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(signalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(sampleRateTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4))
                 .addGap(12, 12, 12)
@@ -238,11 +180,11 @@ public class MainView extends JFrame {
                 .addGap(35, 35, 35)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(signalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(DO0, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(DO1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(signalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(DO2, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(DO3, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(39, Short.MAX_VALUE))
@@ -252,7 +194,7 @@ public class MainView extends JFrame {
         lineChartPanel.setLayout(lineChartPanelLayout);
         lineChartPanelLayout.setHorizontalGroup(
             lineChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 547, Short.MAX_VALUE)
+            .addGap(0, 549, Short.MAX_VALUE)
         );
         lineChartPanelLayout.setVerticalGroup(
             lineChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -265,7 +207,7 @@ public class MainView extends JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(signalPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(lineChartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
@@ -275,126 +217,13 @@ public class MainView extends JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(signalPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lineChartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void SelectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SelectButtonActionPerformed
-        data.clear();
-        LabAPI api = DatabaseController.getAPI();
-        
-        timeMues = (int) getSampleRate();  
-        
-        System.out.println("Tiempo de Muestreo: " + timeMues);  // Imprime el valor
-        
-        lineChartPanel.removeAll();   // 2. Elimina todos los componentes del lineChartPanel
-        lineChartPanel.add(newChart); // 3. Añade la nueva instancia de LineChartP a lineChartPanel
-        lineChartPanel.revalidate();  // 4. Revalida el lineChartPanel para que se tenga en cuenta cualquier cambio en la estructura de componentes.
-        lineChartPanel.repaint();
-        lineChartPanel.setLayout(new BorderLayout());
-        lineChartPanel.add(newChart, BorderLayout.CENTER);
-
-        if(signalA.isSelected()){
-           System.out.println("Señal seleccionada: "+ selectedAnSignal);
-           tittleChart = selectedAnSignal;
-                   
-        }
-        else if(signalD.isSelected()){
-            System.out.println("Señal seleccionada: "+ selectedDgSignal);
-            tittleChart = selectedDgSignal;
-        }
-        else{
-            JOptionPane.showMessageDialog(
-                    null, 
-                    "Error:  Seleccione una señal", 
-                    "Señal Error", 
-                    JOptionPane.ERROR_MESSAGE
-            );
-        }
-        
-        if (api == null){
-            System.out.println("API IS NULL!!!");           
-            return;
-        }
-        int_proceso proceso = api.proceso.getProcess(3);
-        proceso.setSampleTime(timeMues);
-        api.proceso.updateProcess(proceso);
-        System.out.println(proceso.toString());
-        
-        int_proceso_vars vars = api.procesoVars.getProcessVar(tittleChart);
-        System.out.println(vars.toString());
-        
-        api.procesoVars.updateProcessVar(vars);
-        
-        List<int_proceso_vars_data> varsData = api.procesoVarsData.getVarDataForProcess(vars.getId());
-        
-        for (int_proceso_vars_data data : varsData) {
-            System.out.println(data.toString());   
-        }
-        
-       
-//        serialController.sendText("T"+timeMues+","+tittleChart);
-        System.out.println("T"+timeMues+","+tittleChart);
-//        
-//        if(primero){
-//            grafica.remove(0);
-//
-//            plotRunnable = () -> {
-//                if(serialController.newAnalogData || serialController.newDigitalByte){
-//                    
-//                    data.addTime(t);
-//                    
-//                    if(tittleChart.charAt(0)=='A'){
-//                        System.out.println("PLOT");
-//                        data.addSignal((double)serialController.readAnalog);
-//                        grafica.add(t ,(double)serialController.readAnalog);
-//                        
-//                        
-//                    }
-//                    
-//                    else if(tittleChart.charAt(0)=='D'){
-//                        data.addSignal((double)serialController.readDigital);
-//                        grafica.add(t ,(double)serialController.readDigital);
-//                    }
-//                    
-//                    if (grafica.getItemCount() > NUM_VALUES) {
-//                        grafica.remove(0);
-//                    }
-//                    newChart.updateDataset(tittleChart, dataset);
-//                    
-//                    lineChartPanel.repaint();
-//                    
-//                    t += timeMues;
-//                    System.out.println(t);
-//                    
-//                    if(tittleChart.charAt(0)=='A'){
-//                        serialController.newAnalogData = false;
-//                    } else if(tittleChart.charAt(0)=='D'){
-//                        serialController.newDigitalByte = false;
-//                    }
-//                    
-//                }
-//            };
-//            scheduler.scheduleAtFixedRate(plotRunnable, 0, 200, TimeUnit.MILLISECONDS);
-//            primero = false;
-//        }
-        
-        
-        //try {
-          //  PrintPlainText.saveToPlainText("seno", 0,newChart.getDataset());
-          //  PrintPlainText.saveToPlainText("coseno", 1,newChart.getDataset());
-        //} catch (IOException ex) {
-          //  Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
-        //}
-    }//GEN-LAST:event_SelectButtonActionPerformed
-
-    private void comboSignalDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboSignalDActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_comboSignalDActionPerformed
 
     /**
      * @param args the command line arguments
@@ -413,27 +242,14 @@ public class MainView extends JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel lineChartPanel;
     private javax.swing.JTextField sampleRateTextField;
     private javax.swing.ButtonGroup seleccionSenal;
     private javax.swing.JRadioButton signalA;
     private javax.swing.JRadioButton signalD;
+    private javax.swing.JPanel signalPanel;
     // End of variables declaration//GEN-END:variables
-    
-    
-    private double getSampleRate() {
-        String timeS = sampleRateTextField.getText();
-        double tiempoMues = 0.0;
-        try {
-            tiempoMues = Double.parseDouble(timeS);
-            
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "Error: '" + timeS+ "' no es un número válido.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-        return tiempoMues;
-    }
-
+   
     public JToggleButton getDO0() {
         return DO0;
     }
@@ -477,12 +293,14 @@ public class MainView extends JFrame {
     public JRadioButton getSignalD() {
         return signalD;
     }
-    
-    public void setSelectedAnSignal(String selectedAnSignal){
-        this.selectedAnSignal = selectedAnSignal;
+   
+    public JPanel getLineChartPanel() {
+        return lineChartPanel;
+    }
+
+    public void setLineChartPanel(JPanel lineChartPanel) {
+        this.lineChartPanel = lineChartPanel;
     }
     
-    public void setSelectedDgSignal(String selectedDgSignal){
-        this.selectedDgSignal = selectedDgSignal;
-    }
+    
 }

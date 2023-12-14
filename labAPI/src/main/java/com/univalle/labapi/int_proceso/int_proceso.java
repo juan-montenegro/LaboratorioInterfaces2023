@@ -218,17 +218,20 @@ public class int_proceso {
     public void setArchivo_manual(Blob archivo_manual) {
         this.archivo_manual = archivo_manual;
     }
+
     @Override
-    public String toString(){
-        return "int_proceso("
-                + this.idpk + ","
-                + this.int_proceso_tipo_id_fk + ","
-                + this.nombre +"," 
-                + this.descripcion +","
-                + this.tiempo_muestreo +","
-                + this.archivo_especificaciones.toString() +","
-                + this.archivo_manual.toString() 
-                + ")";
+    public String toString() {
+        return "int_proceso{" 
+                + "idpk=" + idpk 
+                + ", int_proceso_tipo_id_fk=" + int_proceso_tipo_id_fk 
+                + ", nombre=" + nombre 
+                + ", descripcion=" + descripcion 
+                + ", tiempo_muestreo=" + tiempo_muestreo 
+                + ", archivo_especificaciones=" + archivo_especificaciones 
+                + ", archivo_manual=" + archivo_manual 
+                + '}';
     }
+    
+    
 }
 

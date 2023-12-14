@@ -3,10 +3,16 @@
  */
 
 package com.univalle.guiInterfacesLab2023;
+import com.univalle.guiInterfacesLab2023.controller.DatabaseController;
 import com.univalle.guiInterfacesLab2023.view.LoginView;
 import com.univalle.guiInterfacesLab2023.view.MainView;
+import com.univalle.labapi.int_proceso_refs.int_proceso_refs;
+import com.univalle.labapi.int_proceso_vars.int_proceso_vars;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.time.LocalTime;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  *
@@ -52,6 +58,27 @@ public class MainApp {
             mainFrame.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {
+                    int_proceso_vars vars = DatabaseController.getAPI().procesoVars.getProcessVars(true);
+                    List<int_proceso_refs> refs = DatabaseController.getAPI().procesoRefs.getNamesFlags(true);
+                    if (refs != null) {
+                        for (int_proceso_refs next : refs) {
+                            next.setFlag(false);
+                            int res = DatabaseController.getAPI().procesoRefs.updateProcessRef(next);
+                            if (res > 0) {                            
+                                System.out.println(refs.toString());
+                            }
+                        }   
+                    }
+                    if (vars != null) {
+                        vars.setFlag(Boolean.FALSE);
+                        int res = DatabaseController.getAPI().procesoVars.updateProcessVar(vars);
+                        if (res > 0) {                            
+                            System.out.println(vars.toString());
+                        }
+                    }
+                    DatabaseController.getAPI()
+                        .usuariosProcesos
+                        .updateHoraFin(LocalTime.now());
                     System.exit(0);
                 }
             });
