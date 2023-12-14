@@ -78,9 +78,12 @@ public class LinkInterfacesLab2023 {
         
         while (flagCicloPrincipal != 1 && regisUsuarioProceso != null && horaInicio!=horaFin && horaInicio != null && horaFin !=null){
             
+            //USUARIOS_PROCESOS
             regisUsuarioProceso = labApi.usuariosProcesos.getLastRecord();
             horaFin = regisUsuarioProceso.getEndTime();
             
+            //PROCESO_VARS
+            processVar = labApi.procesoVars.getProcessVars(true);
              //LECTURA DE LA TABLA PROCESOS_VARS
             if (processVar != null) {
                señalSelected = processVar.getName(); 
@@ -91,7 +94,9 @@ public class LinkInterfacesLab2023 {
                iDseñalSelected = 0;
             }
             señalTemp = señalSelected;
-
+            
+            //PROCESO_REFS
+            procesoRef = labApi.procesoRefs.getNamesFlags(true);
              //LECTURA DE LA TABLA PROCESOS_REFS
             if (!procesoRef.isEmpty()){
                 for(int i = 0; i < procesoRef.size(); i++){
@@ -121,6 +126,7 @@ public class LinkInterfacesLab2023 {
                 //ENVIAR SEÑALES DE SALIDA
                 if (stateDo0 != prevStateDo0){
                     arduino.enviarTexto("DO0"+stateDo0);
+                    //REGISTRO PROCESO_REFS_DATA
                     labApi.procesoRefsData.insertRefData(4, stateDo0, t, Date.valueOf(hoy), Time.valueOf(LocalTime.now()));
                     prevStateDo0 = stateDo0;
                 }
@@ -140,10 +146,12 @@ public class LinkInterfacesLab2023 {
                     prevStateDo3 = stateDo3;
                 }
 
-                //ENVIAR SEÑALES DE ENTRADA
-                if(señalTemp != señalSelected){ t = 0;}
+                
+                //COMPROBAR SI SE CAMBIO LA SEÑAL SELECCIONADA
+                if(señalTemp == null ? señalSelected != null : !señalTemp.equals(señalSelected)){ t = 0;}
                 señalTemp = señalSelected;
 
+                //ENVIAR SEÑALES DE ENTRADA
                 if(señalSelected.charAt(0)=='A' || señalSelected.charAt(0)=='D'){
                     
                     arduino.enviarTexto("T"+timeMues+","+señalSelected);
@@ -151,6 +159,7 @@ public class LinkInterfacesLab2023 {
                     if(arduino.newAnalogData || arduino.newDigitalByte){
                         if (señalSelected.charAt(0)=='A'){
                             valorAmp = (double)arduino.readAnalog;
+                            //REGISTRO PROCESO_VARS_DATA
                             int insertSeñal = labApi.procesoVarsData.insertVarData(iDseñalSelected, valorAmp, t, Date.valueOf(hoy), Time.valueOf(LocalTime.now()));    
                         }
                         else if (señalSelected.charAt(0)=='D'){
@@ -195,6 +204,7 @@ public class LinkInterfacesLab2023 {
                 System.out.println(señalSelected); 
                 System.out.println(iDseñalSelected);
                 
+                //VERIFICAR SI EL USUARIO SE SALIO DE LA SESION
                 regisUsuarioProceso = labApi.usuariosProcesos.getLastRecord();
                 horaFin = regisUsuarioProceso.getEndTime();
                 
