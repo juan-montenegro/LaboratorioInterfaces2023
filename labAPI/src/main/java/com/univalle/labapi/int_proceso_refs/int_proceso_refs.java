@@ -6,7 +6,9 @@ package com.univalle.labapi.int_proceso_refs;
 
 /**
  *
- * @author juane
+ * @author Juan Esteban Montenegro
+ * @author Juan Camilo Chavez
+ * @author Juan David Beltran
  */
 public class int_proceso_refs {
     /**
@@ -159,7 +161,7 @@ public class int_proceso_refs {
         return max_2;
     }
 
-     /**
+    /**
      * Establece el valor máximo para ciertos parámetros del proceso.
      *
      * @param max El nuevo valor máximo.
@@ -168,7 +170,7 @@ public class int_proceso_refs {
         this.max_2 = max;
     }
 
-     /**
+    /**
      * Obtiene el valor mínimo para ciertos parámetros del proceso.
      *
      * @return El valor mínimo.

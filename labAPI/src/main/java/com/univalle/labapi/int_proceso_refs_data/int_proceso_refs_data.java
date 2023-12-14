@@ -21,7 +21,7 @@ public class int_proceso_refs_data {
     private Date fecha;
     private Time hora;
 
-   /**
+    /**
      * Constructor para crear una instancia de int_proceso_refs_data con valores específicos.
      *
      * @param processRefId ID de la referencia del proceso.
@@ -45,7 +45,6 @@ public class int_proceso_refs_data {
      *
      * @return El ID de la instancia.
      */
-    
     public int getId() {
         return idpk;
     }
@@ -66,28 +65,24 @@ public class int_proceso_refs_data {
      *
      * @return El ID de la referencia del proceso.
      */
-    
     public int getProcessRefId() {
         return int_proceso_refs_id_fk;
     }
 
-       /**
+    /**
      * Establece el ID de la referencia del proceso.
      *
      * @param processRefId El nuevo ID para la referencia del proceso.
      */
-    
     public void getProcessVarId(int processRefId) {
         this.int_proceso_refs_id_fk = processRefId;
     }
 
-   /**
+    /**
      * Obtiene el valor asociado a la referencia del proceso.
      *
      * @return El valor de la referencia del proceso.
      */
-    
-    
     public double getValue() {
         return valor;
     }
@@ -97,8 +92,6 @@ public class int_proceso_refs_data {
      *
      * @param value El nuevo valor para la referencia del proceso.
      */
-    
-    
     public void setValue(double value) {
         this.valor = value;
     }
@@ -108,8 +101,6 @@ public class int_proceso_refs_data {
      *
      * @return El tiempo de la referencia del proceso.
      */
-    
-    
     public double getTime() {
         return tiempo;
     }
@@ -119,35 +110,33 @@ public class int_proceso_refs_data {
      *
      * @param time El nuevo tiempo para la referencia del proceso.
      */
-    
     public void setTime(double time) {
         this.tiempo = time;
     }
+    
     /**
      * Obtiene la fecha de registro de los datos.
      *
      * @return La fecha de registro.
      */
-    
     public Date getDate() {
         return fecha;
     }
+    
     /**
      * Establece la fecha de registro de los datos.
      *
      * @param date La nueva fecha de registro.
      */
-    
     public void setDate(Date date) {
         this.fecha = date;
     }
 
-     /**
+    /**
      * Obtiene la hora de registro de los datos.
      *
      * @return La hora de registro.
      */
-    
     public Time getClockTime() {
         return hora;
     }
@@ -157,7 +146,6 @@ public class int_proceso_refs_data {
      *
      * @param time La nueva hora de registro.
      */
-    
     public void setClockTime(Time time) {
         this.hora = time;
     }

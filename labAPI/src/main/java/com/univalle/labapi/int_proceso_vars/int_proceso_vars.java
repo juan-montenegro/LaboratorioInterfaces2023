@@ -8,7 +8,6 @@ package com.univalle.labapi.int_proceso_vars;
  * Representa las variables asociadas a un proceso en el sistema.
  * Incluye detalles como el nombre, descripción, valores máximo y mínimo, y un indicador de estado.
  */
-
 public class int_proceso_vars {
     
     private int idpk;

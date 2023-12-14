@@ -20,7 +20,6 @@ import java.util.logging.Logger;
  * Implementación del DAO (Data Access Object) para la entidad int_proceso_vars_data.
  * Proporciona métodos para interactuar con la base de datos en relación con los datos de las variables de procesos.
  */
-
 public class int_proceso_vars_dataDAOImpl implements int_proceso_vars_dataDAO {
     // Constantes para las columnas y consultas SQL.
     private static final String ID = "id";
@@ -63,7 +62,6 @@ public class int_proceso_vars_dataDAOImpl implements int_proceso_vars_dataDAO {
      *
      * @param connection La conexión a la base de datos.
      */
-    
     public int_proceso_vars_dataDAOImpl(Connection connection) {
         this.connection = connection;
         this.processVarsData = new ArrayList<>();

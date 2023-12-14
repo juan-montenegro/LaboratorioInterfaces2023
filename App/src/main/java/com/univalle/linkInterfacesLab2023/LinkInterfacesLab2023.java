@@ -76,120 +76,29 @@ public class LinkInterfacesLab2023 {
             horaFin = regisUsuarioProceso.getEndTime();
         }
         
-        while (flagCicloPrincipal != 1 && regisUsuarioProceso != null && horaInicio!=horaFin && horaInicio != null && horaFin !=null){
-            
-            //USUARIOS_PROCESOS
-            regisUsuarioProceso = labApi.usuariosProcesos.getLastRecord();
-            horaFin = regisUsuarioProceso.getEndTime();
-            
-            //PROCESO_VARS
-            processVar = labApi.procesoVars.getProcessVars(true);
-             //LECTURA DE LA TABLA PROCESOS_VARS
-            if (processVar != null) {
-               señalSelected = processVar.getName(); 
-               iDseñalSelected = processVar.getId();
-               timeMues = proceso.getSampleTime();
-            }else {
-               señalSelected = "No hay registros con flag=true";
-               iDseñalSelected = 0;
-            }
-            señalTemp = señalSelected;
-            
-            //PROCESO_REFS
-            procesoRef = labApi.procesoRefs.getNamesFlags(true);
-             //LECTURA DE LA TABLA PROCESOS_REFS
-            if (!procesoRef.isEmpty()){
-                for(int i = 0; i < procesoRef.size(); i++){
-                    salidasDigitales.add(procesoRef.get(i).toString());
-                }
-                // Ahora, establecer los estados en base a la presencia de los nombres en la lista salidasDigitales
-                stateDo0 = salidasDigitales.contains("DO0") ? 1 : 0;
-                stateDo1 = salidasDigitales.contains("DO1") ? 1 : 0;
-                stateDo2 = salidasDigitales.contains("DO2") ? 1 : 0;
-                stateDo3 = salidasDigitales.contains("DO3") ? 1 : 0;    
+        try{
+            while (flagCicloPrincipal != 1 && regisUsuarioProceso != null && horaInicio!=horaFin && horaInicio != null && horaFin !=null){
 
-                //ENVIAR SEÑALES DE SALIDA
-                arduino.enviarTexto("DO0"+stateDo0);
-                arduino.enviarTexto("DO1"+stateDo1);
-                arduino.enviarTexto("DO2"+stateDo2);
-                arduino.enviarTexto("DO3"+stateDo3);
+                //USUARIOS_PROCESOS
+                regisUsuarioProceso = labApi.usuariosProcesos.getLastRecord();
+                horaFin = regisUsuarioProceso.getEndTime();
 
-                prevStateDo0 = stateDo0;
-                prevStateDo1 = stateDo1;
-                prevStateDo2 = stateDo2;
-                prevStateDo3 = stateDo3;
-            }
-
-            while(horaInicio == horaFin){
-
-
-                //ENVIAR SEÑALES DE SALIDA
-                if (stateDo0 != prevStateDo0){
-                    arduino.enviarTexto("DO0"+stateDo0);
-                    //REGISTRO PROCESO_REFS_DATA
-                    labApi.procesoRefsData.insertRefData(4, stateDo0, t, Date.valueOf(hoy), Time.valueOf(LocalTime.now()));
-                    prevStateDo0 = stateDo0;
-                }
-                if (stateDo1 != prevStateDo1){
-                    arduino.enviarTexto("DO1"+stateDo1);
-                    labApi.procesoRefsData.insertRefData(5, stateDo1, t, Date.valueOf(hoy), Time.valueOf(LocalTime.now()));
-                    prevStateDo1 = stateDo1;
-                }
-                if (stateDo2 != prevStateDo2){
-                    arduino.enviarTexto("DO2"+stateDo2);
-                    labApi.procesoRefsData.insertRefData(6, stateDo2, t, Date.valueOf(hoy), Time.valueOf(LocalTime.now()));
-                    prevStateDo2 = stateDo2;
-                }
-                if (stateDo3 != prevStateDo3){
-                    arduino.enviarTexto("DO3"+stateDo3);
-                    labApi.procesoRefsData.insertRefData(7, stateDo3, t, Date.valueOf(hoy), Time.valueOf(LocalTime.now()));
-                    prevStateDo3 = stateDo3;
-                }
-
-                
-                //COMPROBAR SI SE CAMBIO LA SEÑAL SELECCIONADA
-                if(señalTemp == null ? señalSelected != null : !señalTemp.equals(señalSelected)){ t = 0;}
-                señalTemp = señalSelected;
-
-                //ENVIAR SEÑALES DE ENTRADA
-                if(señalSelected.charAt(0)=='A' || señalSelected.charAt(0)=='D'){
-                    
-                    arduino.enviarTexto("T"+timeMues+","+señalSelected);
-                    
-                    if(arduino.newAnalogData || arduino.newDigitalByte){
-                        if (señalSelected.charAt(0)=='A'){
-                            valorAmp = (double)arduino.readAnalog;
-                            //REGISTRO PROCESO_VARS_DATA
-                            int insertSeñal = labApi.procesoVarsData.insertVarData(iDseñalSelected, valorAmp, t, Date.valueOf(hoy), Time.valueOf(LocalTime.now()));    
-                        }
-                        else if (señalSelected.charAt(0)=='D'){
-                            valorAmp = (double)arduino.readDigital;
-                            int insertSeñal = labApi.procesoVarsData.insertVarData(iDseñalSelected, valorAmp, t, Date.valueOf(hoy), Time.valueOf(LocalTime.now()));    
-                        }
-
-                        t += timeMues;
-
-                        if(señalSelected.charAt(0)=='A'){
-                            arduino.newAnalogData = false;
-                        } else if(señalSelected.charAt(0)=='D'){
-                            arduino.newDigitalByte = false;
-                        }
-                    }
-                }
-                
-                //VUELVE A LEER LA BASE DE DATOS POR SI HAY UN CAMBIO TANTO EN LAS SALIDAS DIGI Y LAS ENTRADAS A/D
+                //PROCESO_VARS
                 processVar = labApi.procesoVars.getProcessVars(true);
+                 //LECTURA DE LA TABLA PROCESOS_VARS
                 if (processVar != null) {
                    señalSelected = processVar.getName(); 
                    iDseñalSelected = processVar.getId();
                    timeMues = proceso.getSampleTime();
-                   ahora = LocalTime.now();
                 }else {
                    señalSelected = "No hay registros con flag=true";
                    iDseñalSelected = 0;
                 }
+                señalTemp = señalSelected;
 
+                //PROCESO_REFS
                 procesoRef = labApi.procesoRefs.getNamesFlags(true);
+                 //LECTURA DE LA TABLA PROCESOS_REFS
                 if (!procesoRef.isEmpty()){
                     for(int i = 0; i < procesoRef.size(); i++){
                         salidasDigitales.add(procesoRef.get(i).toString());
@@ -198,23 +107,122 @@ public class LinkInterfacesLab2023 {
                     stateDo0 = salidasDigitales.contains("DO0") ? 1 : 0;
                     stateDo1 = salidasDigitales.contains("DO1") ? 1 : 0;
                     stateDo2 = salidasDigitales.contains("DO2") ? 1 : 0;
-                    stateDo3 = salidasDigitales.contains("DO3") ? 1 : 0;           
+                    stateDo3 = salidasDigitales.contains("DO3") ? 1 : 0;    
+
+                    //ENVIAR SEÑALES DE SALIDA
+                    arduino.enviarTexto("DO0"+stateDo0);
+                    arduino.enviarTexto("DO1"+stateDo1);
+                    arduino.enviarTexto("DO2"+stateDo2);
+                    arduino.enviarTexto("DO3"+stateDo3);
+
+                    prevStateDo0 = stateDo0;
+                    prevStateDo1 = stateDo1;
+                    prevStateDo2 = stateDo2;
+                    prevStateDo3 = stateDo3;
                 }
 
-                System.out.println(señalSelected); 
-                System.out.println(iDseñalSelected);
-                
-                //VERIFICAR SI EL USUARIO SE SALIO DE LA SESION
-                regisUsuarioProceso = labApi.usuariosProcesos.getLastRecord();
-                horaFin = regisUsuarioProceso.getEndTime();
-                
-                if(horaInicio != horaFin){
-                    flagCicloPrincipal = 1;
-                }
+                while(horaInicio == horaFin){
 
+
+                    //ENVIAR SEÑALES DE SALIDA
+                    if (stateDo0 != prevStateDo0){
+                        arduino.enviarTexto("DO0"+stateDo0);
+                        //REGISTRO PROCESO_REFS_DATA
+                        labApi.procesoRefsData.insertRefData(4, stateDo0, t, Date.valueOf(hoy), Time.valueOf(LocalTime.now()));
+                        prevStateDo0 = stateDo0;
+                    }
+                    if (stateDo1 != prevStateDo1){
+                        arduino.enviarTexto("DO1"+stateDo1);
+                        labApi.procesoRefsData.insertRefData(5, stateDo1, t, Date.valueOf(hoy), Time.valueOf(LocalTime.now()));
+                        prevStateDo1 = stateDo1;
+                    }
+                    if (stateDo2 != prevStateDo2){
+                        arduino.enviarTexto("DO2"+stateDo2);
+                        labApi.procesoRefsData.insertRefData(6, stateDo2, t, Date.valueOf(hoy), Time.valueOf(LocalTime.now()));
+                        prevStateDo2 = stateDo2;
+                    }
+                    if (stateDo3 != prevStateDo3){
+                        arduino.enviarTexto("DO3"+stateDo3);
+                        labApi.procesoRefsData.insertRefData(7, stateDo3, t, Date.valueOf(hoy), Time.valueOf(LocalTime.now()));
+                        prevStateDo3 = stateDo3;
+                    }
+
+
+                    //COMPROBAR SI SE CAMBIO LA SEÑAL SELECCIONADA
+                    if(señalTemp == null ? señalSelected != null : !señalTemp.equals(señalSelected)){ t = 0;}
+                    señalTemp = señalSelected;
+
+                    //ENVIAR SEÑALES DE ENTRADA
+                    if(señalSelected.charAt(0)=='A' || señalSelected.charAt(0)=='D'){
+
+                        arduino.enviarTexto("T"+timeMues+","+señalSelected);
+
+                        if(arduino.newAnalogData || arduino.newDigitalByte){
+                            if (señalSelected.charAt(0)=='A'){
+                                valorAmp = (double)arduino.readAnalog;
+                                //REGISTRO PROCESO_VARS_DATA
+                                int insertSeñal = labApi.procesoVarsData.insertVarData(iDseñalSelected, valorAmp, t, Date.valueOf(hoy), Time.valueOf(LocalTime.now()));    
+                            }
+                            else if (señalSelected.charAt(0)=='D'){
+                                valorAmp = (double)arduino.readDigital;
+                                int insertSeñal = labApi.procesoVarsData.insertVarData(iDseñalSelected, valorAmp, t, Date.valueOf(hoy), Time.valueOf(LocalTime.now()));    
+                            }
+
+                            t += timeMues;
+
+                            if(señalSelected.charAt(0)=='A'){
+                                arduino.newAnalogData = false;
+                            } else if(señalSelected.charAt(0)=='D'){
+                                arduino.newDigitalByte = false;
+                            }
+                        }
+                    }
+
+                    //VUELVE A LEER LA BASE DE DATOS POR SI HAY UN CAMBIO TANTO EN LAS SALIDAS DIGI Y LAS ENTRADAS A/D
+                    processVar = labApi.procesoVars.getProcessVars(true);
+                    if (processVar != null) {
+                       señalSelected = processVar.getName(); 
+                       iDseñalSelected = processVar.getId();
+                       timeMues = proceso.getSampleTime();
+                       ahora = LocalTime.now();
+                    }else {
+                       señalSelected = "No hay registros con flag=true";
+                       iDseñalSelected = 0;
+                    }
+
+                    procesoRef = labApi.procesoRefs.getNamesFlags(true);
+                    if (!procesoRef.isEmpty()){
+                        for(int i = 0; i < procesoRef.size(); i++){
+                            salidasDigitales.add(procesoRef.get(i).toString());
+                        }
+                        // Ahora, establecer los estados en base a la presencia de los nombres en la lista salidasDigitales
+                        stateDo0 = salidasDigitales.contains("DO0") ? 1 : 0;
+                        stateDo1 = salidasDigitales.contains("DO1") ? 1 : 0;
+                        stateDo2 = salidasDigitales.contains("DO2") ? 1 : 0;
+                        stateDo3 = salidasDigitales.contains("DO3") ? 1 : 0;           
+                    }
+
+                    System.out.println(señalSelected); 
+                    System.out.println(iDseñalSelected);
+
+                    //VERIFICAR SI EL USUARIO SE SALIO DE LA SESION
+                    regisUsuarioProceso = labApi.usuariosProcesos.getLastRecord();
+                    horaFin = regisUsuarioProceso.getEndTime();
+
+                    if(horaInicio != horaFin){
+                        flagCicloPrincipal = 1;
+                    }
+
+                }
             }
         }
-            
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        // Closing...
+        finally{
+            labApi.database.closeConnection();
+        }
         
         
         //java.awt.EventQueue.invokeLater(() -> {  

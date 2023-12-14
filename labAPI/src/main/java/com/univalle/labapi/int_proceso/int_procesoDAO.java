@@ -8,27 +8,21 @@ import java.sql.Blob;
 
 /**
  *
- * @author juane
+ * @author Juan Esteban Montenegro
+ * @author Juan Camilo Chavez
+ * @author Juan David Beltran
  */
 public interface int_procesoDAO {
-
-//    /**
-//     *
-//     * @return
-//     */
-//    public List<int_proceso> getAllProcess();
 
     /**
      *
      * @param idProcess
-     * @return
      */
     public int_proceso getProcess(int idProcess);
 
     /**
      *
      * @param name
-     * @return
      */
     public int_proceso getProcess(String name);
 
@@ -38,7 +32,6 @@ public interface int_procesoDAO {
      * @param description
      * @param sampleTime
      * @param processTypeId
-     * @return
      */
     public int insertProcess(int processTypeId, String name, String description,
             double sampleTime, Blob textFile, Blob manualFile);
@@ -46,21 +39,18 @@ public interface int_procesoDAO {
     /**
      *
      * @param process2Update
-     * @return
      */
     public int updateProcess(int_proceso process2Update);
 
     /**
      *
      * @param processDB
-     * @return
      */
     public int deleteProcess(int_proceso processDB);
 
     /**
      *
      * @param userID
-     * @return
      */
     public int deleteProcess(int userID);
 }
