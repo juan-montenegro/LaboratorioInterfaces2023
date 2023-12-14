@@ -9,8 +9,8 @@ import java.sql.Time;
 
 
 /**
- *
- * @author juane
+ * Representa los datos asociados a una variable de proceso en el sistema.
+ * Incluye detalles como valor, tiempo, fecha y hora de registro.
  */
 public class int_proceso_vars_data {
     private int idpk;
@@ -20,13 +20,14 @@ public class int_proceso_vars_data {
     private Date fecha;
     private Time hora;
 
-    /**
+   /**
+     * Constructor para crear una instancia de int_proceso_vars_data con valores específicos.
      *
-     * @param processVarId
-     * @param value
-     * @param time
-     * @param date
-     * @param uploadTime
+     * @param processVarId ID de la variable de proceso.
+     * @param value        Valor asociado a la variable de proceso.
+     * @param time         Tiempo asociado a la variable de proceso.
+     * @param date         Fecha de registro de los datos.
+     * @param uploadTime   Hora de registro de los datos.
      */
     public int_proceso_vars_data(int processVarId, double value, 
             double time, Date date, Time uploadTime) {   
@@ -38,96 +39,111 @@ public class int_proceso_vars_data {
     }
 
     /**
+     * Obtiene el ID de la instancia de int_proceso_vars_data.
      *
-     * @return
+     * @return El ID de la instancia.
      */
+    
     public int getId() {
         return idpk;
     }
 
     /**
+     * Establece el ID de la instancia de int_proceso_vars_data.
      *
-     * @param id
+     * @param id El nuevo ID para la instancia.
      */
     public void setId(int id) {
         this.idpk = id;
     }
 
     /**
+     * Obtiene el ID de la variable de proceso asociada.
      *
-     * @return
+     * @return El ID de la variable de proceso.
      */
     public int getProcessVarId() {
         return int_proceso_vars_id_fk;
     }
 
-    /**
+   /**
+     * Establece el ID de la variable de proceso asociada.
      *
-     * @param processVarId
+     * @param processVarId El nuevo ID para la variable de proceso.
      */
     public void getProcessVarId(int processVarId) {
         this.int_proceso_vars_id_fk = processVarId;
     }
 
-    /**
+     /**
+     * Obtiene el valor asociado a la variable de proceso.
      *
-     * @return
+     * @return El valor de la variable de proceso.
      */
     public double getValue() {
         return valor;
     }
 
+  
     /**
+     * Establece el valor asociado a la variable de proceso.
      *
-     * @param value
+     * @param value El nuevo valor para la variable de proceso.
      */
     public void setValue(double value) {
         this.valor = value;
     }
 
-    /**
+   /**
+     * Obtiene el tiempo asociado a la variable de proceso.
      *
-     * @return
+     * @return El tiempo de la variable de proceso.
      */
     public double getTime() {
         return tiempo;
     }
 
-    /**
+       /**
+     * Establece el tiempo asociado a la variable de proceso.
      *
-     * @param time
+     * @param time El nuevo tiempo para la variable de proceso.
      */
+    
     public void setTime(double time) {
         this.tiempo = time;
     }
-
     /**
+     * Obtiene la fecha de registro de los datos.
      *
-     * @return
+     * @return La fecha de registro.
      */
+
     public Date getDate() {
         return fecha;
     }
-
     /**
+     * Establece la fecha de registro de los datos.
      *
-     * @param date
+     * @param date La nueva fecha de registro.
      */
+
     public void setDate(Date date) {
         this.fecha = date;
     }
-
     /**
+     * Obtiene la hora de registro de los datos.
      *
-     * @return
+     * @return La hora de registro.
      */
+
     public Time getClockTime() {
         return hora;
     }
 
     /**
+     * Establece la hora de registro de los datos.
      *
-     * @param time
+     * @param time La nueva hora de registro.
      */
     public void setClockTime(Time time) {
         this.hora = time;

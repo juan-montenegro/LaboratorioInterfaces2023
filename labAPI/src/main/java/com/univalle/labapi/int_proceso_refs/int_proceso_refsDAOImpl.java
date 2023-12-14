@@ -15,6 +15,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
+/**
+ * Implementación del DAO (Data Access Object) para la entidad int_proceso_refs.
+ * Proporciona métodos para interactuar con la base de datos respecto a las referencias de procesos.
+ */
+
 public class int_proceso_refsDAOImpl implements int_proceso_refsDAO {
     private static final String ID = "id";
     private static final String INT_PROCESO_ID = "int_proceso_id";
@@ -23,6 +28,8 @@ public class int_proceso_refsDAOImpl implements int_proceso_refsDAO {
     private static final String MAX_2 = "max_2";
     private static final String MIN = "min";
     private static final String FLAG = "flag";
+    
+    // Consultas SQL predefinidas.
     
     private static final String GET_ALL_PROCESS_REFS 
             = "SELECT id, int_proceso_id, nombre, descripcion, max_2, min, flag "
@@ -55,14 +62,18 @@ public class int_proceso_refsDAOImpl implements int_proceso_refsDAO {
     private final List<int_proceso_refs> procesosRefs;
     private final List<int_proceso_refs> procesoRefsFlag;
     
-    /**
+   /**
+     * Constructor para inicializar la conexión a la base de datos y las listas de referencias de procesos.
      *
-     * @param connection
+     * @param connection La conexión a la base de datos.
      */
+    
     public int_proceso_refsDAOImpl(Connection connection) {
         this.connection = connection;
         this.procesosRefs = new ArrayList<>();
         this.procesoRefsFlag = new ArrayList<>();
+        
+        // Inicialización y carga de referencias de procesos existentes.
         
         try {
             PreparedStatement statement = this.connection
@@ -84,7 +95,11 @@ public class int_proceso_refsDAOImpl implements int_proceso_refsDAO {
                     .log(Level.SEVERE, null, ex);
         }        
     }
-    
+    /**
+ * Obtiene una lista de todas las referencias de procesos.
+ * 
+ * @return Una lista de objetos int_proceso_refs que representan todas las referencias de procesos.
+ */
     
     @Override
     public List<int_proceso_refs> getAllProcessRefs() {
@@ -112,6 +127,12 @@ public class int_proceso_refsDAOImpl implements int_proceso_refsDAO {
         return this.procesosRefs;
     }
 
+    /**
+ * Obtiene una referencia de proceso específica por su ID.
+ * 
+ * @param refId El ID de la referencia del proceso.
+ * @return Un objeto int_proceso_refs que representa la referencia del proceso con el ID especificado.
+ */
     @Override
     public int_proceso_refs getProcessRef(int refId) {
         int_proceso_refs processRef = null;
@@ -139,7 +160,12 @@ public class int_proceso_refsDAOImpl implements int_proceso_refsDAO {
         }
         return processRef;        
     }
-
+/**
+ * Obtiene una referencia de proceso específica por su nombre.
+ * 
+ * @param name El nombre de la referencia del proceso.
+ * @return Un objeto int_proceso_refs que representa la referencia del proceso con el nombre especificado.
+ */
     @Override
     public int_proceso_refs getProcessRef(String name) {
         int_proceso_refs processRef = null;
@@ -167,7 +193,16 @@ public class int_proceso_refsDAOImpl implements int_proceso_refsDAO {
         }
         return processRef;
     }
-
+/**
+ * Inserta una nueva referencia de proceso en la base de datos.
+ * 
+ * @param processId El ID del proceso.
+ * @param name El nombre de la referencia del proceso.
+ * @param description La descripción de la referencia del proceso.
+ * @param max Valor máximo asociado a la referencia del proceso.
+ * @param min Valor mínimo asociado a la referencia del proceso.
+ * @return El número de filas afectadas por la operación.
+ */
     @Override
     public int insertProcessRef(int processId, String name, 
             String description, double max, double min) {
@@ -201,7 +236,12 @@ public class int_proceso_refsDAOImpl implements int_proceso_refsDAO {
         return resRows;
         
     }
-
+/**
+ * Actualiza una referencia de proceso existente en la base de datos.
+ * 
+ * @param processRef Objeto int_proceso_refs que representa la referencia del proceso a actualizar.
+ * @return El número de filas afectadas por la operación.
+ */
     @Override
     public int updateProcessRef(int_proceso_refs processRef) {
         int resRows = 0;
@@ -224,7 +264,12 @@ public class int_proceso_refsDAOImpl implements int_proceso_refsDAO {
         }
         return resRows;
     }
-
+/**
+ * Elimina una referencia de proceso específica de la base de datos.
+ * 
+ * @param processRef Objeto int_proceso_refs que representa la referencia del proceso a eliminar.
+ * @return El número de filas afectadas por la operación.
+ */
     @Override
     public int deleteProcessRef(int_proceso_refs processRef) {
         int resRows = 0;
@@ -245,7 +290,12 @@ public class int_proceso_refsDAOImpl implements int_proceso_refsDAO {
         
         return resRows;
     }
-
+/**
+ * Elimina una referencia de proceso específica de la base de datos por su ID.
+ * 
+ * @param refId El ID de la referencia del proceso a eliminar.
+ * @return El número de filas afectadas por la operación.
+ */
     @Override
     public int deleteProcessRef(int refId) {
         int resRows = 0;
@@ -274,7 +324,12 @@ public class int_proceso_refsDAOImpl implements int_proceso_refsDAO {
         
         return resRows;
     }
-
+/**
+ * Obtiene una lista de referencias de proceso filtrada por un indicador booleano.
+ * 
+ * @param flag El indicador booleano para filtrar las referencias de proceso.
+ * @return Una lista de objetos int_proceso_refs que cumplen con el criterio de filtro.
+ */
     @Override
     public List<int_proceso_refs> getNamesFlags(boolean flag) {
      
