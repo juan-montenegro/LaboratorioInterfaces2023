@@ -10,41 +10,42 @@ package com.univalle.labapi.int_proceso_refs;
  */
 public class int_proceso_refs {
     /**
-     * Field id, primary key.
+     * Identificador único del registro, clave primaria.
      */
     private int idpk;
     /**
-     * 
+     * Identificador del proceso asociado, clave foránea.
      */
     private int int_proceso_id_fk;
     /**
-     * 
+     * Nombre del proceso.
      */
     private String nombre;
     /**
-     * 
+     * Descripción del proceso.
      */
     private String descripcion;
     /**
-     * 
+     * Valor máximo permitido para ciertos parámetros del proceso.
      */
     private double max_2;
     /**
-     * 
+     * Valor mínimo permitido para ciertos parámetros del proceso.
      */
     private double min;
-    /**
-     * 
+     /**
+     * Indicador de estado o condición (generalmente usado como un booleano).
      */
     private boolean flag;
 
     /**
+     * Constructor para crear una referencia de proceso con valores iniciales.
      *
-     * @param processId
-     * @param name
-     * @param description
-     * @param max
-     * @param min
+     * @param processId    Identificador del proceso.
+     * @param name         Nombre del proceso.
+     * @param description  Descripción del proceso.
+     * @param max          Valor máximo para parámetros del proceso.
+     * @param min          Valor mínimo para parámetros del proceso.
      */
     public int_proceso_refs(int processId, String name, 
             String description, double max, double min) {    
@@ -57,13 +58,14 @@ public class int_proceso_refs {
     }
     
     /**
+     * Constructor completo para crear una referencia de proceso.
      *
-     * @param processId
-     * @param name
-     * @param description
-     * @param max
-     * @param min
-     * @param flag
+     * @param processId    Identificador del proceso.
+     * @param name         Nombre del proceso.
+     * @param description  Descripción del proceso.
+     * @param max          Valor máximo para parámetros del proceso.
+     * @param min          Valor mínimo para parámetros del proceso.
+     * @param flag         Indicador de estado o condición.
      */
     public int_proceso_refs(int processId, String name, 
             String description, double max, double min, boolean  flag) {    
@@ -76,112 +78,127 @@ public class int_proceso_refs {
     }
 
     /**
+     * Obtiene el identificador único del registro.
      *
-     * @return
+     * @return El identificador único.
      */
     public int getId() {
         return idpk;
     }
 
+
     /**
+     * Establece el identificador único del registro.
      *
-     * @param id
+     * @param id El nuevo identificador único.
      */
     public void setId(int id) {
         this.idpk = id;
     }
 
-    /**
+     /**
+     * Obtiene el identificador del proceso asociado.
      *
-     * @return
+     * @return El identificador del proceso.
      */
     public int getProcessId() {
         return int_proceso_id_fk;
     }
 
     /**
+     * Establece el identificador del proceso asociado.
      *
-     * @param processId
+     * @param processId El nuevo identificador del proceso.
      */
     public void setProcessId(int processId) {
         this.int_proceso_id_fk = processId;
     }
 
     /**
+     * Obtiene el nombre del proceso.
      *
-     * @return
+     * @return El nombre del proceso.
      */
     public String getName() {
         return nombre;
     }
 
-    /**
+      /**
+     * Obtiene la descripción del proceso.
      *
-     * @param name
+     * @return La descripción del proceso.
      */
     public void setName(String name) {
         this.nombre = name;
     }
 
     /**
+     * Establece la descripción del proceso.
      *
-     * @return
+     * @param description La nueva descripción del proceso.
      */
     public String getDescription() {
         return descripcion;
     }
 
     /**
+     * Establece la descripción del proceso.
      *
-     * @param description
+     * @param description La nueva descripción del proceso.
      */
     public void setDescription(String description) {
         this.descripcion = description;
     }
 
     /**
+     * Obtiene el valor máximo para ciertos parámetros del proceso.
      *
-     * @return
+     * @return El valor máximo.
      */
     public double getMax() {
         return max_2;
     }
 
-    /**
+     /**
+     * Establece el valor máximo para ciertos parámetros del proceso.
      *
-     * @param max
+     * @param max El nuevo valor máximo.
      */
     public void setMax(double max) {
         this.max_2 = max;
     }
 
-    /**
+     /**
+     * Obtiene el valor mínimo para ciertos parámetros del proceso.
      *
-     * @return
+     * @return El valor mínimo.
      */
     public double getMin() {
         return min;
     }
-
+    
     /**
+     * Establece el valor mínimo para ciertos parámetros del proceso.
      *
-     * @param min
+     * @param min El nuevo valor mínimo.
      */
     public void setMin(double min) {
         this.min = min;
     }
 
     /**
+     * Verifica si el indicador de estado o condición está activo.
      *
-     * @return
+     * @return El estado del indicador.
      */
     public boolean isFlag() {
         return this.flag;
     }
 
     /**
+     * Establece el indicador de estado o condición.
      *
-     * @param flag
+     * @param flag El nuevo estado del indicador.
      */
     public void setFlag(boolean flag) {
         this.flag = flag;

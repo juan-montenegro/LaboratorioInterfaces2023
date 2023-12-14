@@ -14,8 +14,13 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Implementación del DAO (Data Access Object) para la entidad int_proceso_vars.
+ * Proporciona métodos para interactuar con la base de datos en relación con las variables de procesos.
+ */
 
 public class int_proceso_varsDAOImpl implements int_proceso_varsDAO {
+    // Constantes para las columnas y consultas SQL.
     private static final String ID = "id";
     private static final String INT_PROCESO_ID = "int_proceso_id";
     private static final String NOMBRE = "nombre";
@@ -24,6 +29,7 @@ public class int_proceso_varsDAOImpl implements int_proceso_varsDAO {
     private static final String MIN = "min";
     private static final String FLAG = "flag";
     
+    // Consultas SQL predefinidas. 
     private static final String GET_ALL_PROCESS_VARS 
             = "SELECT id, int_proceso_id, nombre, descripcion, max_2, min, flag "
             + "FROM int_proceso_vars";
@@ -50,14 +56,16 @@ public class int_proceso_varsDAOImpl implements int_proceso_varsDAO {
     private Connection connection = null;
     private final List<int_proceso_vars> procesosVars;
     
-    /**
+      /**
+     * Constructor que inicializa la conexión a la base de datos y carga las variables de proceso existentes.
      *
-     * @param connection
+     * @param connection La conexión a la base de datos.
      */
+    
     public int_proceso_varsDAOImpl(Connection connection) {
         this.connection = connection;
         this.procesosVars = new ArrayList<>();
-        
+        // Carga inicial de las variables de proceso.
         try {
             PreparedStatement statement = this.connection
                     .prepareStatement(GET_ALL_PROCESS_VARS);
@@ -78,7 +86,12 @@ public class int_proceso_varsDAOImpl implements int_proceso_varsDAO {
                     .log(Level.SEVERE, null, ex);
         }        
     }
-    
+    /**
+ * Obtiene una lista de todos los objetos int_proceso_vars desde la base de datos.
+ * Borra la lista existente de variables de proceso y la llena con los datos recuperados.
+ *
+ * @return Una lista de todos los objetos int_proceso_vars.
+ */
     
     @Override
     public List<int_proceso_vars> getAllProcessVars() {
@@ -105,7 +118,12 @@ public class int_proceso_varsDAOImpl implements int_proceso_varsDAO {
         }
         return this.procesosVars;
     }
-
+/**
+ * Obtiene un objeto int_proceso_vars específico por su ID desde la base de datos.
+ *
+ * @param varId El ID del objeto int_proceso_vars que se desea obtener.
+ * @return El objeto int_proceso_vars con el ID especificado, o null si no se encuentra.
+ */
     @Override
     public int_proceso_vars getProcessVar(int varId) {
         int_proceso_vars processVar = null;
@@ -132,7 +150,12 @@ public class int_proceso_varsDAOImpl implements int_proceso_varsDAO {
         }
         return processVar;        
     }
-
+/**
+ * Obtiene un objeto int_proceso_vars específico por su nombre desde la base de datos.
+ *
+ * @param name El nombre del objeto int_proceso_vars que se desea obtener.
+ * @return El objeto int_proceso_vars con el nombre especificado, o null si no se encuentra.
+ */
     @Override
     public int_proceso_vars getProcessVar(String name) {
         int_proceso_vars processVar = null;
@@ -160,7 +183,16 @@ public class int_proceso_varsDAOImpl implements int_proceso_varsDAO {
         }
         return processVar;
     }
-
+/**
+ * Inserta un nuevo objeto int_proceso_vars en la base de datos y lo agrega a la lista interna.
+ *
+ * @param processId    El ID del proceso al que se relacionará el objeto int_proceso_vars.
+ * @param name         El nombre del objeto int_proceso_vars.
+ * @param description  La descripción del objeto int_proceso_vars.
+ * @param max          El valor máximo del objeto int_proceso_vars.
+ * @param min          El valor mínimo del objeto int_proceso_vars.
+ * @return El número de filas afectadas en la base de datos (debería ser 1 si la inserción tiene éxito).
+ */
     @Override
     public int insertProcessVar(int processId, String name, 
             String description, double max, double min) {
@@ -194,7 +226,12 @@ public class int_proceso_varsDAOImpl implements int_proceso_varsDAO {
         return resRows;
         
     }
-
+/**
+ * Actualiza un objeto int_proceso_vars existente en la base de datos y en la lista interna.
+ *
+ * @param processVar El objeto int_proceso_vars que se desea actualizar.
+ * @return El número de filas afectadas en la base de datos (debería ser 1 si la actualización tiene éxito).
+ */
     @Override
     public int updateProcessVar(int_proceso_vars processVar) {
         int resRows = 0;
@@ -217,7 +254,12 @@ public class int_proceso_varsDAOImpl implements int_proceso_varsDAO {
         }
         return resRows;
     }
-
+/**
+ * Elimina un objeto int_proceso_vars existente de la base de datos y lo elimina de la lista interna.
+ *
+ * @param processVar El objeto int_proceso_vars que se desea eliminar.
+ * @return El número de filas afectadas en la base de datos (debería ser 1 si la eliminación tiene éxito).
+ */
     @Override
     public int deleteProcessVar(int_proceso_vars processVar) {
         int resRows = 0;
@@ -238,7 +280,12 @@ public class int_proceso_varsDAOImpl implements int_proceso_varsDAO {
         
         return resRows;
     }
-
+/**
+ * Elimina un objeto int_proceso_vars por su ID de la base de datos y lo elimina de la lista interna.
+ *
+ * @param varId El ID del objeto int_proceso_vars que se desea eliminar.
+ * @return El número de filas afectadas en la base de datos (debería ser 1 si la eliminación tiene éxito).
+ */
     @Override
     public int deleteProcessVar(int varId) {
         int resRows = 0;
@@ -267,7 +314,12 @@ public class int_proceso_varsDAOImpl implements int_proceso_varsDAO {
         
         return resRows;
     }
-
+/**
+ * Obtiene un objeto int_proceso_vars con una bandera específica desde la base de datos.
+ *
+ * @param flag La bandera que se utiliza para buscar el objeto int_proceso_vars.
+ * @return El objeto int_proceso_vars con la bandera especificada, o null si no se encuentra.
+ */
     @Override
     public int_proceso_vars getProcessVars(boolean flag) {
         int_proceso_vars processVar = null;

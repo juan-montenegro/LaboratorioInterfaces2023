@@ -16,8 +16,13 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Implementación del DAO (Data Access Object) para la entidad int_proceso_vars_data.
+ * Proporciona métodos para interactuar con la base de datos en relación con los datos de las variables de procesos.
+ */
 
 public class int_proceso_vars_dataDAOImpl implements int_proceso_vars_dataDAO {
+    // Constantes para las columnas y consultas SQL.
     private static final String ID = "id";
     private static final String INT_PROCESO_VARS_ID = "int_proceso_vars_id";
     private static final String VALOR = "valor";
@@ -25,9 +30,7 @@ public class int_proceso_vars_dataDAOImpl implements int_proceso_vars_dataDAO {
     private static final String FECHA = "fecha";
     private static final String HORA = "hora";
     
-//    private static final String GET_ALL_PROCESS_VARS_DATA 
-//            = "SELECT id, int_proceso_vars_id, valor, tiempo, fecha, hora "
-//            + "FROM int_proceso_vars_data";
+    // Consultas SQL predefinidas.
     private static final String GET_PROCESS_VARS_DATA_A
             = "SELECT id, int_proceso_vars_id, valor, tiempo, fecha, hora "
             + "FROM int_proceso_vars_data "
@@ -50,11 +53,25 @@ public class int_proceso_vars_dataDAOImpl implements int_proceso_vars_dataDAO {
     private Connection connection = null;
     private final List<int_proceso_vars_data> processVarsData;
 
+    
+    /**
+     * Constructor que inicializa la conexión a la base de datos y la lista de datos de variables de proceso.
+     *
+     * @param connection La conexión a la base de datos.
+     */
+    
     public int_proceso_vars_dataDAOImpl(Connection connection) {
         this.connection = connection;
         this.processVarsData = new ArrayList<>();
     }
+    
 
+    /**
+ * Obtiene una lista de todos los datos de variables de proceso relacionados con un proceso específico desde la base de datos.
+ *
+ * @param processId El ID del proceso para el cual se desean los datos de las variables de proceso.
+ * @return Una lista de objetos int_proceso_vars_data relacionados con el proceso especificado.
+ */
     @Override
     public List<int_proceso_vars_data> getAllVarDataForProcess(int processId) {
         try {
@@ -79,7 +96,12 @@ public class int_proceso_vars_dataDAOImpl implements int_proceso_vars_dataDAO {
         }
         return this.processVarsData;
     }
-
+/**
+ * Obtiene un objeto int_proceso_vars_data específico relacionado con un proceso específico desde la base de datos.
+ *
+ * @param processId El ID del proceso para el cual se desea el dato de variable de proceso.
+ * @return El objeto int_proceso_vars_data relacionado con el proceso y su ID, o null si no se encuentra.
+ */
     @Override
     public int_proceso_vars_data getVarDataForProcess(int processId) {
         int_proceso_vars_data processVar = null;
@@ -106,7 +128,12 @@ public class int_proceso_vars_dataDAOImpl implements int_proceso_vars_dataDAO {
         }
         return processVar;
     }
-
+/**
+ * Obtiene un objeto int_proceso_vars_data específico por su ID desde la base de datos.
+ *
+ * @param id El ID del objeto int_proceso_vars_data que se desea obtener.
+ * @return El objeto int_proceso_vars_data con el ID especificado, o null si no se encuentra.
+ */
     @Override
     public int_proceso_vars_data getVarDataForId(int id) {
         int_proceso_vars_data processVar = null;
@@ -133,7 +160,16 @@ public class int_proceso_vars_dataDAOImpl implements int_proceso_vars_dataDAO {
         }
         return processVar;
     }
-
+/**
+ * Inserta nuevos datos de variable de proceso en la base de datos y los agrega a la lista interna.
+ *
+ * @param processVarId El ID de la variable de proceso a la que se relacionarán los datos.
+ * @param value        El valor de la variable de proceso.
+ * @param time         El tiempo relacionado con la variable de proceso.
+ * @param date         La fecha relacionada con la variable de proceso.
+ * @param uploadTime   La hora de carga relacionada con la variable de proceso.
+ * @return El número de filas afectadas en la base de datos (debería ser 1 si la inserción tiene éxito).
+ */
     @Override
     public int insertVarData(int processVarId, double value, double time, 
             Date date, Time uploadTime) {
@@ -160,7 +196,12 @@ public class int_proceso_vars_dataDAOImpl implements int_proceso_vars_dataDAO {
         return resRows;
         
     }
-
+/**
+ * Actualiza un objeto int_proceso_vars_data existente en la base de datos y en la lista interna.
+ *
+ * @param varData El objeto int_proceso_vars_data que se desea actualizar.
+ * @return El número de filas afectadas en la base de datos (debería ser 1 si la actualización tiene éxito).
+ */
     @Override
     public int updateVarData(int_proceso_vars_data varData) {
         int resRows = 0;
@@ -183,6 +224,12 @@ public class int_proceso_vars_dataDAOImpl implements int_proceso_vars_dataDAO {
         return resRows;
     }
 
+/**
+ * Elimina un objeto int_proceso_vars_data existente de la base de datos y lo elimina de la lista interna.
+ *
+ * @param varData El objeto int_proceso_vars_data que se desea eliminar.
+ * @return El número de filas afectadas en la base de datos (debería ser 1 si la eliminación tiene éxito).
+ */
     @Override
     public int deleteVarData(int_proceso_vars_data varData) {
         int resRows = 0;
@@ -204,7 +251,12 @@ public class int_proceso_vars_dataDAOImpl implements int_proceso_vars_dataDAO {
         
         return resRows;
     }
-
+/**
+ * Elimina un objeto int_proceso_vars_data por su ID de la base de datos y lo elimina de la lista interna.
+ *
+ * @param id El ID del objeto int_proceso_vars_data que se desea eliminar.
+ * @return El número de filas afectadas en la base de datos (debería ser 1 si la eliminación tiene éxito).
+ */
     @Override
     public int deleteVarData(int id) {
         int resRows = 0;

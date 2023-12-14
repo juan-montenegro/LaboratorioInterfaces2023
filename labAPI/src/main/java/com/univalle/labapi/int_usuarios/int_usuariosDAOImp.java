@@ -7,29 +7,25 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * The int_usuariosDAOImp class implements the int_usuariosDAO interface in order to implement
- * all the methods to handle the int_usuarios table. 
- *  
- * @author Bladimir Bacca Cortes (bladimir.bacca@correounivalle.edu.co)
- * @version $Revision: 1.0 $
- *
+ * Implementa la interfaz int_usuariosDAO para implementar 
+ * todos los métodos para manejar la tabla int_usuarios.
  */
 public class int_usuariosDAOImp implements int_usuariosDAO {
 	
 	/**
-	 * List of all users in the int_usuarios table.
+	 * Lista de todos los usuarios en la tabla int_usuarios.
 	 */
 	private List<int_usuarios> Users;
 	/**
-	 * dbConn is an instance of the database connection.
+	 * Instancia de la conexión a la base de datos.
 	 */
 	private Connection dbConn = null; 	
 	
-	/**
-	 * Constructor of int_usuariosDAOImp class
-	 * 
-	 * @param dbConn Database connection.
-	 */
+    /**
+     * Constructor de la clase int_usuariosDAOImp
+     * 
+     * @param dbConn Conexión a la base de datos.
+     */
 	public int_usuariosDAOImp (Connection dbConn) {
 		this.Users = new ArrayList<>();
 		this.dbConn = dbConn;
@@ -53,13 +49,11 @@ public class int_usuariosDAOImp implements int_usuariosDAO {
 		}
 	}
 	
-	/**
-	 * This method gets an instance of int_usuarios class corresponding to a particular registry of the 
-	 * int_usuarios table.
-	 * 
-	 * @param idUser Id of the user to get from the int_usuarios table.
-         * @return 
-	 */
+    /** Obtiene un objeto int_usuarios por su ID desde la base de datos.
+     * 
+     * @param idUser El ID del usuario que se desea obtener.
+     * @return El objeto int_usuarios con el ID especificado, o null si no se encuentra.
+     */
         @Override
 	public int_usuarios getUser(int idUser) {
 		int_usuarios resUser = null;
@@ -83,14 +77,15 @@ public class int_usuariosDAOImp implements int_usuariosDAO {
 		return resUser;
 	}
 	
-	/**
-	 * This method gets an instance of int_usuarios class corresponding to a particular registry of the 
-	 * int_usuarios table using the names and last names.
-	 * 
-	 * @param names String with the names of the user to get from the int_usuarios table.
-	 * @param lastNames String with the last names of the user to get from the int_usuarios table.
-     * @return 
-	 */
+
+
+    /**
+     * Obtiene un objeto int_usuarios por sus nombres y apellidos desde la base de datos.
+     * 
+     * @param names      Los nombres del usuario.
+     * @param lastNames  Los apellidos del usuario.
+     * @return El objeto int_usuarios con los nombres y apellidos especificados, o null si no se encuentra.
+     */
         @Override
 	public int_usuarios getUser(String names, String lastNames)
 	{
@@ -117,11 +112,11 @@ public class int_usuariosDAOImp implements int_usuariosDAO {
 		return resUser;
 	}
 	
-	/**
-	 * This method gets an updated list of all users saved on the int_usuarios table.
-	 * 
-	 * @return List object with all users of int_usuarios table.
-	 */
+  /**
+     * Obtiene una lista de todos los usuarios desde la base de datos y actualiza la lista interna.
+     * 
+     * @return Una lista de todos los usuarios.
+     */
         @Override
 	public List<int_usuarios> getAllUsers()
 	{
@@ -151,16 +146,16 @@ public class int_usuariosDAOImp implements int_usuariosDAO {
 		return this.Users;
 	}
 	
-	/**
-	 * This method inserts a new user into the int_usuarios table.
-	 * 
-	 * @param name String object with the user name.
-	 * @param apellidos String object with the user last name.
-	 * @param email String object with the email of the user.
-	 * @param pwd String object with the password of the user.
-	 * @param int_usuarios_tipo_id Integer value corresponding to the user profile in the int_usuarios_tipo table.
-         * @return 
-	 */
+    /**
+     * Inserta un nuevo usuario en la base de datos y lo agrega a la lista interna.
+     * 
+     * @param name               El nombre del usuario.
+     * @param apellidos          Los apellidos del usuario.
+     * @param email              El correo electrónico del usuario.
+     * @param pwd                La contraseña del usuario.
+     * @param int_usuarios_tipo_id El ID del tipo de usuario.
+     * @return El número de filas afectadas en la base de datos (debería ser 1 si la inserción tiene éxito).
+     */
         @Override
 	public int insertUser(String name, String apellidos, String email, String pwd, int int_usuarios_tipo_id)
 	{
@@ -181,13 +176,12 @@ public class int_usuariosDAOImp implements int_usuariosDAO {
 		
 		return resRows;
 	}
-	
-	/**
-	 * This method updates a registry of int_usuarios table using an instance of int_usuarios class.
-	 * 
-	 * @param user2Update int_usuarios object where all information of the user is saved.
-         * @return 
-	 */
+ /**
+     * Actualiza un usuario existente en la base de datos y en la lista interna.
+     * 
+     * @param user2Update El objeto int_usuarios que se desea actualizar.
+     * @return El número de filas afectadas en la base de datos (debería ser 1 si la actualización tiene éxito).
+     */
         @Override
 	public int updateUser(int_usuarios user2Update)
 	{
@@ -227,12 +221,12 @@ public class int_usuariosDAOImp implements int_usuariosDAO {
 		return resRows;
 	}   
 	
-	/**
-	 * This method deletes a registry of int_usuarios table.
-	 * 
-	 * @param userDB int_usuarios object corresponding to the user to be deleted.
-         * @return 
-	 */
+    /**
+     * Elimina un usuario existente de la base de datos y lo elimina de la lista interna.
+     * 
+     * @param userDB El objeto int_usuarios que se desea eliminar.
+     * @return El número de filas afectadas en la base de datos (debería ser 1 si la eliminación tiene éxito).
+     */
         @Override
 	public int deleteUser(int_usuarios userDB)
 	{
@@ -254,12 +248,12 @@ public class int_usuariosDAOImp implements int_usuariosDAO {
 		return resRows;
 	}
 	
-	/**
-	 * This method deletes a registry of int_usuarios table.
-	 * 
-	 * @param userID ID of the corresponding to the user to be deleted.
-         * @return 
-	 */
+   /**
+     * Elimina un usuario por su ID de la base de datos y lo elimina de la lista interna.
+     * 
+     * @param userID El ID del usuario que se desea eliminar.
+     * @return El número de filas afectadas en la base de datos (debería ser 1 si la eliminación tiene éxito).
+     */
         @Override
 	public int deleteUser(int userID)
 	{

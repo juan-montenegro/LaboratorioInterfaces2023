@@ -10,48 +10,51 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 /**
- *
- * @author juane
+ * Representa una entidad de usuario en proceso, asociando un usuario con un proceso específico.
+ * Incluye información sobre la fecha, hora de inicio, hora de finalización y la cantidad de 'hits' realizados en el proceso.
  */
 public class int_usuarios_proceso {
     /**
-     * Field id, primary key.
+     * / Campo id, clave primaria.
      */
     private int idpk;
     /**
-     * Field int_usuarios_id, foreign key of table int_usuarios
+    / * Campo int_usuarios_id, clave foránea de la tabla int_usuarios.
      */
     private int int_usuarios_id_fk;
     /**
-     * Field int_proceso_id, foreign key of table int_proceso
-     */
+    / Campo int_proceso_id, clave foránea de la tabla int_proceso.
+    */
     private int int_proceso_id_fk;
     /**
-     * 
+     * Fecha del proceso.
      */
     private LocalDate fecha;
     /**
-     * 
+     * Hora de inicio del proceso.
      */
     private LocalTime hora_inicio;
     /**
-     * 
+     * Hora de finalización del proceso
      */
     private LocalTime hora_fin;
     /**
-     * 
+     * Cantidad de hits en el proceso.
      */
     private int hits;
 
     /**
+     * Constructor de int_usuarios_proceso.
+     * Inicializa una nueva instancia con los detalles especificados.
      *
-     * @param userId
-     * @param processId
-     * @param date
-     * @param tiempoIni
-     * @param tiempoFin
-     * @param hits
+     * @param userId Identificador del usuario asociado.
+     * @param processId Identificador del proceso asociado.
+     * @param date Fecha del proceso.
+     * @param tiempoIni Hora de inicio del proceso.
+     * @param tiempoFin Hora de finalización del proceso.
+     * @param hits Cantidad de 'hits' realizados en el proceso.
      */
+    
     public int_usuarios_proceso(int userId, int processId, Date date, Time tiempoIni, Time tiempoFin, int hits) {
         this.int_usuarios_id_fk = userId;
         this.int_proceso_id_fk = processId;

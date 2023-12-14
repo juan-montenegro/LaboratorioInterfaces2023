@@ -12,7 +12,10 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
+/**
+ * Implementación del DAO (Data Access Object) para la entidad int_proceso.
+ * Proporciona métodos para interactuar con la base de datos respecto a los procesos.
+ */
 public class int_procesoDAOImpl implements int_procesoDAO {
     private static final String ID = "id";
     private static final String INT_PROCESO_TIPO_ID = "int_proceso_tipo_id";
@@ -21,16 +24,13 @@ public class int_procesoDAOImpl implements int_procesoDAO {
     private static final String TIEMPO_MUESTREO = "tiempo_muestreo";
     private static final String ARCHIVO_ESPECIFICACIONES = "archivo_especificaciones";
     private static final String ARCHIVO_MANUAL = "archivo_manual";
-    
-//    private static final String GET_ALL_PROCESS_ 
-//            = "SELECT id, int_proceso_tipo_id, nombre, descripcion, tiempo_muestreo, archivo_especificacion, archivo_manual "
-//            + "FROM int_proceso";
+
     private static final String GET_PROCESS_A 
             = "SELECT id, int_proceso_tipo_id, nombre, descripcion, tiempo_muestreo, archivo_especificacion, archivo_manual "
             + "FROM int_proceso "
             + "WHERE id=?";    
     private static final String GET_PROCESS_B 
-            = "SELECT id, int_proceso_id, nombre, descripcion, max_2, min, flag "
+            = "SELECT id, int_proceso_tipo_id, nombre, descripcion, tiempo_muestreo, archivo_especificacion, archivo_manual "
             + "FROM int_proceso "
             + "WHERE nombre=?";
     private static final String INSERT_PROCESS
@@ -46,22 +46,29 @@ public class int_procesoDAOImpl implements int_procesoDAO {
     
     private Connection connection = null;
     private int_proceso currentProcess;
-
+    
+    /**
+     * Constructor para crear una instancia del DAO con una conexión a la base de datos.
+     *
+     * @param connection La conexión a la base de datos.
+     */
+    
     public int_procesoDAOImpl(Connection connection) {
         this.connection = connection;
         
     }
     
-    
-    
-
-//    @Override
-//    public List<int_proceso> getAllProcess() {
-//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-//    }
+/**
+     * Recupera un proceso por su identificador.
+     *
+     * @param id El identificador del proceso.
+     * @return El proceso si se encuentra, null en caso contrario.
+     */
 
     @Override
     public int_proceso getProcess(int id) {
+        // Implementación del método...
+        // Código para recuperar un proceso por su ID.
         int_proceso process = null;
         try {
             PreparedStatement statement = this.connection
@@ -84,9 +91,16 @@ public class int_procesoDAOImpl implements int_procesoDAO {
         }
         return process;  
     }
-
+    /**
+     * Recupera un proceso por su nombre.
+     *
+     * @param name El nombre del proceso.
+     * @return El proceso si se encuentra, null en caso contrario.
+     */
     @Override
     public int_proceso getProcess(String name) {
+        // Implementación del método...
+        // Código para recuperar un proceso por su nombre
         int_proceso process = null;
         try {
             PreparedStatement statement = this.connection
@@ -110,9 +124,23 @@ public class int_procesoDAOImpl implements int_procesoDAO {
         return process; 
     }
 
+        /**
+     * Inserta un nuevo proceso en la base de datos.
+     *
+     * @param processTypeId Identificador del tipo de proceso.
+     * @param name Nombre del proceso.
+     * @param description Descripción del proceso.
+     * @param sampleTime Tiempo de muestreo del proceso.
+     * @param textFile Archivo de especificaciones del proceso.
+     * @param manualFile Archivo manual del proceso.
+     * @return El número de filas afectadas.
+     */
+    
     @Override
     public int insertProcess(int processTypeId, String name, String description, 
             double sampleTime, Blob textFile, Blob manualFile) {
+        // Implementación del método...
+        // Código para insertar un nuevo proceso.
         int resRows = 0;
 
         try {
@@ -138,8 +166,16 @@ public class int_procesoDAOImpl implements int_procesoDAO {
         return resRows;
     }
 
+    /**
+     * Actualiza un proceso existente en la base de datos.
+     *
+     * @param process2Update El proceso con los datos actualizados.
+     * @return El número de filas afectadas.
+     */
     @Override
     public int updateProcess(int_proceso process2Update) {
+        // Implementación del método...
+        // Código para actualizar un proceso existente.
         int resRows = 0;
 
         try {
@@ -164,9 +200,16 @@ public class int_procesoDAOImpl implements int_procesoDAO {
         }
         return resRows;        
     }
-
+    /**
+     * Elimina un proceso de la base de datos por su objeto.
+     *
+     * @param processDB El proceso a eliminar.
+     * @return El número de filas afectadas.
+     */
     @Override
     public int deleteProcess(int_proceso processDB) {
+        // Implementación del método...
+        // Código para eliminar un proceso por su objeto.
         int resRows = 0;
 
         try {
@@ -184,8 +227,13 @@ public class int_procesoDAOImpl implements int_procesoDAO {
         }
         return resRows;  
     }
-
-    @Override
+    /**
+     * Elimina un proceso de la base de datos por su identificador de usuario.
+     *
+     * @param userID El identificador del usuario del proceso a eliminar.
+     * @return El número de filas afectadas.
+     */
+    @Override 
     public int deleteProcess(int userID) {
         int resRows = 0;
 
