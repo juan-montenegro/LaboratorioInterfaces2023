@@ -20,6 +20,9 @@ import java.util.logging.Logger;
 /**
  * Implementa las operaciones CRUD para la entidad int_usuarios_proceso en la base de datos.
  * Permite insertar, actualizar, borrar y consultar registros de procesos asociados a usuarios.
+ * @author Juan Camilo Chavez 
+ * @author Juan Esteban Montenegro
+ * @author Juan David Beltran
  */
 
 public class int_usuarios_procesoDAOImpl implements int_usuarios_procesoDAO {
@@ -35,6 +38,7 @@ public class int_usuarios_procesoDAOImpl implements int_usuarios_procesoDAO {
     private List <int_usuarios_proceso> procesosFecha; // Lista de procesos por fecha.
     private List <int_usuarios_proceso> usuariosFecha; // Lista de usuarios por fecha.
     private int hitsForDate = 0; // Total de hits en una fecha específica.
+    private int_usuarios_proceso lastRecordUsuariosProceso;
     
     /**
      * Constructor que inicializa la conexión a la base de datos y prepara las consultas.
@@ -298,6 +302,47 @@ public class int_usuarios_procesoDAOImpl implements int_usuarios_procesoDAO {
         }
         return result;
     }
+    
+    @Override
+    public int_usuarios_proceso getLastRecord() {
+        this.lastRecordUsuariosProceso = null;
+        int lastId = getLastRecordId();
+
+        if (lastId != -1) {
+            String query = "SELECT `int_proceso_id`, `int_usuarios_id`, `fecha`, `hora_inicio`, `hora_fin`,`hits`  FROM `int_usuarios_proceso` WHERE `id` = ?";
+
+            try (PreparedStatement pstmt = this.conectionDb.prepareStatement(query)) {
+                pstmt.setInt(1, lastId);
+
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    if (rs.next()) {
+                        int_usuarios_proceso registro = new int_usuarios_proceso(
+                            rs.getInt("int_proceso_id"),
+                            rs.getInt("int_usuarios_id"),
+                            rs.getDate("fecha"),
+                            rs.getTime("hora_inicio"),
+                            rs.getTime("hora_fin"),
+                            rs.getInt("hits")
+                        );
+                        
+                    registro.setProcessId(rs.getInt("int_proceso_id"));
+                    registro.setUserId(rs.getInt("int_usuarios_id"));
+                    registro.setDate(rs.getDate("fecha").toLocalDate());
+                    registro.setStartTime(rs.getTime("hora_inicio").toLocalTime());
+                    registro.setEndTime(rs.getTime("hora_fin").toLocalTime());
+                    
+                    this.lastRecordUsuariosProceso = registro;
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+              }
+            } else {
+            System.out.println("No hay registros.");
+            }
+
+        return this.lastRecordUsuariosProceso;
+    }
     /**
      * Elimina un registro de la base de datos por ID de usuario, ID de proceso, fecha y hora de inicio.
      * 
@@ -335,7 +380,7 @@ public class int_usuarios_procesoDAOImpl implements int_usuarios_procesoDAO {
      */
     @Override
     public int deleteRegistersOfUser(int usuarioId) {
-         int result = 0;
+        int result = 0;
         String queryDelete = "DELETE FROM `int_usuarios_proceso` WHERE `int_usuarios_id` = ?";
 
         try (PreparedStatement pstmt = this.conectionDb.prepareStatement(queryDelete)) {
