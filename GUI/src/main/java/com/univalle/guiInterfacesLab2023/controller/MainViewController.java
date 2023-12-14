@@ -133,24 +133,19 @@ public class MainViewController implements ActionListener, ItemListener  {
     }
     
     private void stateChanged(ItemEvent e, JToggleButton item){
-        int_proceso_refs_data refData = new int_proceso_refs_data(
-                0, 
-                0, 
-                0, 
-                Date.valueOf(LocalDate.now()), 
-                Time.valueOf(LocalTime.now())
-        );
+        int_proceso_refs refData;
         if(e.getStateChange() == ItemEvent.SELECTED){
             item.setBackground(ON_COLOR);
-            
-            refData.setValue(1);
-            refsController.updateRefData(refData);
+            refData = api.procesoRefs.getProcessRef(item.getText());
+            refData.setFlag(true);
+            api.procesoRefs.updateProcessRef(refData);
             System.out.println(item.getText()+"1");
             
         } else if (e.getStateChange() == ItemEvent.DESELECTED) {
             item.setBackground(OFF_COLOR);
-            refData.setValue(0);
-            refsController.updateRefData(refData);
+            refData = api.procesoRefs.getProcessRef(item.getText());
+            refData.setFlag(false);
+            api.procesoRefs.updateProcessRef(refData);
             System.out.println(item.getText()+"0");            
         }
         
@@ -213,7 +208,8 @@ public class MainViewController implements ActionListener, ItemListener  {
         System.out.println(vars.toString());
         
         api.procesoVars.updateProcessVar(vars);
-        
+        Date dateFlag = Date.valueOf(LocalDate.now());
+        Time timeFlag = Time.valueOf(LocalTime.now());
         
 //        for (int_proceso_vars_data data : varsData) {
 //            System.out.println(data.toString());   
@@ -221,31 +217,37 @@ public class MainViewController implements ActionListener, ItemListener  {
        
 //        serialController.sendText("T"+timeMues+","+tittleChart);
         System.out.println("T"+timeMues+","+tittleChart);
-        int_proceso_vars_dataDAOImpl vDAOImpl = DatabaseController.getAPI().procesoVarsData;
+        varsController = DatabaseController.getAPI().procesoVarsData;
         
         if(primero){
             grafica.remove(0);
 
             plotRunnable = () -> {
                 if(vars.isFlag()){
-                    int_proceso_vars_data varsData = api.procesoVarsData.getVarDataForId(vars.getId());
+                    int_proceso_vars_data varsData = varsController.getLastProcess();
+                    if (dateFlag.before(varsData.getDate()) & timeFlag.before(varsData.getClockTime())) {
+                        data.addTime(t);
+                    
+                        System.out.println("PLOT");
+                        data.addSignal(varsData.getValue());
+                        grafica.add(t ,varsData.getValue());
 
-                    data.addTime(t);
-                    
-                    System.out.println("PLOT");
-                    data.addSignal(varsData.getValue());
-                    grafica.add(t ,varsData.getValue());
-                    
-                    if (grafica.getItemCount() > NUM_VALUES) {
-                        grafica.remove(0);
+                        if (grafica.getItemCount() > NUM_VALUES) {
+                            grafica.remove(0);
+                        }
+                        newChart.updateDataset(tittleChart, dataset);
+
+                        lineChartPanel.repaint();
+
+                        t += timeMues;
+                        System.out.println(t);
+                    } 
+                } else{
+                    if (!data.getSignal().isEmpty()) {
+                        data.clear();
+                        grafica.clear();
+                        lineChartPanel.repaint();
                     }
-                    newChart.updateDataset(tittleChart, dataset);
-                    
-                    lineChartPanel.repaint();
-                    
-                    t += timeMues;
-                    System.out.println(t);
-                    
                 }
             };
             scheduler.scheduleAtFixedRate(plotRunnable, 0, 200, TimeUnit.MILLISECONDS);

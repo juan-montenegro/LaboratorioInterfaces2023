@@ -28,7 +28,6 @@ public class int_proceso_vars_dataDAOImpl implements int_proceso_vars_dataDAO {
     private static final String TIEMPO = "tiempo";
     private static final String FECHA = "fecha";
     private static final String HORA = "hora";
-    private static final String LAST_ID = "last_id";
     
     // Consultas SQL predefinidas.
     private static final String GET_PROCESS_VARS_DATA_A
@@ -50,8 +49,8 @@ public class int_proceso_vars_dataDAOImpl implements int_proceso_vars_dataDAO {
             = "DELETE FROM int_proceso_vars_data "
             + "WHERE id=?";
     
-    private static final String GET_MAX_ID
-            = "SELECT MAX(id) AS last_id FROM int_proceso_vars_data";
+    private static final String GET_LAST_PROCESS
+            = "SELECT * FROM int_proceso_vars_data ORDER BY Id DESC LIMIT 1";
     
     private Connection connection = null;
     private final List<int_proceso_vars_data> processVarsData;
@@ -163,6 +162,32 @@ public class int_proceso_vars_dataDAOImpl implements int_proceso_vars_dataDAO {
         }
         return processVar;
     }
+    
+    @Override
+    public int_proceso_vars_data getLastProcess() {
+        int_proceso_vars_data processVar = null;
+        try {
+            PreparedStatement statement = this.connection
+                    .prepareStatement(GET_LAST_PROCESS);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                processVar = new int_proceso_vars_data(
+                        rs.getInt(INT_PROCESO_VARS_ID), 
+                        rs.getDouble(VALOR),
+                        rs.getDouble(TIEMPO), 
+                        rs.getDate(FECHA),
+                        rs.getTime(HORA)
+                );
+                processVar.setId(rs.getInt(ID));
+                break;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(int_proceso_vars_dataDAOImpl.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        }
+        return processVar;
+    }
+    
     /**
      * Inserta nuevos datos de variable de proceso en la base de datos y los agrega a la lista interna.
      *
@@ -288,6 +313,5 @@ public class int_proceso_vars_dataDAOImpl implements int_proceso_vars_dataDAO {
         
         return resRows;
     }
-    
     
 }

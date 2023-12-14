@@ -45,7 +45,7 @@ public class int_proceso_refs_dataDAOImpl implements int_proceso_refs_dataDAO {
             + "SET int_proceso_refs_id=?, valor=?, tiempo=?, fecha=?, hora=?";
     private static final String UPDATE_PROCESS_REFS_DATA 
             = "UPDATE int_proceso_refs_data "
-            + "SET int_proceso_id=?, valor=?, tiempo=?, fecha=?, hora=? "
+            + "SET int_proceso_refs_id=?, valor=?, tiempo=?, fecha=?, hora=? "
             + "WHERE id=?";        
     private static final String DELETE_PROCESS_REFS_DATA 
             = "DELETE FROM int_proceso_refs_data "
@@ -93,6 +93,7 @@ public class int_proceso_refs_dataDAOImpl implements int_proceso_refs_dataDAO {
         }
         return this.processRefsData;
     }
+
     /**
      * Obtiene los datos de referencia de un proceso específico por su identificador.
      * 
@@ -125,6 +126,7 @@ public class int_proceso_refs_dataDAOImpl implements int_proceso_refs_dataDAO {
         }
         return processRef;
     }
+
     /**
      * Obtiene los datos de referencia de un proceso específico por su ID.
      * 
@@ -249,6 +251,7 @@ public class int_proceso_refs_dataDAOImpl implements int_proceso_refs_dataDAO {
         
         return resRows;
     }
+
     /**
      * Elimina los datos de referencia de un proceso específico por su ID.
      * 
