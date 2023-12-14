@@ -20,7 +20,7 @@ public class int_proceso_vars_data {
     private Date fecha;
     private Time hora;
 
-   /**
+    /**
      * Constructor para crear una instancia de int_proceso_vars_data con valores específicos.
      *
      * @param processVarId ID de la variable de proceso.
@@ -43,7 +43,6 @@ public class int_proceso_vars_data {
      *
      * @return El ID de la instancia.
      */
-    
     public int getId() {
         return idpk;
     }
@@ -66,7 +65,7 @@ public class int_proceso_vars_data {
         return int_proceso_vars_id_fk;
     }
 
-   /**
+    /**
      * Establece el ID de la variable de proceso asociada.
      *
      * @param processVarId El nuevo ID para la variable de proceso.
@@ -75,7 +74,7 @@ public class int_proceso_vars_data {
         this.int_proceso_vars_id_fk = processVarId;
     }
 
-     /**
+    /**
      * Obtiene el valor asociado a la variable de proceso.
      *
      * @return El valor de la variable de proceso.
@@ -94,7 +93,7 @@ public class int_proceso_vars_data {
         this.valor = value;
     }
 
-   /**
+    /**
      * Obtiene el tiempo asociado a la variable de proceso.
      *
      * @return El tiempo de la variable de proceso.
@@ -103,12 +102,11 @@ public class int_proceso_vars_data {
         return tiempo;
     }
 
-       /**
+    /**
      * Establece el tiempo asociado a la variable de proceso.
      *
      * @param time El nuevo tiempo para la variable de proceso.
      */
-    
     public void setTime(double time) {
         this.tiempo = time;
     }
@@ -117,7 +115,6 @@ public class int_proceso_vars_data {
      *
      * @return La fecha de registro.
      */
-
     public Date getDate() {
         return fecha;
     }
@@ -126,7 +123,6 @@ public class int_proceso_vars_data {
      *
      * @param date La nueva fecha de registro.
      */
-
     public void setDate(Date date) {
         this.fecha = date;
     }
@@ -135,7 +131,6 @@ public class int_proceso_vars_data {
      *
      * @return La hora de registro.
      */
-
     public Time getClockTime() {
         return hora;
     }

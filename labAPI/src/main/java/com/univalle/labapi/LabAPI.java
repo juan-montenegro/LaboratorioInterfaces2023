@@ -18,8 +18,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
- * @author juane
+ *Integra todas las implementaciones de las dao del LabApi
+ * @author Juan Esteban Montenegro
+ * @author Juan Camilo Chavez
+ * @author Juan David Beltran
  */
 public class LabAPI {
     public Database database;

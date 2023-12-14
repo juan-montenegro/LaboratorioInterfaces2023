@@ -11,26 +11,23 @@ import java.sql.Blob;
  * nombre, descripción, tiempo de muestreo y archivos asociados.
  * Es una entidad que se corresponde con una tabla en la base de datos.
  */
-
 public class int_proceso {
     
-/**
+    /**
      * Identificador único del proceso, clave primaria en la base de datos.
      */
     private int idpk;
     
-      /**
+    /**
      * Identificador del tipo de proceso, clave foránea de la tabla int_proceso_tipo.
      */
-    
     private int int_proceso_tipo_id_fk;
     
     /**
      * Nombre del proceso.
      */
-    
-    
     private String nombre;
+    
     /**
      * Descripción del proceso.
      */
@@ -39,7 +36,6 @@ public class int_proceso {
     /**
      * Archivo de especificaciones del proceso.
      */
-    
     private double tiempo_muestreo;
     
      /**
@@ -51,15 +47,14 @@ public class int_proceso {
     /**
      * Archivo del manual del proceso.
      */
-    
     private Blob archivo_manual;
-/**
+
+    /**
      * Constructor para crear una instancia de int_proceso con valores iniciales.
      *
      * @param processTypeId Identificador del tipo de proceso.
      * @param name          Nombre del proceso.
      */
-    
     public int_proceso(int processTypeId, String name) {
         this.int_proceso_tipo_id_fk = processTypeId;
         this.nombre = name;
@@ -70,7 +65,7 @@ public class int_proceso {
         
     }
     
-     /**
+    /**
      * Constructor para crear una instancia de int_proceso con todos los detalles.
      *
      * @param processTypeId        Identificador del tipo de proceso.
@@ -80,7 +75,6 @@ public class int_proceso {
      * @param textFile             Archivo de especificaciones del proceso.
      * @param manualFile           Archivo del manual del proceso.
      */
-    
     public int_proceso(int processTypeId, String name, String description, 
             double sampleTime, Blob textFile, Blob manualFile) {
         this.int_proceso_tipo_id_fk = processTypeId;
@@ -93,7 +87,7 @@ public class int_proceso {
     
     
 
-       /**
+    /**
      * Obtiene el identificador único del proceso.
      * 
      * @return El identificador único del proceso.

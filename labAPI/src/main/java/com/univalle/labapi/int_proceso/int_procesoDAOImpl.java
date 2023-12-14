@@ -56,7 +56,6 @@ public class int_procesoDAOImpl implements int_procesoDAO {
      *
      * @param connection La conexión a la base de datos.
      */
-    
     public int_procesoDAOImpl(Connection connection) {
         this.connection = connection;
         
@@ -154,7 +153,6 @@ public class int_procesoDAOImpl implements int_procesoDAO {
      * @param manualFile Archivo manual del proceso.
      * @return El número de filas afectadas.
      */
-    
     @Override
     public int insertProcess(int processTypeId, String name, String description, 
             double sampleTime, Blob textFile, Blob manualFile) {
@@ -275,8 +273,5 @@ public class int_procesoDAOImpl implements int_procesoDAO {
 
     public int_proceso getCurrentProcess() {
         return currentProcess;
-    }
-    
-    
-    
+    }    
 }

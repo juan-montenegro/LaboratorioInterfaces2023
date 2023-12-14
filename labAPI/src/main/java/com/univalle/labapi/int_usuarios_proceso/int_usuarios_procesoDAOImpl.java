@@ -106,7 +106,7 @@ public class int_usuarios_procesoDAOImpl implements int_usuarios_procesoDAO {
         }
         return this.procesos;
     }
-  /**
+    /**
      * Obtiene una lista de todos los registros de usuarios en un proceso específico desde la base de datos y actualiza la lista interna.
      * 
      * @param procesoId El ID del proceso para el cual se desean obtener los registros de usuarios.
@@ -190,7 +190,7 @@ public class int_usuarios_procesoDAOImpl implements int_usuarios_procesoDAO {
         }
         return this.usuariosFecha;
     }
-  /**
+    /**
      * Obtiene el total de hits para una fecha específica desde la base de datos.
      * 
      * @param fecha La fecha para la cual se desea obtener el total de hits.

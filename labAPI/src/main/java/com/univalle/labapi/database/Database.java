@@ -23,28 +23,25 @@ public class Database {
     private Connection connection = null;
     private final Properties props;
     
-  /**
+    /**
      * Constructor de la clase Database.
      * Inicializa las propiedades de conexión con el usuario y la contraseña proporcionados.
      * 
      * @param user     Nombre de usuario para la conexión a la base de datos.
      * @param password Contraseña para la conexión a la base de datos.
      */
-    
-    
     public Database(String user, String password) {
         props = new Properties();
         props.put("user", user);
         props.put("password", password);
     }
    
-        /**
+    /**
      * Inicializa la conexión a la base de datos.
      * Carga el driver de JDBC y establece la conexión con las propiedades definidas.
      * 
      * @throws SQLException Si ocurre un error al establecer la conexión con la base de datos.
      */
-    
     public void initConnection() throws SQLException {
         try {
             Class.forName(DRIVER);
@@ -57,19 +54,18 @@ public class Database {
 
     }
     
-        /**
+    /**
      * Cierra la conexión a la base de datos.
      * 
      * @throws SQLException Si ocurre un error al cerrar la conexión con la base de datos.
      */
-    
     public void closeConnection() throws SQLException {
         System.out.println("Closing database connection...");
         connection.close();
         System.out.println("Connection valid: " + connection.isValid(5));
     }
     
-       /**
+    /**
      * Comprueba si la conexión actual a la base de datos es válida.
      * 
      * @return true si la conexión es válida, false en caso contrario.
@@ -80,12 +76,11 @@ public class Database {
         return connection.isValid(5);
     }
     
-        /**
+    /**
      * Obtiene la conexión actual a la base de datos.
      * 
      * @return La conexión actual a la base de datos.
      */
-    
     public Connection getConnection(){
         return this.connection;
     }
