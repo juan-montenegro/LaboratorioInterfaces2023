@@ -30,6 +30,8 @@ public interface int_usuarios_procesoDAO {
         public int getLastRecordId();
         public int updateHoraFin(LocalTime hora_fin);
         
+        public int_usuarios_proceso getLastRecord();
+        
         public int deleteRegister(int usario, int proceso, LocalDate fecha,LocalTime hora_inicio);
         public int deleteRegistersOfUser(int usuario);
         public int deleteRegistersOfProcess(int proceso);
