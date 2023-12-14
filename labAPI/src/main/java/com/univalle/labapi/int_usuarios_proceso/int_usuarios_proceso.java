@@ -54,7 +54,6 @@ public class int_usuarios_proceso {
      * @param tiempoFin Hora de finalización del proceso.
      * @param hits Cantidad de 'hits' realizados en el proceso.
      */
-    
     public int_usuarios_proceso(int userId, int processId, Date date, Time tiempoIni, Time tiempoFin, int hits) {
         this.int_usuarios_id_fk = userId;
         this.int_proceso_id_fk = processId;

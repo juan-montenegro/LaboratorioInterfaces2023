@@ -10,7 +10,9 @@ import java.util.List;
 
 /**
  *
- * @author juane
+ * @author Juan Esteban Montenegro
+ * @author Juan Camilo Chavez
+ * @author Juan David Beltran
  */
 public interface int_proceso_vars_dataDAO {
     
