@@ -46,7 +46,7 @@ public class int_proceso_refs_dataDAOImpl implements int_proceso_refs_dataDAO {
             + "SET int_proceso_refs_id=?, valor=?, tiempo=?, fecha=?, hora=?";
     private static final String UPDATE_PROCESS_REFS_DATA 
             = "UPDATE int_proceso_refs_data "
-            + "SET int_proceso_id=?, valor=?, tiempo=?, fecha=?, hora=? "
+            + "SET int_proceso_refs_id=?, valor=?, tiempo=?, fecha=?, hora=? "
             + "WHERE id=?";        
     private static final String DELETE_PROCESS_REFS_DATA 
             = "DELETE FROM int_proceso_refs_data "
@@ -70,7 +70,7 @@ public class int_proceso_refs_dataDAOImpl implements int_proceso_refs_dataDAO {
  * 
  * @param processId El identificador del proceso para el cual se están buscando los datos de referencia.
  * @return Una lista de objetos int_proceso_refs_data que representan los datos de referencia para el proceso especificado.
- * @throws SQLException Si ocurre un error de SQL durante la ejecución de la consulta.
+ * throws SQLException Si ocurre un error de SQL durante la ejecución de la consulta.
  */
     @Override
     public List<int_proceso_refs_data> getAllRefDataForProcess(int processId) {
@@ -101,7 +101,7 @@ public class int_proceso_refs_dataDAOImpl implements int_proceso_refs_dataDAO {
  * 
  * @param processId El identificador del proceso.
  * @return Un objeto int_proceso_refs_data que representa los datos de referencia del proceso o null si no se encuentra.
- * @throws SQLException Si ocurre un error de SQL durante la ejecución de la consulta.
+ * throws SQLException Si ocurre un error de SQL durante la ejecución de la consulta.
  */
     @Override
     public int_proceso_refs_data getRefDataForProcess(int processId) {
@@ -134,7 +134,7 @@ public class int_proceso_refs_dataDAOImpl implements int_proceso_refs_dataDAO {
  * 
  * @param id El identificador de los datos de referencia del proceso.
  * @return Un objeto int_proceso_refs_data que representa los datos de referencia o null si no se encuentra.
- * @throws SQLException Si ocurre un error de SQL durante la ejecución de la consulta.
+ * throws SQLException Si ocurre un error de SQL durante la ejecución de la consulta.
  */
     @Override
     public int_proceso_refs_data getRefDataForId(int id) {
@@ -173,7 +173,7 @@ public class int_proceso_refs_dataDAOImpl implements int_proceso_refs_dataDAO {
  * @param date La fecha de los datos.
  * @param uploadTime La hora de los datos.
  * @return El número de filas afectadas por la operación.
- * @throws SQLException Si ocurre un error de SQL durante la ejecución de la consulta.
+ * throws SQLException Si ocurre un error de SQL durante la ejecución de la consulta.
  */
     @Override
     public int insertRefData(int processRefId, double value, double time, 
@@ -201,13 +201,13 @@ public class int_proceso_refs_dataDAOImpl implements int_proceso_refs_dataDAO {
         return resRows;
         
     }
-/**
- * Actualiza los datos de referencia de un proceso existente en la base de datos.
- * 
- * @param refData Los datos de referencia del proceso a actualizar.
- * @return El número de filas afectadas por la operación.
- * @throws SQLException Si ocurre un error de SQL durante la ejecución de la consulta.
- */
+    /**
+     * Actualiza los datos de referencia de un proceso existente en la base de datos.
+     * 
+     * @param refData Los datos de referencia del proceso a actualizar.
+     * @return El número de filas afectadas por la operación.
+     * throws SQLException Si ocurre un error de SQL durante la ejecución de la consulta.
+     */
     @Override
     public int updateRefData(int_proceso_refs_data refData) {
         int resRows = 0;
@@ -229,13 +229,13 @@ public class int_proceso_refs_dataDAOImpl implements int_proceso_refs_dataDAO {
         }
         return resRows;
     }
-/**
- * Elimina los datos de referencia de un proceso específico en la base de datos.
- * 
- * @param refData Los datos de referencia del proceso a eliminar.
- * @return El número de filas afectadas por la operación.
- * @throws SQLException Si ocurre un error de SQL durante la ejecución de la consulta.
- */
+    /**
+     * Elimina los datos de referencia de un proceso específico en la base de datos.
+     * 
+     * @param refData Los datos de referencia del proceso a eliminar.
+     * @return El número de filas afectadas por la operación.
+     * throws SQLException Si ocurre un error de SQL durante la ejecución de la consulta.
+     */
     @Override
     public int deleteRefData(int_proceso_refs_data refData) {
         int resRows = 0;
@@ -262,7 +262,7 @@ public class int_proceso_refs_dataDAOImpl implements int_proceso_refs_dataDAO {
  * 
  * @param id El identificador de los datos de referencia del proceso a eliminar.
  * @return El número de filas afectadas por la operación.
- * @throws SQLException Si ocurre un error de SQL durante la ejecución de la consulta.
+ * throws SQLException Si ocurre un error de SQL durante la ejecución de la consulta.
  */
     @Override
     public int deleteRefData(int id) {

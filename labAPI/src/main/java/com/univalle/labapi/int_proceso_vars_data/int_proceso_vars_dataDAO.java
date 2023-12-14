@@ -37,6 +37,13 @@ public interface int_proceso_vars_dataDAO {
     
     /**
      *
+     * @param Id
+     * @return
+     */
+    public int_proceso_vars_data getLastProcess();
+    
+    /**
+     *
      * @param processVarId
      * @param value
      * @param time

@@ -10,9 +10,12 @@ import com.univalle.labapi.int_proceso_refs.int_proceso_refs;
 import com.univalle.labapi.int_proceso_vars.int_proceso_vars;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.SQLException;
 import java.time.LocalTime;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -79,6 +82,11 @@ public class MainApp {
                     DatabaseController.getAPI()
                         .usuariosProcesos
                         .updateHoraFin(LocalTime.now());
+                    try {
+                        DatabaseController.getAPI().database.closeConnection();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                     System.exit(0);
                 }
             });
