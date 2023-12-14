@@ -24,7 +24,6 @@ import java.util.logging.Logger;
  * @author Juan Esteban Montenegro
  * @author Juan David Beltran
  */
-
 public class int_usuarios_procesoDAOImpl implements int_usuarios_procesoDAO {
 
     private Connection conectionDb = null; // Conexión a la base de datos.
@@ -45,7 +44,6 @@ public class int_usuarios_procesoDAOImpl implements int_usuarios_procesoDAO {
      *
      * @param conectionDb La conexión a la base de datos.
      */
-    
     public int_usuarios_procesoDAOImpl(Connection conectionDb){
 		
         this.conectionDb = conectionDb;
@@ -85,7 +83,6 @@ public class int_usuarios_procesoDAOImpl implements int_usuarios_procesoDAO {
      * @param usuarioId El ID del usuario para el cual se desean obtener los registros de procesos.
      * @return Una lista de todos los registros de procesos para el usuario especificado.
      */
-    
     @Override
     public List<int_usuarios_proceso> getAllProcessForUser(int usuarioId) {
         this.procesos.clear();
@@ -272,7 +269,7 @@ public class int_usuarios_procesoDAOImpl implements int_usuarios_procesoDAO {
 
     return lastId;
     }
-        /**
+    /**
      * Actualiza la hora de finalización de un registro en la base de datos.
      * 
      * @param hora_fin La nueva hora de finalización.
@@ -303,6 +300,15 @@ public class int_usuarios_procesoDAOImpl implements int_usuarios_procesoDAO {
         return result;
     }
     
+    /**
+    * Recupera el último registro de la tabla `int_usuarios_proceso` en la base de datos.
+    * 
+    * Este método consulta la base de datos para obtener el registro más reciente en la tabla `int_usuarios_proceso`.
+    * Utiliza el ID más alto (último registro) para hacer la selección. Si no se encuentran registros, retorna `null`.
+    * 
+    * @return El último registro de `int_usuarios_proceso` como un objeto de tipo {@link int_usuarios_proceso},
+    *         o `null` si no hay registros.
+    */
     @Override
     public int_usuarios_proceso getLastRecord() {
         this.lastRecordUsuariosProceso = null;
