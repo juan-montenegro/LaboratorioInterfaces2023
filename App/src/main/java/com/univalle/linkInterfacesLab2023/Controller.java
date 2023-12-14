@@ -18,8 +18,8 @@ public class Controller implements Runnable, SerialPortDataListener
 {
 	private final SerialPort puertoSerie;
 	private byte[] myNewData;
-	private final Thread myReadingThread;
-        private final Thread myWrittingThread;
+	private Thread myReadingThread;
+        private Thread myWrittingThread;
 	//private static String mySerialPortDesc = "COM2";
         private static int estadoFSM = 0;
 
@@ -45,12 +45,23 @@ public class Controller implements Runnable, SerialPortDataListener
         
         puertoSerie.getInputStream();
         
-        //Registrar eventos
-        puertoSerie.addDataListener(this);
+        addDataListener();
+        startThreads();
+    }
+
+    private void startThreads() {
         //Hilo de ejecución para recivir datos
         myReadingThread = new Thread(this);
         myWrittingThread = new Thread(this);
-	myReadingThread.start();
+        if (!myWrittingThread.isAlive()) {
+            myWrittingThread.start();
+        }
+        myReadingThread.start();
+    }
+
+    private void addDataListener() {
+        //Registrar eventos
+        puertoSerie.addDataListener(this);
     }
     
     @Override
@@ -172,4 +183,9 @@ public class Controller implements Runnable, SerialPortDataListener
         }
         
     }
+
+    public SerialPort getPuertoSerie() {
+        return puertoSerie;
+    }
+    
 }

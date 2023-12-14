@@ -56,6 +56,10 @@ public class int_proceso_refsDAOImpl implements int_proceso_refsDAO {
             = "SELECT id, int_proceso_id, nombre, descripcion, max_2, min, flag "
             + "FROM int_proceso_refs "
             + "WHERE flag=?";   
+    private static final String GET_PROCESS_REFS_ID 
+            = "SELECT id, int_proceso_id, nombre, descripcion, max_2, min, flag "
+            + "FROM int_proceso_refs "
+            + "WHERE int_proceso_id=?";  
     
     private Connection connection = null;
     private final List<int_proceso_refs> procesosRefs;
@@ -172,7 +176,7 @@ public class int_proceso_refsDAOImpl implements int_proceso_refsDAO {
             statement.setString(1, name);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                int_proceso_refs tempRef = new int_proceso_refs(
+                processRef = new int_proceso_refs(
                         rs.getInt(INT_PROCESO_ID), 
                         rs.getString(NOMBRE),
                         rs.getString(DESCRIPCION), 
@@ -180,8 +184,8 @@ public class int_proceso_refsDAOImpl implements int_proceso_refsDAO {
                         rs.getInt(MIN),
                         rs.getBoolean(FLAG)
                 );
-                tempRef.setId(rs.getInt(ID));
-                processRef = tempRef;
+                processRef.setId(rs.getInt(ID));
+                System.out.println("GET" +processRef.toString());
                 break;
             }
         } catch (SQLException ex) {
@@ -254,6 +258,7 @@ public class int_proceso_refsDAOImpl implements int_proceso_refsDAO {
             statement.setInt(7, processRef.getId());
             this.procesosRefs.add(processRef);
             resRows = statement.executeUpdate();
+            System.out.println("UPDATE" + processRef.toString());
             
         } catch (SQLException ex) {
             Logger.getLogger(int_proceso_refsDAOImpl.class.getName())
@@ -353,5 +358,32 @@ public class int_proceso_refsDAOImpl implements int_proceso_refsDAO {
                     .log(Level.SEVERE, null, ex);
         }
         return this.procesoRefsFlag;  
+    }
+
+    @Override
+    public List<int_proceso_refs> getAllProcessRefs(int processRef) {
+        this.procesosRefs.clear();
+        try {
+            PreparedStatement statement = this.connection
+                    .prepareStatement(GET_PROCESS_REFS_ID);
+            statement.setInt(1, processRef);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                int_proceso_refs tempRef = new int_proceso_refs(
+                        rs.getInt(INT_PROCESO_ID), 
+                        rs.getString(NOMBRE),
+                        rs.getString(DESCRIPCION), 
+                        rs.getInt(MAX_2),
+                        rs.getInt(MIN),
+                        rs.getBoolean(FLAG)
+                );
+                tempRef.setId(rs.getInt(ID));
+                this.procesosRefs.add(tempRef);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(int_proceso_refsDAOImpl.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        }
+        return this.procesosRefs;
     }
 }

@@ -25,8 +25,10 @@ public class LoginController implements ActionListener {
     private final LoginView loginView;
     private final MainView mainView;
     
-    private final String userDB = "watz";
-    private final String passwordDB = "LbMzojJXDx_ZYWEq";
+//    private final String userDB = "watz";
+//    private final String passwordDB = "LbMzojJXDx_ZYWEq";
+    private final String userDB = "camilo";
+    private final String passwordDB = "docWHn9LCLk7N98@";
     
     public LoginController(LoginView loginView, MainView mainView){
         this.loginView = loginView;

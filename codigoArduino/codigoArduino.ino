@@ -122,7 +122,9 @@ void loop() {
 
       
       if(lectura=="A0"){
-        Serial.println("LEYENDO: " + lectura);
+        digitalWrite(ledPin, HIGH);
+        delay(1000);
+        digitalWrite(ledPin, LOW);
         muestreoActual = millis();
         deltaMuestreo = (double) muestreoActual-muestreoAnterior;
         if(deltaMuestreo>=ts){
@@ -231,16 +233,19 @@ void loop() {
 
 void potenciometro(const int pin){
     
-          int sensorVal=analogRead(pin); 
-          Serial.print("sensorVal: ");
-          Serial.println(sensorVal);
-          
-          buffer[0]=h1;
-          buffer[1]=h2;
-          buffer[2]=sensorVal/256;
-          buffer[3]=sensorVal%256;
-          buffer[4]=h3;
-          Serial.write(buffer,sizeof(buffer));
+  int sensorVal=analogRead(pin); 
+  Serial.print("sensorVal: ");
+  Serial.println(sensorVal);
+  
+  buffer[0]=h1;
+  buffer[1]=h2;
+  buffer[2]=sensorVal/256;
+  buffer[3]=sensorVal%256;
+  buffer[4]=h3;
+  Serial.write(buffer,sizeof(buffer));
+  digitalWrite(Led1,HIGH);
+  delay(1000);
+  digitalWrite(Led1,LOW);
         
 }
 void enviarDatos(const int pin ) {
@@ -253,4 +258,7 @@ void enviarDatos(const int pin ) {
   buffer[3] = h3;
 
   Serial.write(buffer, sizeof(buffer));
+  digitalWrite(Led1,HIGH);
+  delay(1000);
+  digitalWrite(Led1,LOW);
 }

@@ -19,6 +19,7 @@ public interface int_proceso_refsDAO {
      * @return
      */
     public List<int_proceso_refs> getAllProcessRefs();
+    public List<int_proceso_refs> getAllProcessRefs(int processRef);
 
     /**
      *

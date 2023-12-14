@@ -10,7 +10,6 @@ import com.univalle.guiInterfacesLab2023.view.LineChartPanel;
 import com.univalle.labapi.LabAPI;
 import com.univalle.labapi.int_proceso.int_proceso;
 import com.univalle.labapi.int_proceso_refs.int_proceso_refs;
-import com.univalle.labapi.int_proceso_refs_data.int_proceso_refs_data;
 import com.univalle.labapi.int_proceso_refs_data.int_proceso_refs_dataDAOImpl;
 import com.univalle.labapi.int_proceso_vars.int_proceso_vars;
 import com.univalle.labapi.int_proceso_vars_data.int_proceso_vars_data;
@@ -92,7 +91,7 @@ public class MainViewController implements ActionListener, ItemListener  {
     
     @Override
     public void itemStateChanged(ItemEvent e) {
-        if(refsController == null)setRefsController();
+        if(refsController == null) setRefsController();
         if (e.getSource()== mainView.getDO0()){
             stateChanged(e, mainView.getDO0());
             
@@ -133,20 +132,23 @@ public class MainViewController implements ActionListener, ItemListener  {
     }
     
     private void stateChanged(ItemEvent e, JToggleButton item){
+        if (api == null){
+            setAPI();
+        }
         int_proceso_refs refData;
         if(e.getStateChange() == ItemEvent.SELECTED){
             item.setBackground(ON_COLOR);
+            System.out.println("Señal: " + item.getText()+1);
             refData = api.procesoRefs.getProcessRef(item.getText());
             refData.setFlag(true);
             api.procesoRefs.updateProcessRef(refData);
-            System.out.println(item.getText()+"1");
             
         } else if (e.getStateChange() == ItemEvent.DESELECTED) {
             item.setBackground(OFF_COLOR);
+            System.out.println("Señal: " + item.getText()+0);
             refData = api.procesoRefs.getProcessRef(item.getText());
             refData.setFlag(false);
             api.procesoRefs.updateProcessRef(refData);
-            System.out.println(item.getText()+"0");            
         }
         
     }
