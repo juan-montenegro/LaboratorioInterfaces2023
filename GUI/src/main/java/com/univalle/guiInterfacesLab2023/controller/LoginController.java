@@ -11,6 +11,7 @@ import com.univalle.labapi.int_usuarios.int_usuarios;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.sql.SQLInvalidAuthorizationSpecException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.logging.Level;
@@ -44,8 +45,7 @@ public class LoginController implements ActionListener {
             int_usuarios usuario = doLogin(user, password);
             if (usuario != null) {
                 DatabaseController.setCurrentUser(usuario);
-                DatabaseController.getAPI()
-                        .usuariosProcesos.insertNewRegister(
+                DatabaseController.getAPI().usuariosProcesos.insertNewRegister(
                                 usuario.getId(), 
                                 3, 
                                 LocalDate.now(), 
@@ -72,9 +72,11 @@ public class LoginController implements ActionListener {
             labAPI = new LabAPI(userDB, passwordDB);
             DatabaseController.initController(labAPI);
             usuario = labAPI.usuarios.getLoginUser(user, password);
-        } catch (SQLException ex) {
-            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+          
+        } catch (SQLInvalidAuthorizationSpecException ex) {
             JOptionPane.showMessageDialog(loginView, "Error al iniciar sesión.");
+        } catch (SQLException ex) {
+            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);   
         }
         
         return usuario;

@@ -9,7 +9,7 @@ import com.univalle.labapi.int_usuarios.int_usuarios;
 
 /**
  *
- * @author juane
+ * @author juane 
  */
 public class DatabaseController {
     private static DatabaseController instance = null;

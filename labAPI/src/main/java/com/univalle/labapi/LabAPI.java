@@ -55,8 +55,8 @@ public class LabAPI {
     
     
 
-//    public static void main(String[] args) {
-//        System.out.println("API START!");
-//    }
+    public static void main(String[] args) {
+        System.out.println("API START!");
+    }
     
 }

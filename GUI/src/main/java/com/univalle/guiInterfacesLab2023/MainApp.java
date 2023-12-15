@@ -13,6 +13,7 @@ import java.awt.event.WindowEvent;
 import java.sql.SQLException;
 import java.time.LocalTime;
 import java.util.List;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -79,8 +80,7 @@ public class MainApp {
                         }
                     }
                     DatabaseController.getAPI()
-                        .usuariosProcesos
-                        .updateHoraFin(LocalTime.now());
+                        .usuariosProcesos.updateHoraFin(LocalTime.now());
                     try {
                         DatabaseController.getAPI().database.closeConnection();
                     } catch (SQLException ex) {
