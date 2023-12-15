@@ -227,7 +227,7 @@ public class MainViewController implements ActionListener, ItemListener  {
             plotRunnable = () -> {
                 if(vars.isFlag()){
                     int_proceso_vars_data varsData = varsController.getLastProcess();
-                    if (dateFlag.before(varsData.getDate()) & timeFlag.before(varsData.getClockTime())) {
+                    if (dateFlag.before(varsData.getDate()) && timeFlag.before(varsData.getClockTime())) {
                         data.addTime(t);
                     
                         System.out.println("PLOT");

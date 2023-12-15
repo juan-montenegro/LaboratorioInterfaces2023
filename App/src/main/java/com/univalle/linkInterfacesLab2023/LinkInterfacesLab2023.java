@@ -26,28 +26,28 @@ import java.util.logging.Logger;
  * @author Juan Camilo Chavez
  */
 public class LinkInterfacesLab2023 {
-    private static final String COMM_PORT = "COM5";
+    private static final String COMM_PORT = "COM9";
     private static final String USER = "camilo";
     private static final String PASSWORD = "docWHn9LCLk7N98@"; 
     private static String señalSelected = "";
     private static String señalTemp = "";
     private static Controller arduino;
+    
     private static LabAPI labApi;
-    private static ScheduledExecutorService digitalService;
-    private static Runnable digitalRunnable;
-        
-    private static ScheduledExecutorService analogService;
+    
+    private static ScheduledExecutorService executorService;
+    private static Runnable digitalRunnable;        
     private static Runnable analogRunnable;
-    
-//    private static ScheduledExecutorService controllerService;
-    
+        
+    private static LocalDate hoy;
     private static LocalTime horaInicio = null;
     private static LocalTime horaFin = null;
+    
     private static int iDseñalSelected = 0;
-//    private static String tittle = "";
     private static double timeMues = 0;
     private static double t = 0;
     private static double valorAmp = 0;
+    
 
     private static int stateDo0 = 0;
     private static int stateDo1 = 0;
@@ -58,23 +58,21 @@ public class LinkInterfacesLab2023 {
     private static int prevStateDo1 = 0;
     private static int prevStateDo2 = 0;
     private static int prevStateDo3 = 0;
-    private static LocalDate hoy;
-//    private static LocalTime ahora;
+    
+    private static boolean messagePrev = false;
+    private static boolean messageNow = false;
     
     private static int_proceso_vars processVar;
     private static List<int_proceso_refs> procesoRef;
     private static int_proceso proceso;
     private static int_usuarios_proceso regisUsuarioProceso;
 
-//    private ScheduledExecutorService newUserService;
-//    private Runnable newTask;
     public static void main(String args[]){
         
-        digitalService = Executors.newScheduledThreadPool(1);
-        analogService = Executors.newScheduledThreadPool(1);
+        executorService = Executors.newScheduledThreadPool(1);
                 
         arduino = new Controller(COMM_PORT);
-        while(!arduino.getPuertoSerie().isOpen()){
+        while(!arduino.isOpen()){
             arduino.init();
         }
         arduino.addDataListener();
@@ -85,7 +83,7 @@ public class LinkInterfacesLab2023 {
 //        ahora = LocalTime.now();
         horaInicio = null;
         horaFin = null;
-        
+
         proceso = labApi.proceso.getProcess(3);
         
         
@@ -114,15 +112,15 @@ public class LinkInterfacesLab2023 {
             }
             System.out.println(regisUsuarioProceso);
 
-            digitalService.scheduleAtFixedRate(
+            executorService.scheduleAtFixedRate(
                 digitalRunnable, 
                 0, 
                 200, 
                 TimeUnit.MILLISECONDS
             );
-            analogService.scheduleAtFixedRate(
+            executorService.scheduleAtFixedRate(
                 analogRunnable, 
-                10, 
+                100, 
                 200, 
                 TimeUnit.MILLISECONDS
             );
@@ -156,8 +154,8 @@ public class LinkInterfacesLab2023 {
         @Override
         public void run() {
             setAPI();
-
             if (horaInicio.compareTo(horaFin)!= 0) return;
+            
             //VUELVE A LEER LA BASE DE DATOS POR SI HAY UN CAMBIO TANTO EN LAS SALIDAS DIGI Y LAS ENTRADAS A/D
             processVar = labApi.procesoVars.getProcessVars(true);
             
@@ -165,30 +163,33 @@ public class LinkInterfacesLab2023 {
 
             //LECTURA DE LA TABLA PROCESOS_VARS
             if (processVar != null) {
-               señalSelected = processVar.getName(); 
-               iDseñalSelected = processVar.getId();
-               timeMues = proceso.getSampleTime();
+                messageNow = true;
+                señalSelected = processVar.getName(); 
+                iDseñalSelected = processVar.getId();
+                timeMues = proceso.getSampleTime();
             } else {
-               señalSelected = "No hay registros con flag=true";
-               iDseñalSelected = 0;
-               System.out.println(señalSelected);
-               return;
+                messageNow = false;
+                messagePrev = false;
+                señalSelected = "No hay registros con flag=true";
+                iDseñalSelected = 0;
+                System.out.println(señalSelected);
+                return;
             }
             
-            System.out.println("SIGNAL: " + señalSelected);
-            System.out.println("ID: " + iDseñalSelected);
             //COMPROBAR SI SE CAMBIO LA SEÑAL SELECCIONADA
             if(!señalTemp.equals(señalSelected)){
                 t = 0;
             }
             
-            
             //ENVIAR SEÑALES DE ENTRADA
-            if(señalSelected.charAt(0)=='A' || señalSelected.charAt(0)=='D'){
+            if(messageNow && messagePrev != messageNow){
                 System.out.println("IS ANALOG/DIGIAL");
+                System.out.println("SIGNAL: " + señalSelected);
+                System.out.println("ID: " + iDseñalSelected);
 
                 arduino.enviarTexto("T"+timeMues+","+señalSelected);
                 System.out.println("T"+timeMues+","+señalSelected);
+                messagePrev = messageNow;
             }
 
             if(arduino.newAnalogData || arduino.newDigitalByte){
@@ -310,8 +311,6 @@ public class LinkInterfacesLab2023 {
             prevStateDo1 = stateDo1;
             prevStateDo2 = stateDo2;
             prevStateDo3 = stateDo3;
-
-            señalTemp = señalSelected;
         }
     }
 }
