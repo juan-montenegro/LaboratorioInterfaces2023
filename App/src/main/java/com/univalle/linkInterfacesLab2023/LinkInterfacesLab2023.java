@@ -19,14 +19,16 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.checkerframework.common.returnsreceiver.qual.This;
 //import jdk.javadoc.doclet.DocletEnvironment;
 
 /**
  *
  * @author Juan Camilo Chavez
+ * @author Juan Esteban Montenegro
  */
 public class LinkInterfacesLab2023 {
-    private static final String COMM_PORT = "COM9";
+    private static final String COMM_PORT = "COM3";
     private static final String USER = "camilo";
     private static final String PASSWORD = "docWHn9LCLk7N98@"; 
     private static String señalSelected = "";
@@ -68,13 +70,16 @@ public class LinkInterfacesLab2023 {
     private static int_usuarios_proceso regisUsuarioProceso;
 
     public static void main(String args[]){
+        System.out.println("Iniciando servicio.....");
         
         executorService = Executors.newScheduledThreadPool(1);
-                
+        
+        System.out.println("Iniciando SerialPort.....");                
         arduino = new Controller(COMM_PORT);
         while(!arduino.isOpen()){
             arduino.init();
         }
+        System.out.println("SerialPort abierto.....");
         arduino.addDataListener();
         arduino.startThreads();
         setAPI();
@@ -91,6 +96,7 @@ public class LinkInterfacesLab2023 {
         
         //PRIMERA LECTURA
         //LECTURA DE LA TABLA USUARIOS_PROCESO
+        System.out.println("Obteniendo ultimo usuario.....");
         while (regisUsuarioProceso == null){
             regisUsuarioProceso = labApi.usuariosProcesos.getLastRecord();
         }
@@ -103,7 +109,8 @@ public class LinkInterfacesLab2023 {
         
         try{
             System.out.println(regisUsuarioProceso);
-            System.out.println("primer Ciclo");            
+            System.out.println("primer Ciclo");   
+            System.out.println("Esperando nuevo usuario.....");
             while (horaInicio.compareTo(horaFin)!= 0){
                 //USUARIOS_PROCESOS
                 regisUsuarioProceso = labApi.usuariosProcesos.getLastRecord();
@@ -111,7 +118,7 @@ public class LinkInterfacesLab2023 {
                 horaFin = regisUsuarioProceso.getEndTime();             
             }
             System.out.println(regisUsuarioProceso);
-
+            
             executorService.scheduleAtFixedRate(
                 digitalRunnable, 
                 0, 
@@ -154,7 +161,10 @@ public class LinkInterfacesLab2023 {
         @Override
         public void run() {
             setAPI();
-            if (horaInicio.compareTo(horaFin)!= 0) return;
+            if (horaInicio.compareTo(horaFin)!= 0){
+                detectCloseSessionstatic();
+                return;
+            } 
             
             //VUELVE A LEER LA BASE DE DATOS POR SI HAY UN CAMBIO TANTO EN LAS SALIDAS DIGI Y LAS ENTRADAS A/D
             processVar = labApi.procesoVars.getProcessVars(true);
@@ -162,6 +172,7 @@ public class LinkInterfacesLab2023 {
             
 
             //LECTURA DE LA TABLA PROCESOS_VARS
+            //REVISAR
             if (processVar != null) {
                 messageNow = true;
                 señalSelected = processVar.getName(); 
@@ -182,6 +193,8 @@ public class LinkInterfacesLab2023 {
             }
             señalTemp = señalSelected;
             
+            //AQUI ESTA EL ERROR //////////////////////////////////////////
+            
             //ENVIAR SEÑALES DE ENTRADA
             if(messageNow && messagePrev != messageNow){
                 System.out.println("IS ANALOG/DIGIAL");
@@ -192,7 +205,7 @@ public class LinkInterfacesLab2023 {
                 System.out.println("T"+timeMues+","+señalSelected);
                 messagePrev = messageNow;
             }
-
+            ///AQUI ESTA EL ERROR/////////////////////////////////////////////////////
             if(arduino.newAnalogData || arduino.newDigitalByte){
                 System.out.println("NEW DATA");
 
@@ -232,7 +245,10 @@ public class LinkInterfacesLab2023 {
         @Override
         public void run() {
             setAPI();
-            if (horaInicio.compareTo(horaFin)!= 0) return;
+            if (horaInicio.compareTo(horaFin)!= 0){
+                detectCloseSessionstatic();
+                return;
+            } 
 
             procesoRef = labApi.procesoRefs.getAllProcessRefs(3);
             if (procesoRef.isEmpty()) return ;
@@ -313,5 +329,16 @@ public class LinkInterfacesLab2023 {
             prevStateDo2 = stateDo2;
             prevStateDo3 = stateDo3;
         }
+    }
+    
+    private static void detectCloseSessionstatic(){
+        try {
+            labApi.database.closeConnection();
+            arduino.closePort();
+            if(!labApi.database.isConnectionValid()){
+                System.exit(0);
+            }
+        }    
+	catch (Exception e) {e.printStackTrace();}
     }
 }

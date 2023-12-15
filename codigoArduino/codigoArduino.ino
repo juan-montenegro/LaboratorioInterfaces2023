@@ -59,9 +59,9 @@ void leerTiempo(String trama) {
 
     // Actualiza el tiempo de muestreo
     ts = nuevoValor;
-    digitalWrite(ledPin, HIGH);
-    delay(1000);
-    digitalWrite(ledPin, LOW);
+    digitalWrite(Led4, HIGH);
+    delay(500);
+    digitalWrite(Led4, LOW);
   } else {
    // Serial.println("Trama inválida.");
   }
@@ -122,9 +122,6 @@ void loop() {
 
       
       if(lectura=="A0"){
-        digitalWrite(ledPin, HIGH);
-        delay(1000);
-        digitalWrite(ledPin, LOW);
         muestreoActual = millis();
         deltaMuestreo = (double) muestreoActual-muestreoAnterior;
         if(deltaMuestreo>=ts){
@@ -243,10 +240,6 @@ void potenciometro(const int pin){
   buffer[3]=sensorVal%256;
   buffer[4]=h3;
   Serial.write(buffer,sizeof(buffer));
-  digitalWrite(Led1,HIGH);
-  delay(1000);
-  digitalWrite(Led1,LOW);
-        
 }
 void enviarDatos(const int pin ) {
   int S2=digitalRead(pin);
@@ -258,7 +251,4 @@ void enviarDatos(const int pin ) {
   buffer[3] = h3;
 
   Serial.write(buffer, sizeof(buffer));
-  digitalWrite(Led1,HIGH);
-  delay(1000);
-  digitalWrite(Led1,LOW);
 }
