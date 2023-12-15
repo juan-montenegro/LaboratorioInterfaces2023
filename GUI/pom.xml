@@ -24,7 +24,8 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>labAPI</artifactId>
-            <version>${project.version}</version>
+            <version>0.0.1</version>
+            <type>jar</type>
         </dependency>
     </dependencies>
     <properties>

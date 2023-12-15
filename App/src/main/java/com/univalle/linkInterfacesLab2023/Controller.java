@@ -9,6 +9,9 @@ import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -171,15 +174,24 @@ public class Controller implements Runnable, SerialPortDataListener
     
     
     public void enviarTexto(String data) {
+//        System.out.println("IS THREAD ALIVE?");
         if (!myWrittingThread.isAlive()) {
+//            System.out.println("START WRITE THREAD");
             myWrittingThread.start();
         }
-
+//        System.out.println("THREAD ALIVE");
+//        System.out.println("IS PORT OPEN?");
         if (puertoSerie.isOpen()) {
             try {
+//                System.out.println("SENDING: " + data);
                 OutputStream out = puertoSerie.getOutputStream();
                 out.write(data.getBytes()); // Envía la cadena como un array de bytes
                 out.flush();
+                try {
+                    TimeUnit.MILLISECONDS.sleep(200);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                }
                
             } catch (IOException e) {
                 e.printStackTrace();
