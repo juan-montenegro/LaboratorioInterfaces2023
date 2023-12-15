@@ -159,7 +159,7 @@ public class LinkInterfacesLab2023 {
             //VUELVE A LEER LA BASE DE DATOS POR SI HAY UN CAMBIO TANTO EN LAS SALIDAS DIGI Y LAS ENTRADAS A/D
             processVar = labApi.procesoVars.getProcessVars(true);
             
-            señalTemp = señalSelected;
+            
 
             //LECTURA DE LA TABLA PROCESOS_VARS
             if (processVar != null) {
@@ -180,6 +180,7 @@ public class LinkInterfacesLab2023 {
             if(!señalTemp.equals(señalSelected)){
                 t = 0;
             }
+            señalTemp = señalSelected;
             
             //ENVIAR SEÑALES DE ENTRADA
             if(messageNow && messagePrev != messageNow){
