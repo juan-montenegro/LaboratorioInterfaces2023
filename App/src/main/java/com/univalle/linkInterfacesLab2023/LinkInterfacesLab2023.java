@@ -24,9 +24,10 @@ import java.util.logging.Logger;
 /**
  *
  * @author Juan Camilo Chavez
+ * @author Juan Esteban Montenegro
  */
 public class LinkInterfacesLab2023 {
-    private static final String COMM_PORT = "COM9";
+    private static final String COMM_PORT = "COM3";
     private static final String USER = "camilo";
     private static final String PASSWORD = "docWHn9LCLk7N98@"; 
     private static String señalSelected = "";
@@ -68,13 +69,16 @@ public class LinkInterfacesLab2023 {
     private static int_usuarios_proceso regisUsuarioProceso;
 
     public static void main(String args[]){
+        System.out.println("Iniciando servicio.....");
         
         executorService = Executors.newScheduledThreadPool(1);
-                
+        
+        System.out.println("Iniciando SerialPort.....");                
         arduino = new Controller(COMM_PORT);
         while(!arduino.isOpen()){
             arduino.init();
         }
+        System.out.println("SerialPort abierto.....");
         arduino.addDataListener();
         arduino.startThreads();
         setAPI();
@@ -91,6 +95,7 @@ public class LinkInterfacesLab2023 {
         
         //PRIMERA LECTURA
         //LECTURA DE LA TABLA USUARIOS_PROCESO
+        System.out.println("Obteniendo ultimo usuario.....");
         while (regisUsuarioProceso == null){
             regisUsuarioProceso = labApi.usuariosProcesos.getLastRecord();
         }
@@ -103,7 +108,8 @@ public class LinkInterfacesLab2023 {
         
         try{
             System.out.println(regisUsuarioProceso);
-            System.out.println("primer Ciclo");            
+            System.out.println("primer Ciclo");   
+            System.out.println("Esperando nuevo usuario.....");
             while (horaInicio.compareTo(horaFin)!= 0){
                 //USUARIOS_PROCESOS
                 regisUsuarioProceso = labApi.usuariosProcesos.getLastRecord();
@@ -111,7 +117,7 @@ public class LinkInterfacesLab2023 {
                 horaFin = regisUsuarioProceso.getEndTime();             
             }
             System.out.println(regisUsuarioProceso);
-
+            
             executorService.scheduleAtFixedRate(
                 digitalRunnable, 
                 0, 
@@ -162,6 +168,7 @@ public class LinkInterfacesLab2023 {
             
 
             //LECTURA DE LA TABLA PROCESOS_VARS
+            //REVISAR
             if (processVar != null) {
                 messageNow = true;
                 señalSelected = processVar.getName(); 
