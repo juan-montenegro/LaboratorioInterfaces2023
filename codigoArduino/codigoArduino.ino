@@ -59,9 +59,9 @@ void leerTiempo(String trama) {
 
     // Actualiza el tiempo de muestreo
     ts = nuevoValor;
-    digitalWrite(ledPin, HIGH);
-    delay(1000);
-    digitalWrite(ledPin, LOW);
+    digitalWrite(Led4, HIGH);
+    delay(500);
+    digitalWrite(Led4, LOW);
   } else {
    // Serial.println("Trama inválida.");
   }
@@ -122,9 +122,6 @@ void loop() {
 
       
       if(lectura=="A0"){
-        digitalWrite(ledPin, HIGH);
-        delay(1000);
-        digitalWrite(ledPin, LOW);
         muestreoActual = millis();
         deltaMuestreo = (double) muestreoActual-muestreoAnterior;
         if(deltaMuestreo>=ts){

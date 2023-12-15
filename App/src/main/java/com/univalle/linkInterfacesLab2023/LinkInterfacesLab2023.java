@@ -183,6 +183,8 @@ public class LinkInterfacesLab2023 {
             }
             
             
+            //AQUI ESTA EL ERROR //////////////////////////////////////////
+            
             //ENVIAR SEÑALES DE ENTRADA
             if(señalSelected.charAt(0)=='A' || señalSelected.charAt(0)=='D'){
                 System.out.println("IS ANALOG/DIGIAL");
@@ -190,7 +192,7 @@ public class LinkInterfacesLab2023 {
                 arduino.enviarTexto("T"+timeMues+","+señalSelected);
                 System.out.println("T"+timeMues+","+señalSelected);
             }
-
+            ///AQUI ESTA EL ERROR/////////////////////////////////////////////////////
             if(arduino.newAnalogData || arduino.newDigitalByte){
                 System.out.println("NEW DATA");
 
