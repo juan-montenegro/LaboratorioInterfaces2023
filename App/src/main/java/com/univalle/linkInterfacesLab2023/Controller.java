@@ -116,29 +116,29 @@ public class Controller implements Runnable, SerialPortDataListener
             case 0:
                 if(trama == HEADER1){
                     estadoFSM = 1;
-                    System.out.println("H1: " +trama);
+//                    System.out.println("H1: " +trama);
                 }
                 break;
             case 1:
                 if(trama == HEADER2){
                     estadoFSM = 2;
-                    System.out.println("H2: " + trama);
+//                    System.out.println("H2: " + trama);
                 }
                 break;
             case 2:
                 B1 = trama;
-                System.out.println("B1: " + trama);
+//                System.out.println("B1: " + trama);
                 estadoFSM = 3; 
                 break;
             case 3:
                 if(trama == HEADER3){
-                    System.out.println("H3: " + trama);
+//                    System.out.println("H3: " + trama);
                     estadoFSM = 0;
                     readDigital = B1;
                     newDigitalByte = true;
                 }
                 else{
-                    System.out.println("B2: " + trama);
+//                    System.out.println("B2: " + trama);
                     B2 = trama;
                     estadoFSM = 4;
                 }   

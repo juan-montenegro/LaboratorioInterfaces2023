@@ -10,7 +10,7 @@ import com.univalle.guiInterfacesLab2023.view.LineChartPanel;
 import com.univalle.labapi.LabAPI;
 import com.univalle.labapi.int_proceso.int_proceso;
 import com.univalle.labapi.int_proceso_refs.int_proceso_refs;
-import com.univalle.labapi.int_proceso_refs_data.int_proceso_refs_dataDAOImpl;
+import com.univalle.labapi.int_proceso_refs.int_proceso_refsDAOImpl;
 import com.univalle.labapi.int_proceso_vars.int_proceso_vars;
 import com.univalle.labapi.int_proceso_vars_data.int_proceso_vars_data;
 import com.univalle.labapi.int_proceso_vars_data.int_proceso_vars_dataDAOImpl;
@@ -42,7 +42,7 @@ public class MainViewController implements ActionListener, ItemListener  {
     private final Color OFF_COLOR = new Color(187,187,187);
     private final Color ON_COLOR = new Color(251, 208, 62);
     private LabAPI api;
-    private int_proceso_refs_dataDAOImpl refsController;
+    private int_proceso_refsDAOImpl refsController;
     private int_proceso_vars_dataDAOImpl varsController;
     private int_proceso_vars vars;
     private int_proceso_refs refs;
@@ -53,16 +53,18 @@ public class MainViewController implements ActionListener, ItemListener  {
     private final SignalData data;
     
     
-    private final ScheduledExecutorService scheduler;
+    private final ScheduledExecutorService scheduledService;
     
-    private Runnable plotRunnable;
-//    private final SerialController serialController;
-    private boolean primero = true;
+    private final Runnable plotRunnable;
+//    private Runnable databaseRunnable;
     
     private final XYSeries grafica;
     private final XYSeriesCollection dataset;
     private final LineChartPanel newChart; 
     private final int NUM_VALUES = 200;
+    private final JPanel lineChartPanel;
+    private Date dateFlag;
+    private Time timeFlag;
    
     double t = 0;
 
@@ -71,20 +73,29 @@ public class MainViewController implements ActionListener, ItemListener  {
     public MainViewController(MainView mainView){
         this.mainView = mainView;
         
-        this.scheduler = Executors.newScheduledThreadPool(1);
+        this.scheduledService = Executors.newScheduledThreadPool(1);
         this.grafica = new XYSeries("Signal");
         this.grafica.add(0,0);
         this.dataset = new XYSeriesCollection();
         this.dataset.addSeries(grafica);
         this.newChart = new LineChartPanel(timeMues,tittleChart, dataset);
+        api = DatabaseController.getAPI();
         
         this.data = new SignalData();
+        lineChartPanel = mainView.getLineChartPanel();
+        plotRunnable = new PlotRunnableImpl();
+        scheduledService.scheduleAtFixedRate(
+                plotRunnable, 
+                0, 
+                200, 
+                TimeUnit.MILLISECONDS
+        );
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(varsController == null) setVarsController();
         if (e.getSource() == mainView.getSelectButton()){
+            if(varsController == null) setVarsController();
             buttonPressed();
         }
     }
@@ -132,37 +143,36 @@ public class MainViewController implements ActionListener, ItemListener  {
     }
     
     private void stateChanged(ItemEvent e, JToggleButton item){
-        if (api == null){
-            setAPI();
-        }
-        int_proceso_refs refData;
+        if(!isAPIvalid()) return;
         if(e.getStateChange() == ItemEvent.SELECTED){
             item.setBackground(ON_COLOR);
             System.out.println("Señal: " + item.getText()+1);
-            refData = api.procesoRefs.getProcessRef(item.getText());
-            refData.setFlag(true);
-            api.procesoRefs.updateProcessRef(refData);
+            refs = refsController.getProcessRef(item.getText());
+            if (refs == null) return;
+            refs.setFlag(true);
+            refsController.updateProcessRef(refs);
             
         } else if (e.getStateChange() == ItemEvent.DESELECTED) {
             item.setBackground(OFF_COLOR);
             System.out.println("Señal: " + item.getText()+0);
-            refData = api.procesoRefs.getProcessRef(item.getText());
-            refData.setFlag(false);
-            api.procesoRefs.updateProcessRef(refData);
+            refs = refsController.getProcessRef(item.getText());
+            if (refs == null) return;
+            refs.setFlag(false);
+            refsController.updateProcessRef(refs);
         }
         
     }
     
     private void buttonPressed(){
         data.clear();
-        JPanel lineChartPanel = mainView.getLineChartPanel();
-        
+        grafica.clear();
+        lineChartPanel.repaint();
+
+        vars = api.procesoVars.getProcessVar(tittleChart);
         if(vars != null) {
             vars.setFlag(false);
             api.procesoVars.updateProcessVar(vars);
         }
-        
-        
         
         timeMues = (int) getSampleRate();  
         
@@ -192,77 +202,26 @@ public class MainViewController implements ActionListener, ItemListener  {
             if (result == JOptionPane.OK_OPTION) return;
         }
         
-        if (api == null){
-            setAPI();
-        }
+        if (api == null) isAPIvalid();
+        
         int_proceso proceso = api.proceso.getProcess(3);
         proceso.setSampleTime(timeMues);
         api.proceso.updateProcess(proceso);
         System.out.println(proceso.toString());
         
         vars = api.procesoVars.getProcessVar(tittleChart);
-        if (refs != null) {
-            refs.setFlag(false);
-            api.procesoRefs.updateProcessRef(refs);
-        }
+
         vars.setFlag(true);
 
         System.out.println(vars.toString());
         
         api.procesoVars.updateProcessVar(vars);
-        Date dateFlag = Date.valueOf(LocalDate.now());
-        Time timeFlag = Time.valueOf(LocalTime.now());
         
-//        for (int_proceso_vars_data data : varsData) {
-//            System.out.println(data.toString());   
-//        }
-       
-//        serialController.sendText("T"+timeMues+","+tittleChart);
         System.out.println("T"+timeMues+","+tittleChart);
-        varsController = DatabaseController.getAPI().procesoVarsData;
-        
-        if(primero){
-            grafica.remove(0);
+        varsController = api.procesoVarsData;
 
-            plotRunnable = () -> {
-                if(vars.isFlag()){
-                    int_proceso_vars_data varsData = varsController.getLastProcess();
-                    if (dateFlag.before(varsData.getDate()) && timeFlag.before(varsData.getClockTime())) {
-                        data.addTime(t);
-                    
-                        System.out.println("PLOT");
-                        data.addSignal(varsData.getValue());
-                        grafica.add(t ,varsData.getValue());
-
-                        if (grafica.getItemCount() > NUM_VALUES) {
-                            grafica.remove(0);
-                        }
-                        newChart.updateDataset(tittleChart, dataset);
-
-                        lineChartPanel.repaint();
-
-                        t += timeMues;
-                        System.out.println(t);
-                    } 
-                } else{
-                    if (!data.getSignal().isEmpty()) {
-                        data.clear();
-                        grafica.clear();
-                        lineChartPanel.repaint();
-                    }
-                }
-            };
-            scheduler.scheduleAtFixedRate(plotRunnable, 0, 200, TimeUnit.MILLISECONDS);
-            primero = false;
-        }
-        
-        
-        //try {
-          //  PrintPlainText.saveToPlainText("seno", 0,newChart.getDataset());
-          //  PrintPlainText.saveToPlainText("coseno", 1,newChart.getDataset());
-        //} catch (IOException ex) {
-          //  Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
-        //}
+        dateFlag = Date.valueOf(LocalDate.now());
+        timeFlag = Time.valueOf(LocalTime.now());
     }
     
     private double getSampleRate() {
@@ -272,29 +231,33 @@ public class MainViewController implements ActionListener, ItemListener  {
             tiempoMues = Double.parseDouble(timeS);
             
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "Error: '" + timeS+ "' no es un número válido.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(
+                    null, "Error: '" + timeS+ "' no es un número válido.", 
+                    "Error", 
+                    JOptionPane.ERROR_MESSAGE
+            );
         }
         return tiempoMues;
     }
     
     private void setRefsController(){
-        LabAPI labAPI = DatabaseController.getAPI();
-        if (labAPI == null) return;
-        refsController = labAPI.procesoRefsData;
+        if (!isAPIvalid()) return;
+        refsController = api.procesoRefs;
     }
     
     private void setVarsController(){
-        LabAPI labAPI = DatabaseController.getAPI();
-        if (labAPI == null) return;
-        varsController = labAPI.procesoVarsData;
+        if (!isAPIvalid()) return;
+        varsController = api.procesoVarsData;
     }
     
-    private boolean setAPI(){
+    private boolean isAPIvalid(){
+        setAPI();
+        return api != null; 
+    }
+    
+    private void setAPI() {
         api = DatabaseController.getAPI();
-        return api != null;
-        
     }
-    
     private void setSelectedAnSignal(String selectedAnSignal){
         this.selectedAnSignal = selectedAnSignal;
     }
@@ -303,6 +266,36 @@ public class MainViewController implements ActionListener, ItemListener  {
         this.selectedDgSignal = selectedDgSignal;
     }
 
-       
-    
+    private class PlotRunnableImpl implements Runnable {
+
+        @Override
+        public void run() {
+            if(!isAPIvalid()) return;
+            vars = api.procesoVars.getProcessVar(tittleChart);
+            if (vars == null) return;
+            if(!vars.isFlag()) return;
+            System.out.println("Obteniendo ultimo dato.");
+            int_proceso_vars_data varsData = varsController.getLastProcess();
+            boolean isValidDate = dateFlag.before(varsData.getDate()) || dateFlag.compareTo(varsData.getDate()) == 0;
+            boolean isTimeValid = timeFlag.before(varsData.getClockTime());
+            if (isValidDate && isTimeValid) {
+                data.addTime(t);
+
+                System.out.println("PLOT");
+                
+                data.addSignal(varsData.getValue());
+                grafica.add(t ,varsData.getValue());
+
+                if (grafica.getItemCount() > NUM_VALUES) {
+                    grafica.remove(0);
+                }
+                newChart.updateDataset(tittleChart, dataset);
+
+                lineChartPanel.repaint();
+
+                t += timeMues;
+            }
+            
+        }
+    }
 }
