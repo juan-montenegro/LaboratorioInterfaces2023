@@ -240,10 +240,6 @@ void potenciometro(const int pin){
   buffer[3]=sensorVal%256;
   buffer[4]=h3;
   Serial.write(buffer,sizeof(buffer));
-  digitalWrite(Led1,HIGH);
-  delay(1000);
-  digitalWrite(Led1,LOW);
-        
 }
 void enviarDatos(const int pin ) {
   int S2=digitalRead(pin);
@@ -255,7 +251,4 @@ void enviarDatos(const int pin ) {
   buffer[3] = h3;
 
   Serial.write(buffer, sizeof(buffer));
-  digitalWrite(Led1,HIGH);
-  delay(1000);
-  digitalWrite(Led1,LOW);
 }

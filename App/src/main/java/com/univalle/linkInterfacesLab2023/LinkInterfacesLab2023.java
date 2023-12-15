@@ -19,6 +19,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.checkerframework.common.returnsreceiver.qual.This;
 //import jdk.javadoc.doclet.DocletEnvironment;
 
 /**
@@ -160,7 +161,10 @@ public class LinkInterfacesLab2023 {
         @Override
         public void run() {
             setAPI();
-            if (horaInicio.compareTo(horaFin)!= 0) return;
+            if (horaInicio.compareTo(horaFin)!= 0){
+                detectCloseSessionstatic();
+                return;
+            } 
             
             //VUELVE A LEER LA BASE DE DATOS POR SI HAY UN CAMBIO TANTO EN LAS SALIDAS DIGI Y LAS ENTRADAS A/D
             processVar = labApi.procesoVars.getProcessVars(true);
@@ -241,7 +245,10 @@ public class LinkInterfacesLab2023 {
         @Override
         public void run() {
             setAPI();
-            if (horaInicio.compareTo(horaFin)!= 0) return;
+            if (horaInicio.compareTo(horaFin)!= 0){
+                detectCloseSessionstatic();
+                return;
+            } 
 
             procesoRef = labApi.procesoRefs.getAllProcessRefs(3);
             if (procesoRef.isEmpty()) return ;
@@ -322,5 +329,16 @@ public class LinkInterfacesLab2023 {
             prevStateDo2 = stateDo2;
             prevStateDo3 = stateDo3;
         }
+    }
+    
+    private static void detectCloseSessionstatic(){
+        try {
+            labApi.database.closeConnection();
+            arduino.closePort();
+            if(!labApi.database.isConnectionValid()){
+                System.exit(0);
+            }
+        }    
+	catch (Exception e) {e.printStackTrace();}
     }
 }
