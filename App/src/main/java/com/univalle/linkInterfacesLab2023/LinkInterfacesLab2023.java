@@ -19,7 +19,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.checkerframework.common.returnsreceiver.qual.This;
 //import jdk.javadoc.doclet.DocletEnvironment;
 
 /**
@@ -28,7 +27,7 @@ import org.checkerframework.common.returnsreceiver.qual.This;
  * @author Juan Esteban Montenegro
  */
 public class LinkInterfacesLab2023 {
-    private static final String COMM_PORT = "COM3";
+    private static final String COMM_PORT = "COM9";
     private static final String USER = "camilo";
     private static final String PASSWORD = "docWHn9LCLk7N98@"; 
     private static String señalSelected = "";

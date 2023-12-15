@@ -10,7 +10,7 @@ import com.univalle.guiInterfacesLab2023.view.LineChartPanel;
 import com.univalle.labapi.LabAPI;
 import com.univalle.labapi.int_proceso.int_proceso;
 import com.univalle.labapi.int_proceso_refs.int_proceso_refs;
-import com.univalle.labapi.int_proceso_refs_data.int_proceso_refs_dataDAOImpl;
+import com.univalle.labapi.int_proceso_refs.int_proceso_refsDAOImpl;
 import com.univalle.labapi.int_proceso_vars.int_proceso_vars;
 import com.univalle.labapi.int_proceso_vars_data.int_proceso_vars_data;
 import com.univalle.labapi.int_proceso_vars_data.int_proceso_vars_dataDAOImpl;
@@ -42,7 +42,7 @@ public class MainViewController implements ActionListener, ItemListener  {
     private final Color OFF_COLOR = new Color(187,187,187);
     private final Color ON_COLOR = new Color(251, 208, 62);
     private LabAPI api;
-    private int_proceso_refs_dataDAOImpl refsController;
+    private int_proceso_refsDAOImpl refsController;
     private int_proceso_vars_dataDAOImpl varsController;
     private int_proceso_vars vars;
     private int_proceso_refs refs;
@@ -57,8 +57,6 @@ public class MainViewController implements ActionListener, ItemListener  {
     
     private final Runnable plotRunnable;
 //    private Runnable databaseRunnable;
-
-    private boolean primero = true;
     
     private final XYSeries grafica;
     private final XYSeriesCollection dataset;
@@ -81,10 +79,11 @@ public class MainViewController implements ActionListener, ItemListener  {
         this.dataset = new XYSeriesCollection();
         this.dataset.addSeries(grafica);
         this.newChart = new LineChartPanel(timeMues,tittleChart, dataset);
+        api = DatabaseController.getAPI();
         
         this.data = new SignalData();
         lineChartPanel = mainView.getLineChartPanel();
-        plotRunnable = new PlotRunnableImpl(lineChartPanel);
+        plotRunnable = new PlotRunnableImpl();
         scheduledService.scheduleAtFixedRate(
                 plotRunnable, 
                 0, 
@@ -144,23 +143,22 @@ public class MainViewController implements ActionListener, ItemListener  {
     }
     
     private void stateChanged(ItemEvent e, JToggleButton item){
-        if (api == null){
-            getAPI();
-        }
-        int_proceso_refs refData;
+        if(!isAPIvalid()) return;
         if(e.getStateChange() == ItemEvent.SELECTED){
             item.setBackground(ON_COLOR);
             System.out.println("Señal: " + item.getText()+1);
-            refData = api.procesoRefs.getProcessRef(item.getText());
-            refData.setFlag(true);
-            api.procesoRefs.updateProcessRef(refData);
+            refs = refsController.getProcessRef(item.getText());
+            if (refs == null) return;
+            refs.setFlag(true);
+            refsController.updateProcessRef(refs);
             
         } else if (e.getStateChange() == ItemEvent.DESELECTED) {
             item.setBackground(OFF_COLOR);
             System.out.println("Señal: " + item.getText()+0);
-            refData = api.procesoRefs.getProcessRef(item.getText());
-            refData.setFlag(false);
-            api.procesoRefs.updateProcessRef(refData);
+            refs = refsController.getProcessRef(item.getText());
+            if (refs == null) return;
+            refs.setFlag(false);
+            refsController.updateProcessRef(refs);
         }
         
     }
@@ -204,7 +202,7 @@ public class MainViewController implements ActionListener, ItemListener  {
             if (result == JOptionPane.OK_OPTION) return;
         }
         
-        if (api == null) getAPI();
+        if (api == null) isAPIvalid();
         
         int_proceso proceso = api.proceso.getProcess(3);
         proceso.setSampleTime(timeMues);
@@ -221,7 +219,7 @@ public class MainViewController implements ActionListener, ItemListener  {
         
         System.out.println("T"+timeMues+","+tittleChart);
         varsController = api.procesoVarsData;
-        primero = true;
+
         dateFlag = Date.valueOf(LocalDate.now());
         timeFlag = Time.valueOf(LocalTime.now());
     }
@@ -243,23 +241,23 @@ public class MainViewController implements ActionListener, ItemListener  {
     }
     
     private void setRefsController(){
-        api = DatabaseController.getAPI();
-        if (api == null) return;
-        refsController = api.procesoRefsData;
+        if (!isAPIvalid()) return;
+        refsController = api.procesoRefs;
     }
     
     private void setVarsController(){
-        api = DatabaseController.getAPI();
-        if (api == null) return;
+        if (!isAPIvalid()) return;
         varsController = api.procesoVarsData;
     }
     
-    private boolean getAPI(){
-        api = DatabaseController.getAPI();
-        return api != null;
-        
+    private boolean isAPIvalid(){
+        setAPI();
+        return api != null; 
     }
     
+    private void setAPI() {
+        api = DatabaseController.getAPI();
+    }
     private void setSelectedAnSignal(String selectedAnSignal){
         this.selectedAnSignal = selectedAnSignal;
     }
@@ -270,17 +268,11 @@ public class MainViewController implements ActionListener, ItemListener  {
 
     private class PlotRunnableImpl implements Runnable {
 
-        private final JPanel lineChartPanel;
-
-        public PlotRunnableImpl(JPanel lineChartPanel) {
-            this.lineChartPanel = lineChartPanel;
-        }
-
         @Override
         public void run() {
-            if(getAPI()) return;
+            if(!isAPIvalid()) return;
             vars = api.procesoVars.getProcessVar(tittleChart);
-            System.out.println("HAY DATOS?");
+            if (vars == null) return;
             if(!vars.isFlag()) return;
             System.out.println("Obteniendo ultimo dato.");
             int_proceso_vars_data varsData = varsController.getLastProcess();
@@ -290,6 +282,7 @@ public class MainViewController implements ActionListener, ItemListener  {
                 data.addTime(t);
 
                 System.out.println("PLOT");
+                
                 data.addSignal(varsData.getValue());
                 grafica.add(t ,varsData.getValue());
 
@@ -301,7 +294,6 @@ public class MainViewController implements ActionListener, ItemListener  {
                 lineChartPanel.repaint();
 
                 t += timeMues;
-                System.out.println(t);
             }
             
         }

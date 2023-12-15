@@ -73,11 +73,11 @@ public class LoginController implements ActionListener {
             DatabaseController.initController(labAPI);
             usuario = labAPI.usuarios.getLoginUser(user, password);
           
-        } catch (SQLInvalidAuthorizationSpecException ex) {
-            JOptionPane.showMessageDialog(loginView, "Error al iniciar sesión.");
         } catch (SQLException ex) {
-            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);   
-        }
+            JOptionPane.showMessageDialog(loginView, "Error al iniciar sesión.");
+            Logger.getLogger(LoginController.class.getName())
+                    .log(Level.SEVERE, null, ex);   
+        } 
         
         return usuario;
     }
