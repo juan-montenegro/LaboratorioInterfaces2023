@@ -29,9 +29,6 @@ public class DatabaseController {
     }
     
     public static LabAPI getAPI() {
-//        if (instance == null){
-//            throw new Exception("Failed to initialize class");
-//        }
         return labAPI;
     }
 
