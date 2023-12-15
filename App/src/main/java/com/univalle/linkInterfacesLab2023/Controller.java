@@ -38,18 +38,24 @@ public class Controller implements Runnable, SerialPortDataListener
         public boolean newTime = false;
         
     public Controller(String COM) {
-        
-        puertoSerie = SerialPort.getCommPort(COM);
-        puertoSerie.setComPortParameters(9600, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
-        puertoSerie.openPort();
-        
-        puertoSerie.getInputStream();
-        
-        addDataListener();
-        startThreads();
+        puertoSerie = SerialPort.getCommPort(COM);        
+        init();
     }
 
-    private void startThreads() {
+    public void init() {
+        puertoSerie.setComPortParameters(
+                9600, 
+                8, 
+                SerialPort.ONE_STOP_BIT, 
+                SerialPort.NO_PARITY
+        
+        );
+        puertoSerie.openPort();
+        puertoSerie.getInputStream();
+
+    }
+
+    public void startThreads() {
         //Hilo de ejecución para recivir datos
         myReadingThread = new Thread(this);
         myWrittingThread = new Thread(this);
@@ -59,7 +65,7 @@ public class Controller implements Runnable, SerialPortDataListener
         myReadingThread.start();
     }
 
-    private void addDataListener() {
+    public void addDataListener() {
         //Registrar eventos
         puertoSerie.addDataListener(this);
     }

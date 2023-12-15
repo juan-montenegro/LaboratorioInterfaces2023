@@ -19,7 +19,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jdk.javadoc.doclet.DocletEnvironment;
+//import jdk.javadoc.doclet.DocletEnvironment;
 
 /**
  *
@@ -39,12 +39,12 @@ public class LinkInterfacesLab2023 {
     private static ScheduledExecutorService analogService;
     private static Runnable analogRunnable;
     
-    private static ScheduledExecutorService controllerService;
+//    private static ScheduledExecutorService controllerService;
     
     private static LocalTime horaInicio = null;
     private static LocalTime horaFin = null;
     private static int iDseñalSelected = 0;
-    private static String tittle = "";
+//    private static String tittle = "";
     private static double timeMues = 0;
     private static double t = 0;
     private static double valorAmp = 0;
@@ -59,7 +59,7 @@ public class LinkInterfacesLab2023 {
     private static int prevStateDo2 = 0;
     private static int prevStateDo3 = 0;
     private static LocalDate hoy;
-    private static LocalTime ahora;
+//    private static LocalTime ahora;
     
     private static int_proceso_vars processVar;
     private static List<int_proceso_refs> procesoRef;
@@ -70,29 +70,23 @@ public class LinkInterfacesLab2023 {
 //    private Runnable newTask;
     public static void main(String args[]){
         
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        
-        
         digitalService = Executors.newScheduledThreadPool(1);
         analogService = Executors.newScheduledThreadPool(1);
                 
         arduino = new Controller(COMM_PORT);
         while(!arduino.getPuertoSerie().isOpen()){
-            arduino.getPuertoSerie().openPort();
+            arduino.init();
         }
-        
+        arduino.addDataListener();
+        arduino.startThreads();
         setAPI();
         
         hoy = LocalDate.now();
-        ahora = LocalTime.now();
+//        ahora = LocalTime.now();
         horaInicio = null;
         horaFin = null;
         
-        proceso =labApi.proceso.getProcess(3);
+        proceso = labApi.proceso.getProcess(3);
         
         
         regisUsuarioProceso = labApi.usuariosProcesos.getLastRecord();
@@ -119,14 +113,7 @@ public class LinkInterfacesLab2023 {
                 horaFin = regisUsuarioProceso.getEndTime();             
             }
             System.out.println(regisUsuarioProceso);
-//            digitalService.scheduleAtFixedRate(
-//                arduino, 
-//                0, 
-//                200, 
-//                TimeUnit.MILLISECONDS
-//            );
-            
-//            while(horaInicio.compareTo(horaFin)==0){}
+
             digitalService.scheduleAtFixedRate(
                 digitalRunnable, 
                 0, 
@@ -139,13 +126,10 @@ public class LinkInterfacesLab2023 {
                 200, 
                 TimeUnit.MILLISECONDS
             );
-            
-            
-            
-            
-        }
-        catch (Exception e){
-            e.printStackTrace();
+ 
+        } catch (Exception e){
+            Logger.getLogger(LinkInterfacesLab2023.class.getName())
+                    .log(Level.SEVERE, null, e);
         }
         // Closing...
 //        finally{
@@ -161,7 +145,8 @@ public class LinkInterfacesLab2023 {
             try {
                 labApi = new LabAPI(USER, PASSWORD);
             } catch (SQLException ex) {
-                Logger.getLogger(LinkInterfacesLab2023.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(LinkInterfacesLab2023.class.getName())
+                        .log(Level.SEVERE, null, ex);
             }
         }
     }
