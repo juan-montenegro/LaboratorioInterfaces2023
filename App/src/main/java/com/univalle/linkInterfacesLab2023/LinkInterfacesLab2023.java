@@ -3,10 +3,12 @@
  */
 
 package com.univalle.linkInterfacesLab2023;
+import com.fazecast.jSerialComm.SerialPort;
 import com.univalle.labapi.LabAPI;
 import com.univalle.labapi.int_proceso.int_proceso;
 import com.univalle.labapi.int_proceso_refs.int_proceso_refs;
 import com.univalle.labapi.int_proceso_vars.int_proceso_vars;
+import com.univalle.labapi.int_proceso_vars_data.int_proceso_vars_data;
 import com.univalle.labapi.int_usuarios_proceso.int_usuarios_proceso;
 import java.sql.Date;
 import java.sql.SQLException;
@@ -37,17 +39,17 @@ public class LinkInterfacesLab2023 {
     private static LabAPI labApi;
     
     private static ScheduledExecutorService executorService;
-    private static Runnable digitalRunnable;        
-    private static Runnable analogRunnable;
+    private static Runnable outputsDRunnable;        
+    private static Runnable inputsADRunnable;
         
     private static LocalDate hoy;
     private static LocalTime horaInicio = null;
     private static LocalTime horaFin = null;
     
-    private static int iDseñalSelected = 0;
-    private static double timeMues = 0;
-    private static double t = 0;
-    private static double valorAmp = 0;
+    private static volatile int iDseñalSelected = 0;
+    private static volatile double timeMues = 0;
+    private static volatile double t = 0;
+    private static volatile double valorAmp = 0;
     
 
     private static int stateDo0 = 0;
@@ -59,10 +61,7 @@ public class LinkInterfacesLab2023 {
     private static int prevStateDo1 = 0;
     private static int prevStateDo2 = 0;
     private static int prevStateDo3 = 0;
-    
-    private static boolean messagePrev = false;
-    private static boolean messageNow = false;
-    
+
     private static int_proceso_vars processVar;
     private static List<int_proceso_refs> procesoRef;
     private static int_proceso proceso;
@@ -70,80 +69,79 @@ public class LinkInterfacesLab2023 {
 
     public static void main(String args[]){
         System.out.println("Iniciando servicio.....");
-        
         executorService = Executors.newScheduledThreadPool(1);
         
-        System.out.println("Iniciando SerialPort.....");                
+        System.out.println("Iniciando SerialPort.....");  
         arduino = new Controller(COMM_PORT);
-        while(!arduino.isOpen()){
-            arduino.init();
-        }
+        
+        waitForOpenSerialPort();
         System.out.println("SerialPort abierto.....");
+        
         arduino.addDataListener();
-        arduino.startThreads();
+        
         setAPI();
         
         hoy = LocalDate.now();
-//        ahora = LocalTime.now();
+        
         horaInicio = null;
         horaFin = null;
 
         proceso = labApi.proceso.getProcess(3);
         
-        
-        regisUsuarioProceso = labApi.usuariosProcesos.getLastRecord();
-        
         //PRIMERA LECTURA
         //LECTURA DE LA TABLA USUARIOS_PROCESO
         System.out.println("Obteniendo ultimo usuario.....");
+        getLastUserSession();
+        
+        System.out.println("Esperando nuevo usuario.....");
+        waitForNewUserSession();
+        
+        outputsDRunnable = new OutputsDRunnable();
+        inputsADRunnable = new InputsADRunnable();
+
+        executorService.scheduleAtFixedRate(
+            outputsDRunnable, 
+            0, 
+            200, 
+            TimeUnit.MILLISECONDS
+        );
+        
+        executorService.scheduleAtFixedRate(
+            inputsADRunnable, 
+            100, 
+            200, 
+            TimeUnit.MILLISECONDS
+        );
+    }
+
+    private static synchronized void getLastUserSession() {
+        regisUsuarioProceso = labApi.usuariosProcesos.getLastRecord();
         while (regisUsuarioProceso == null){
             regisUsuarioProceso = labApi.usuariosProcesos.getLastRecord();
         }
+        
         horaInicio = regisUsuarioProceso.getStartTime();
         horaFin = regisUsuarioProceso.getEndTime();
-        
-        digitalRunnable = new DigitalRunnable();
-        analogRunnable = new AnalogRunnable();
-        
-        
-        try{
-            System.out.println(regisUsuarioProceso);
-            System.out.println("primer Ciclo");   
-            System.out.println("Esperando nuevo usuario.....");
-            while (horaInicio.compareTo(horaFin)!= 0){
-                //USUARIOS_PROCESOS
-                regisUsuarioProceso = labApi.usuariosProcesos.getLastRecord();
-                horaInicio = regisUsuarioProceso.getStartTime();
-                horaFin = regisUsuarioProceso.getEndTime();             
-            }
-            System.out.println(regisUsuarioProceso);
-            
-            executorService.scheduleAtFixedRate(
-                digitalRunnable, 
-                0, 
-                200, 
-                TimeUnit.MILLISECONDS
-            );
-            executorService.scheduleAtFixedRate(
-                analogRunnable, 
-                100, 
-                200, 
-                TimeUnit.MILLISECONDS
-            );
- 
-        } catch (Exception e){
-            Logger.getLogger(LinkInterfacesLab2023.class.getName())
-                    .log(Level.SEVERE, null, e);
-        }
-        // Closing...
-//        finally{
-//            labApi.database.closeConnection();
-//        }
-        
-        
-        //java.awt.EventQueue.invokeLater(() -> {  
-        //});
+        System.out.println(regisUsuarioProceso);
     }
+
+    public static synchronized void waitForNewUserSession() {
+        while (horaInicio.compareTo(horaFin)!= 0){
+            //USUARIOS_PROCESOS
+            regisUsuarioProceso = labApi.usuariosProcesos.getLastRecord();
+            horaInicio = regisUsuarioProceso.getStartTime();
+            horaFin = regisUsuarioProceso.getEndTime();
+        }
+        System.out.println("New login detected: ");
+        System.out.println(regisUsuarioProceso);
+    }
+
+    private static void waitForOpenSerialPort() {
+        while(!arduino.isOpen()){
+            arduino.openPort();
+        }
+    }
+    
     private static void setAPI() {
         if (labApi == null) {
             try {
@@ -155,31 +153,38 @@ public class LinkInterfacesLab2023 {
         }
     }
     
-    private static class AnalogRunnable implements Runnable{
+    private static synchronized void detectCloseSession(){
+        try {
+            labApi.database.closeConnection();
+            arduino.closePort();
+            if(!labApi.database.isConnectionValid()){
+                System.exit(0);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LinkInterfacesLab2023.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    /**
+     * Runnable que controla las entradas analogas y digitales de Arduino
+     */    
+    private static class InputsADRunnable implements Runnable{
 
         @Override
         public void run() {
             setAPI();
-            if (horaInicio.compareTo(horaFin)!= 0){
-                detectCloseSessionstatic();
-                return;
-            } 
             
             //VUELVE A LEER LA BASE DE DATOS POR SI HAY UN CAMBIO TANTO EN LAS SALIDAS DIGI Y LAS ENTRADAS A/D
             processVar = labApi.procesoVars.getProcessVars(true);
+            proceso = labApi.proceso.getProcess(3);
             
-            
-
             //LECTURA DE LA TABLA PROCESOS_VARS
-            //REVISAR
             if (processVar != null) {
-                messageNow = true;
                 señalSelected = processVar.getName(); 
                 iDseñalSelected = processVar.getId();
                 timeMues = proceso.getSampleTime();
             } else {
-                messageNow = false;
-                messagePrev = false;
                 señalSelected = "No hay registros con flag=true";
                 iDseñalSelected = 0;
                 System.out.println(señalSelected);
@@ -189,63 +194,86 @@ public class LinkInterfacesLab2023 {
             //COMPROBAR SI SE CAMBIO LA SEÑAL SELECCIONADA
             if(!señalTemp.equals(señalSelected)){
                 t = 0;
-            }
-            señalTemp = señalSelected;
-            
-            //AQUI ESTA EL ERROR //////////////////////////////////////////
-            
-            //ENVIAR SEÑALES DE ENTRADA
-            if(messageNow && messagePrev != messageNow){
                 System.out.println("IS ANALOG/DIGIAL");
-                System.out.println("SIGNAL: " + señalSelected);
-                System.out.println("ID: " + iDseñalSelected);
-
-                arduino.enviarTexto("T"+timeMues+","+señalSelected);
+                
+                //ENVIAR SEÑALES DE ENTRADA
                 System.out.println("T"+timeMues+","+señalSelected);
-                messagePrev = messageNow;
+                arduino.enviarTexto("T"+timeMues+","+señalSelected);
+                
+                señalTemp = señalSelected;
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(LinkInterfacesLab2023.class.getName())
+                            .log(Level.SEVERE, null, ex);
+                }
+                return;
             }
-            ///AQUI ESTA EL ERROR/////////////////////////////////////////////////////
+            
+            
             if(arduino.newAnalogData || arduino.newDigitalByte){
                 System.out.println("NEW DATA");
 
-                if (señalSelected.charAt(0)=='A'){
-                    valorAmp = (double) arduino.readAnalog;
-                    //REGISTRO PROCESO_VARS_DATA
-                } else if (señalSelected.charAt(0)=='D'){
-                    valorAmp = (double) arduino.readDigital;
+                switch (señalSelected.charAt(0)) {
+                    case 'A':
+                        valorAmp = (double) arduino.readAnalog;
+                        break;
+                    case 'D':
+                        valorAmp = (double) arduino.readDigital;
+                        break;
+                    default:
+                        return;
                 }
+                
+                int_proceso_vars_data varsData = new int_proceso_vars_data(
+                        iDseñalSelected, 
+                        valorAmp, 
+                        t, 
+                        Date.valueOf(hoy),
+                        Time.valueOf(LocalTime.now())
+                );
 
                 int insertSeñal = labApi.procesoVarsData
                         .insertVarData(
-                                iDseñalSelected, 
-                                valorAmp, 
-                                t, 
-                                Date.valueOf(hoy), 
-                                Time.valueOf(LocalTime.now())
+                                varsData.getProcessVarId(), 
+                                varsData.getValue(), 
+                                varsData.getTime(), 
+                                varsData.getDate(), 
+                                varsData.getClockTime()
                         );    
                 if (insertSeñal > 0) {
+                    t += timeMues;
                     System.out.println("Dato enviado.");
-
+                    System.out.println(varsData.toString());
                 }
-                t += timeMues;
 
                 if(señalSelected.charAt(0)=='A'){
                     arduino.newAnalogData = false;
                 } else if(señalSelected.charAt(0)=='D'){
                     arduino.newDigitalByte = false;
                 }
+                
             }
         }
     }
 
-    
-    private static class DigitalRunnable implements Runnable{
+    /**
+     * Runnable que controla las salidas digitales de Arduino.
+     * En este caso un valor de 1 o true represen un LED
+     * encendido.
+     */
+    private static class OutputsDRunnable implements Runnable{
 
         @Override
         public void run() {
             setAPI();
+            regisUsuarioProceso = labApi.usuariosProcesos.getLastRecord();
+            
+            horaInicio = regisUsuarioProceso.getStartTime();
+            horaFin = regisUsuarioProceso.getEndTime();  
+            
             if (horaInicio.compareTo(horaFin)!= 0){
-                detectCloseSessionstatic();
+                detectCloseSession();
                 return;
             } 
 
@@ -322,22 +350,12 @@ public class LinkInterfacesLab2023 {
             //VERIFICAR SI EL USUARIO SE SALIO DE LA SESION
             regisUsuarioProceso = labApi.usuariosProcesos.getLastRecord();
             horaFin = regisUsuarioProceso.getEndTime();
-
+            
+            // Actualizar valores
             prevStateDo0 = stateDo0;
             prevStateDo1 = stateDo1;
             prevStateDo2 = stateDo2;
             prevStateDo3 = stateDo3;
         }
-    }
-    
-    private static void detectCloseSessionstatic(){
-        try {
-            labApi.database.closeConnection();
-            arduino.closePort();
-            if(!labApi.database.isConnectionValid()){
-                System.exit(0);
-            }
-        }    
-	catch (Exception e) {e.printStackTrace();}
     }
 }

@@ -31,6 +31,7 @@ public class MainView extends JFrame {
         
         mainFrameController.addActionListeners();
         mainFrameController.addItemListeners();
+        mainFrameController.addWindowListener();
         
         comboSignalA.setSelectedIndex(1);
         comboSignalD.setSelectedIndex(1);
@@ -64,6 +65,7 @@ public class MainView extends JFrame {
         DO2 = new javax.swing.JToggleButton();
         DO3 = new javax.swing.JToggleButton();
         jLabel4 = new javax.swing.JLabel();
+        SaveButton = new javax.swing.JButton();
         lineChartPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -106,6 +108,8 @@ public class MainView extends JFrame {
 
         jLabel4.setText("ms");
 
+        SaveButton.setText("Guardar");
+
         javax.swing.GroupLayout signalPanelLayout = new javax.swing.GroupLayout(signalPanel);
         signalPanel.setLayout(signalPanelLayout);
         signalPanelLayout.setHorizontalGroup(
@@ -140,12 +144,6 @@ public class MainView extends JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, signalPanelLayout.createSequentialGroup()
-                .addContainerGap(13, Short.MAX_VALUE)
-                .addGroup(signalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel2)
-                    .addComponent(SelectButton))
-                .addGap(17, 17, 17))
             .addGroup(signalPanelLayout.createSequentialGroup()
                 .addGroup(signalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(signalPanelLayout.createSequentialGroup()
@@ -155,6 +153,14 @@ public class MainView extends JFrame {
                         .addGap(30, 30, 30)
                         .addComponent(jLabel1)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, signalPanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(signalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel2)
+                    .addGroup(signalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(SaveButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(SelectButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGap(17, 17, 17))
         );
         signalPanelLayout.setVerticalGroup(
             signalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -177,7 +183,9 @@ public class MainView extends JFrame {
                     .addComponent(jLabel4))
                 .addGap(12, 12, 12)
                 .addComponent(SelectButton)
-                .addGap(35, 35, 35)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(SaveButton)
+                .addGap(7, 7, 7)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(signalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -235,6 +243,7 @@ public class MainView extends JFrame {
     private javax.swing.JToggleButton DO1;
     private javax.swing.JToggleButton DO2;
     private javax.swing.JToggleButton DO3;
+    private javax.swing.JButton SaveButton;
     private javax.swing.JButton SelectButton;
     private javax.swing.JComboBox<String> comboSignalA;
     private javax.swing.JComboBox<String> comboSignalD;
@@ -301,6 +310,12 @@ public class MainView extends JFrame {
     public void setLineChartPanel(JPanel lineChartPanel) {
         this.lineChartPanel = lineChartPanel;
     }
-    
-    
+
+    public JButton getSaveButton() {
+        return SaveButton;
+    }
+
+    public void setSaveButton(JButton SaveButton) {
+        this.SaveButton = SaveButton;
+    }    
 }
