@@ -7,8 +7,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Implementa la interfaz int_usuariosDAO para implementar 
+ *Implementa la interfaz int_usuariosDAO para implementar 
  * todos los métodos para manejar la tabla int_usuarios.
+ * @author Juan Esteban Montenegro
+ * @author Juan Camilo Chavez
  */
 public class int_usuariosDAOImp implements int_usuariosDAO {
 	
@@ -23,7 +25,7 @@ public class int_usuariosDAOImp implements int_usuariosDAO {
 	private Connection dbConn = null; 	
 	
     /**
-     * Constructor de la clase int_usuariosDAOImp
+      * Constructor de la clase int_usuariosDAOImp
      * 
      * @param dbConn Conexión a la base de datos.
      */
@@ -49,7 +51,7 @@ public class int_usuariosDAOImp implements int_usuariosDAO {
     /** Obtiene un objeto int_usuarios por su ID desde la base de datos.
      * 
      * @param idUser El ID del usuario que se desea obtener.
-     * @return El objeto int_usuarios con el ID especificado, o null si no se encuentra.
+     * @return resUser El objeto int_usuarios con el ID especificado, o null si no se encuentra.
      */
         @Override
 	public int_usuarios getUser(int idUser) {
@@ -80,7 +82,7 @@ public class int_usuariosDAOImp implements int_usuariosDAO {
 	 * 
 	 * @param email String with the email of the user to get from the int_usuarios table.
 	 * @param password String with the password of the user to get from the int_usuarios table.
-         * @return 
+         * @return El objeto int_usuarios con el ID especificado, o null si no se encuentra.
 	 */
         @Override
 	public int_usuarios getLoginUser(String email, String password) {

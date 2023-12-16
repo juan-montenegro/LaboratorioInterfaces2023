@@ -57,8 +57,7 @@ public class int_procesoDAOImpl implements int_procesoDAO {
      * @param connection La conexión a la base de datos.
      */
     public int_procesoDAOImpl(Connection connection) {
-        this.connection = connection;
-        
+        this.connection = connection;   
     }
 
 //    @Override
@@ -271,6 +270,10 @@ public class int_procesoDAOImpl implements int_procesoDAO {
         return resRows;  
     }
 
+    /**
+     * 
+     * @return currentProcess
+     */
     public int_proceso getCurrentProcess() {
         return currentProcess;
     }    

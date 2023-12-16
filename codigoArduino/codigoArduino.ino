@@ -22,15 +22,19 @@ const int Led2 = 10;
 const int Led3 = 11;
 const int Led4 = 12;
 
-volatile unsigned muestreoActual=0;
-volatile unsigned muestreoAnterior=0;
-volatile unsigned deltaMuestreo=0;
+long double muestreoActual=0;
+long double muestreoAnterior=0;
+long double deltaMuestreo=0;
 
 const char START_DELIMITER = 'T';
 const char END_DELIMITER = ',';
 int ts=100; //tiempo de muestreo
 const int ledPin = 13;
+volatile int sensorVal;
 
+void leerTiempo(String trama);
+void potenciometro(const int pin);
+void enviarDatos(const int pin );
 
 void leerTiempo(String trama) {
   String firstPart;
@@ -68,6 +72,34 @@ void leerTiempo(String trama) {
   
 }
 
+void potenciometro(const int pin){
+    
+  sensorVal=analogRead(pin); 
+  Serial.print("sensorVal: ");
+  Serial.println(sensorVal);
+  //Serial.println("PUERTO: " + lectura);
+  buffer[0]=h1;
+  buffer[1]=h2;
+  buffer[2]=sensorVal/256;
+  buffer[3]=sensorVal%256;
+  buffer[4]=h3;
+  Serial.write(buffer,sizeof(buffer));
+  
+  Serial.println("PUERTO: " + lectura);
+  Serial.print("sensorVal: " + String(sensorVal));  
+}
+void enviarDatos(const int pin ) {
+  int S2=digitalRead(pin);
+  byte dato = constrain(S2,0,1);
+
+  buffer[0] = h1;
+  buffer[1] = h2;
+  buffer[2] = dato;
+  buffer[3] = h3;
+
+  Serial.write(buffer, sizeof(buffer));
+}
+
 void setup() {
   // put your setup code here, to run once:
 pinMode(13,OUTPUT);
@@ -92,8 +124,9 @@ void loop() {
       leerTiempo(lectura);
       delay(100);
     }
-    Serial.println("PUERTO: " + lectura);
     
+
+    muestreoActual=millis();
      
      if(lectura=="DO01"){
       digitalWrite(Led1,HIGH);
@@ -120,10 +153,9 @@ void loop() {
       digitalWrite(Led4,LOW);
       } 
 
-      
+  
       if(lectura=="A0"){
-        muestreoActual = millis();
-        deltaMuestreo = (double) muestreoActual-muestreoAnterior;
+        deltaMuestreo = muestreoActual-muestreoAnterior;
         if(deltaMuestreo>=ts){
         potenciometro(SensorPin0);
         muestreoAnterior=muestreoActual;
@@ -131,8 +163,7 @@ void loop() {
       }
 
       else if(lectura=="A1"){
-        muestreoActual=millis();
-        deltaMuestreo=(double) muestreoActual-muestreoAnterior;
+        deltaMuestreo= muestreoActual-muestreoAnterior;
         if(deltaMuestreo>=ts){
         potenciometro(SensorPin1);
         muestreoAnterior=muestreoActual;
@@ -140,17 +171,16 @@ void loop() {
       }
 
       else if(lectura=="A2"){
-        muestreoActual=millis();
-        deltaMuestreo=(double) muestreoActual-muestreoAnterior;
+        deltaMuestreo= muestreoActual-muestreoAnterior;
         if(deltaMuestreo>=ts){
-        potenciometro(SensorPin2);
-        muestreoAnterior=muestreoActual;
+          
+          potenciometro(SensorPin2);
+          muestreoAnterior=muestreoActual;
         } 
       }
 
       else if(lectura=="A3"){
-        muestreoActual=millis();
-        deltaMuestreo=(double) muestreoActual-muestreoAnterior;
+        deltaMuestreo= muestreoActual-muestreoAnterior;
         if(deltaMuestreo>=ts){
         potenciometro(SensorPin3);
         muestreoAnterior=muestreoActual;
@@ -158,8 +188,7 @@ void loop() {
       }
 
       else if(lectura=="A4"){
-        muestreoActual=millis();
-        deltaMuestreo=(double) muestreoActual-muestreoAnterior;
+        deltaMuestreo= muestreoActual-muestreoAnterior;
         if(deltaMuestreo>=ts){
         potenciometro(SensorPin4);
         muestreoAnterior=muestreoActual;
@@ -167,7 +196,6 @@ void loop() {
       }
 
       else if(lectura=="A5"){
-        muestreoActual=millis();
         deltaMuestreo=(double) muestreoActual-muestreoAnterior;
         if(deltaMuestreo>=ts){
         potenciometro(SensorPin5);
@@ -175,7 +203,6 @@ void loop() {
         } 
       }
       else if(lectura=="A6"){
-        muestreoActual=millis();
         deltaMuestreo=(double) muestreoActual-muestreoAnterior;
         if(deltaMuestreo>=ts){
         potenciometro(SensorPin6);
@@ -183,7 +210,6 @@ void loop() {
         } 
       }
       else if(lectura=="A7"){
-        muestreoActual=millis();
         deltaMuestreo=(double) muestreoActual-muestreoAnterior;
         if(deltaMuestreo>=ts){
         potenciometro(SensorPin7);
@@ -191,7 +217,6 @@ void loop() {
         } 
       }
       else if(lectura=="D0"){
-        muestreoActual=millis();
         deltaMuestreo=(double) muestreoActual-muestreoAnterior;
         if(deltaMuestreo>=ts){
          enviarDatos(pin_S2);
@@ -199,7 +224,6 @@ void loop() {
         }
       }   
       else if(lectura=="D1"){
-        muestreoActual=millis();
         deltaMuestreo=(double) muestreoActual-muestreoAnterior;
         if(deltaMuestreo>=ts){
          enviarDatos(pin_S3);
@@ -207,7 +231,6 @@ void loop() {
         }
       }   
       else if(lectura=="D2"){
-        muestreoActual=millis();
         deltaMuestreo=(double) muestreoActual-muestreoAnterior;
         if(deltaMuestreo>=ts){
          enviarDatos(pin_S4);
@@ -215,40 +238,10 @@ void loop() {
         }
       }   
       else if(lectura=="D3"){
-        muestreoActual=millis();
         deltaMuestreo=(double) muestreoActual-muestreoAnterior;
         if(deltaMuestreo>=ts){
          enviarDatos(pin_S5);
          muestreoAnterior=muestreoActual;
         }
       }
-     
-
-
-
-}
-
-void potenciometro(const int pin){
-    
-  int sensorVal=analogRead(pin); 
-  Serial.print("sensorVal: ");
-  Serial.println(sensorVal);
-  
-  buffer[0]=h1;
-  buffer[1]=h2;
-  buffer[2]=sensorVal/256;
-  buffer[3]=sensorVal%256;
-  buffer[4]=h3;
-  Serial.write(buffer,sizeof(buffer));
-}
-void enviarDatos(const int pin ) {
-  int S2=digitalRead(pin);
-  byte dato = constrain(S2,0,1);
-
-  buffer[0] = h1;
-  buffer[1] = h2;
-  buffer[2] = dato;
-  buffer[3] = h3;
-
-  Serial.write(buffer, sizeof(buffer));
 }
