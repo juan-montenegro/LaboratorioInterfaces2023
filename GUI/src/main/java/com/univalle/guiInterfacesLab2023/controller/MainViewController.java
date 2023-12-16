@@ -4,6 +4,7 @@
  */
 package com.univalle.guiInterfacesLab2023.controller;
 
+import com.univalle.guiInterfacesLab2023.MainApp;
 import com.univalle.guiInterfacesLab2023.model.SignalData;
 import com.univalle.guiInterfacesLab2023.view.MainView;
 import com.univalle.guiInterfacesLab2023.view.LineChartPanel;
@@ -20,13 +21,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -38,18 +46,20 @@ import org.jfree.data.xy.XYSeriesCollection;
  *
  * @author juane
  */
-public class MainViewController implements ActionListener, ItemListener  {
+public class MainViewController extends WindowAdapter implements ActionListener, ItemListener  {
     private final Color OFF_COLOR = new Color(187,187,187);
     private final Color ON_COLOR = new Color(251, 208, 62);
     private LabAPI api;
     private int_proceso_refsDAOImpl refsController;
     private int_proceso_vars_dataDAOImpl varsController;
+    private int_proceso_vars_data varsDataPrev;
     private int_proceso_vars vars;
     private int_proceso_refs refs;
     private int timeMues = 0;
     private String selectedAnSignal = "";
     private String selectedDgSignal = "";
     private String tittleChart = "Signal";
+    private boolean isNewData;
     private final SignalData data;
     
     
@@ -83,6 +93,7 @@ public class MainViewController implements ActionListener, ItemListener  {
         
         this.data = new SignalData();
         lineChartPanel = mainView.getLineChartPanel();
+        
         plotRunnable = new PlotRunnableImpl();
         scheduledService.scheduleAtFixedRate(
                 plotRunnable, 
@@ -90,13 +101,22 @@ public class MainViewController implements ActionListener, ItemListener  {
                 200, 
                 TimeUnit.MILLISECONDS
         );
+        mainView.getSaveButton().setEnabled(false);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if(varsController == null) setVarsController();
         if (e.getSource() == mainView.getSelectButton()){
-            if(varsController == null) setVarsController();
             buttonPressed();
+            mainView.getSaveButton().setEnabled(true);
+        } else if (e.getSource() == mainView.getSaveButton()){
+            try {
+                PrintPlainText.saveToPlainText(tittleChart, 0, dataset);
+            } catch (IOException ex) {
+                Logger.getLogger(MainViewController.class.getName())
+                        .log(Level.SEVERE, null, ex);
+            }
         }
     }
     
@@ -130,6 +150,7 @@ public class MainViewController implements ActionListener, ItemListener  {
     
     public void addActionListeners(){
         mainView.getSelectButton().addActionListener(this);
+        mainView.getSaveButton().addActionListener(this);
     }
     
     public void addItemListeners(){              
@@ -140,6 +161,10 @@ public class MainViewController implements ActionListener, ItemListener  {
         
         mainView.getComboSignalA().addItemListener(this);
         mainView.getComboSignalD().addItemListener(this);
+    }
+    
+    public void addWindowListener(){
+        mainView.addWindowListener(this);
     }
     
     private void stateChanged(ItemEvent e, JToggleButton item){
@@ -273,12 +298,25 @@ public class MainViewController implements ActionListener, ItemListener  {
             if(!isAPIvalid()) return;
             vars = api.procesoVars.getProcessVar(tittleChart);
             if (vars == null) return;
-            if(!vars.isFlag()) return;
+            if (!vars.isFlag()) return;
             System.out.println("Obteniendo ultimo dato.");
             int_proceso_vars_data varsData = varsController.getLastProcess();
+            
             boolean isValidDate = dateFlag.before(varsData.getDate()) || dateFlag.compareTo(varsData.getDate()) == 0;
             boolean isTimeValid = timeFlag.before(varsData.getClockTime());
+            
+            if (varsDataPrev == null) {
+                varsDataPrev = varsData;
+                isNewData = true;
+            } else {
+                isNewData = varsData.getId() != varsDataPrev.getId();
+            }
+            
+            
             if (isValidDate && isTimeValid) {
+                if (!isNewData) return;
+                t = varsData.getTime() / 1000;
+                
                 data.addTime(t);
 
                 System.out.println("PLOT");
@@ -293,9 +331,49 @@ public class MainViewController implements ActionListener, ItemListener  {
 
                 lineChartPanel.repaint();
 
-                t += timeMues;
+                varsDataPrev = varsData;
             }
             
         }
     }
+
+    @Override
+    public void windowClosed(WindowEvent e) {
+        super.windowClosed(e);
+    }
+
+    @Override
+    public void windowClosing(WindowEvent e) {
+        super.windowClosing(e); 
+        
+        int_proceso_vars varsData;
+        List<int_proceso_refs> dataList;
+        varsData = api.procesoVars.getProcessVars(true);
+        dataList = api.procesoRefs.getNamesFlags(true);
+        if (dataList != null) {
+            for (int_proceso_refs next : dataList) {
+                next.setFlag(false);
+                int res = api.procesoRefs.updateProcessRef(next);
+                if (res > 0) {                            
+                    System.out.println(dataList.toString());
+                }
+            }   
+        }
+        if (varsData != null) {
+            varsData.setFlag(Boolean.FALSE);
+            int res = DatabaseController.getAPI().procesoVars.updateProcessVar(varsData);
+            if (res > 0) {                            
+                System.out.println(varsData.toString());
+            }
+        }
+        DatabaseController.getAPI()
+            .usuariosProcesos.updateHoraFin(LocalTime.now());
+        try {
+            DatabaseController.getAPI().database.closeConnection();
+        } catch (SQLException ex) {
+            Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        System.exit(0);        
+    }
+    
 }

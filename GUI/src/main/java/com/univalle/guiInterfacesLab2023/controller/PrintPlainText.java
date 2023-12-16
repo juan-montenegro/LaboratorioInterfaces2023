@@ -17,8 +17,9 @@ import org.jfree.data.xy.XYSeriesCollection;
 public class PrintPlainText {
     
     public static void saveToPlainText(String fileName, int serie, XYSeriesCollection dataset) throws IOException {
+        System.out.println("GUARDAR....................");
         BufferedWriter outputWriter;
-        int len = dataset.getItemCount(0);
+        int len = dataset.getItemCount(0) - 1;
         double stamp = dataset.getYValue(serie, len);
         outputWriter = new BufferedWriter(new FileWriter(fileName+"_"+stamp+".txt"));
         for (int i = 0; i < dataset.getItemCount(0); i++) {

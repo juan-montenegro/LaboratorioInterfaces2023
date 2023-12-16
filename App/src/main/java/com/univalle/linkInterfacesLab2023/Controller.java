@@ -8,6 +8,7 @@ import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -17,13 +18,11 @@ import java.util.logging.Logger;
  *
  * @author camilo
  */
-public class Controller implements Runnable, SerialPortDataListener
+public class Controller implements SerialPortDataListener
 {
 	private final SerialPort puertoSerie;
 	private byte[] myNewData;
-	private Thread myReadingThread;
-        private Thread myWrittingThread;
-	//private static String mySerialPortDesc = "COM2";
+
         private static int estadoFSM = 0;
 
         static final byte HEADER1 = 0x7a;
@@ -45,7 +44,7 @@ public class Controller implements Runnable, SerialPortDataListener
         init();
     }
 
-    public void init() {
+    private void init() {
         puertoSerie.setComPortParameters(
                 9600, 
                 8, 
@@ -55,17 +54,6 @@ public class Controller implements Runnable, SerialPortDataListener
         );
         puertoSerie.openPort();
         puertoSerie.getInputStream();
-
-    }
-
-    public void startThreads() {
-        //Hilo de ejecución para recivir datos
-        myReadingThread = new Thread(this);
-        myWrittingThread = new Thread(this);
-        if (!myWrittingThread.isAlive()) {
-            myWrittingThread.start();
-        }
-        myReadingThread.start();
     }
 
     public void addDataListener() {
@@ -73,16 +61,6 @@ public class Controller implements Runnable, SerialPortDataListener
         puertoSerie.addDataListener(this);
     }
     
-    @Override
-    public void run() {
-        try 
-	{
-           while (true)
-           {
-		Thread.sleep(200);
-           }
-	} catch (InterruptedException e) {}
-    }
 
     @Override
     public int getListeningEvents() {
@@ -101,12 +79,19 @@ public class Controller implements Runnable, SerialPortDataListener
 
         } 
     }
-    
-    
    
+    public SerialPort getPuertoSerie() {
+        return puertoSerie;
+    }
+    
     public boolean isOpen(){
         return puertoSerie.isOpen();
     } 
+    
+    public void openPort(){
+        this.puertoSerie.openPort();
+    }
+    
     public boolean closePort() {
         return puertoSerie.closePort();
     }
@@ -116,29 +101,25 @@ public class Controller implements Runnable, SerialPortDataListener
             case 0:
                 if(trama == HEADER1){
                     estadoFSM = 1;
-//                    System.out.println("H1: " +trama);
                 }
                 break;
             case 1:
                 if(trama == HEADER2){
                     estadoFSM = 2;
-//                    System.out.println("H2: " + trama);
                 }
                 break;
             case 2:
                 B1 = trama;
-//                System.out.println("B1: " + trama);
                 estadoFSM = 3; 
                 break;
             case 3:
                 if(trama == HEADER3){
-//                    System.out.println("H3: " + trama);
                     estadoFSM = 0;
                     readDigital = B1;
                     newDigitalByte = true;
+                    System.out.println("readDigital: " + readDigital);
                 }
                 else{
-//                    System.out.println("B2: " + trama);
                     B2 = trama;
                     estadoFSM = 4;
                 }   
@@ -174,36 +155,27 @@ public class Controller implements Runnable, SerialPortDataListener
     
     
     public void enviarTexto(String data) {
-//        System.out.println("IS THREAD ALIVE?");
-        if (!myWrittingThread.isAlive()) {
-//            System.out.println("START WRITE THREAD");
-            myWrittingThread.start();
-        }
-//        System.out.println("THREAD ALIVE");
-//        System.out.println("IS PORT OPEN?");
-        if (puertoSerie.isOpen()) {
-            try {
-//                System.out.println("SENDING: " + data);
-                OutputStream out = puertoSerie.getOutputStream();
-                out.write(data.getBytes()); // Envía la cadena como un array de bytes
-                out.flush();
-                try {
-                    TimeUnit.MILLISECONDS.sleep(200);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-                }
-               
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
+        if (!puertoSerie.isOpen()) {
             System.out.println("El puerto COM no está abierto.");
+            return;
+        }
+        OutputStream out = puertoSerie.getOutputStream();
+        try {
+            // Envía la cadena como un array de bytes
+            out.write(data.getBytes()); 
+            out.flush();
+        } catch (IOException ex) {
+            Logger.getLogger(Controller.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        }
+
+        try {
+            TimeUnit.MILLISECONDS.sleep(200);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Controller.class.getName())
+                    .log(Level.SEVERE, null, ex);
         }
         
-    }
-
-    public SerialPort getPuertoSerie() {
-        return puertoSerie;
     }
     
 }
