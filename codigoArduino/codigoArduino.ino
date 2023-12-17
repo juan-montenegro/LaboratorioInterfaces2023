@@ -4,8 +4,6 @@ byte h2=0x7b;
 byte h3=0x7c;
 String lectura;
 
-String header1="T";
-String header2="M";
 int estadoFSM=0;
 const int SensorPin0=A0;
 const int SensorPin1=A1;
@@ -37,7 +35,6 @@ const int ledPin = 13;
 void leerTiempo(String trama) {
   String firstPart;
   String secondPart;
-  //String trama = Serial.readStringUntil(END_DELIMITER);
   
   if (trama.startsWith(String(START_DELIMITER))) {
     Serial.println("TRAMA: "+trama);
@@ -62,9 +59,9 @@ void leerTiempo(String trama) {
 
     // Actualiza el tiempo de muestreo
     ts = nuevoValor;
-    digitalWrite(ledPin, HIGH);
-    delay(1000);
-    digitalWrite(ledPin, LOW);
+    digitalWrite(Led4, HIGH);
+    delay(500);
+    digitalWrite(Led4, LOW);
   } else {
    // Serial.println("Trama inválida.");
   }
@@ -98,34 +95,33 @@ void loop() {
     Serial.println("PUERTO: " + lectura);
     
      
-     if(lectura=="s11"){
+     if(lectura=="DO01"){
       digitalWrite(Led1,HIGH);
       }
-     else if(lectura=="s10"){
+     else if(lectura=="DO00"){
       digitalWrite(Led1,LOW);
       } 
-      else if(lectura=="s21"){
+      else if(lectura=="DO11"){
       digitalWrite(Led2,HIGH);
       }
-     else if(lectura=="s20"){
+     else if(lectura=="DO10"){
       digitalWrite(Led2,LOW);
       }  
-      else if(lectura=="s31"){
+      else if(lectura=="DO21"){
       digitalWrite(Led3,HIGH);
       }
-      else if(lectura=="s30"){
+      else if(lectura=="DO20"){
       digitalWrite(Led3,LOW);
       } 
-      else if(lectura=="s41"){
+      else if(lectura=="DO31"){
       digitalWrite(Led4,HIGH);
       }
-      else if(lectura=="s40"){
+      else if(lectura=="DO30"){
       digitalWrite(Led4,LOW);
       } 
 
       
       if(lectura=="A0"){
-        Serial.println("LEYENDO: " + lectura);
         muestreoActual = millis();
         deltaMuestreo = (double) muestreoActual-muestreoAnterior;
         if(deltaMuestreo>=ts){
@@ -234,17 +230,16 @@ void loop() {
 
 void potenciometro(const int pin){
     
-          int sensorVal=analogRead(pin); 
-          Serial.print("sensorVal: ");
-          Serial.println(sensorVal);
-          
-          buffer[0]=h1;
-          buffer[1]=h2;
-          buffer[2]=sensorVal/256;
-          buffer[3]=sensorVal%256;
-          buffer[4]=h3;
-          Serial.write(buffer,sizeof(buffer));
-        
+  int sensorVal=analogRead(pin); 
+  Serial.print("sensorVal: ");
+  Serial.println(sensorVal);
+  
+  buffer[0]=h1;
+  buffer[1]=h2;
+  buffer[2]=sensorVal/256;
+  buffer[3]=sensorVal%256;
+  buffer[4]=h3;
+  Serial.write(buffer,sizeof(buffer));
 }
 void enviarDatos(const int pin ) {
   int S2=digitalRead(pin);
