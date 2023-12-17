@@ -5,8 +5,6 @@
 package com.univalle.guiInterfacesLab2023;
 import com.univalle.guiInterfacesLab2023.view.LoginView;
 import com.univalle.guiInterfacesLab2023.view.MainView;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 /**
  *
@@ -42,12 +40,6 @@ public class MainApp {
             MainView mainFrame = new MainView();
             LoginView loginView = new LoginView(mainFrame,true);
             
-            loginView.addWindowListener(new WindowAdapter() {
-                @Override
-                public void windowClosing(WindowEvent e) {
-                    System.exit(0);
-                }
-            });
             mainFrame.setVisible(false);
             loginView.setVisible(true);
         });
