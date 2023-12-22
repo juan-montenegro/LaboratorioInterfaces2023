@@ -1,0 +1,8 @@
+{
+    "main": "index.js",
+    "type": "module",
+    "dependencies": {
+        "mysql": "^2.18.1",
+        "serialport": "^12.0.0"
+    }
+}
