@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Se incluye la librería Chart.js para la creación de gráficos -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+    <script type="text/javascript">
+      document.addEventListener("DOMContentLoaded", function () {
+        // Variables para almacenar los datos del gráfico
+        var valorCh = [];
+        var dato_Value = [];
+        var va_Time = [];
+        var Tiempo = [];
+        var myTime = 0;
+        var myWishLengh = 50;
+        var currLenght = 0;
+
+        // Socket client y URL del servidor
+        var mySocket = new WebSocket("ws://localhost/wsNJS");
+
+        // Eventos del socket
+        mySocket.onopen = mySocketOpen;
+        mySocket.onmessage = mySocketShowData;
+
+        // Función de callback al abrir el socket
+        function mySocketOpen() {
+          mySocket.send("A0");
+          setInterval(function () {
+            mySocket.send("A0");
+          }, 1000);
+        }
+
+        // Función de callback al recibir datos del socket
+        function mySocketShowData(result) {
+          try {
+            // Supongamos que result.data contiene un array de números
+            var valoresArray = JSON.parse(result.data);
+            console.log(valoresArray);
+            // Agregar datos a las variables de tiempo y valores
+            for (var i = 0; i < valoresArray.length; i++) {
+              dato_Value.push(valoresArray[i]);
+              va_Time.push(myTime);
+              myTime += 1;
+            }
+
+            // Ajustar la longitud de los datos si es necesario
+            var currLength = dato_Value.length;
+            if (currLength > myWishLengh) {
+              va_Time.splice(0, currLength - myWishLengh);
+              dato_Value.splice(0, currLength - myWishLengh);
+            }
+
+            // Llamar a la función para graficar los datos
+            plottingData(va_Time, dato_Value);
+          } catch (error) {
+            console.error("Error en mySocketShowData:", error);
+          }
+        }
+
+        // Función de callback al cerrar la página
+        window.onbeforeunload = function () {
+          mySocket.close();
+        };
+
+        // Inicializar el gráfico vacío
+        var ctx = document.getElementById("lineChart").getContext("2d");
+        var myChart = new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: [],
+            datasets: [
+              {
+                data: [],
+                label: "A0",
+                borderColor: "#8bc34a",
+                fill: false,
+              },
+            ],
+          },
+          options: {
+            title: {
+              display: true,
+              text: "Valor del Canal 0 Vs. Tiempo",
+              fontColor: "#ffffff", // Color del texto del título del gráfico
+            },
+            scales: {
+              yAxes: [
+                {
+                  ticks: {
+                    fontColor: "#ffffff", // Color del texto del eje Y
+                  },
+                },
+              ],
+              xAxes: [
+                {
+                  ticks: {
+                    fontColor: "#ffffff", // Color del texto del eje X
+                  },
+                },
+              ],
+            },
+          },
+        });
+
+        function plottingData(varTime, varData) {
+          try {
+            // Asegurarse de que varTime y varData tengan la misma longitud
+            if (varTime.length !== varData.length) {
+              console.error(
+                "Error: varTime y varData deben tener la misma longitud."
+              );
+              return;
+            }
+
+            // Agregar el nuevo tiempo al final del vector de tiempos
+            varTime.push(myTime);
+
+            // Agregar el nuevo dato al final del vector de datos
+            varData.push(valorCh);
+
+            // Limitar el número de elementos a mostrar en la ventana a 50
+            if (varTime.length > 50) {
+              varTime.shift(); // Eliminar el primer elemento del vector de tiempos
+              varData.shift(); // Eliminar el primer elemento del vector de datos
+            }
+
+            // Asignar directamente los datos al gráfico
+            myChart.data.labels = varTime;
+            myChart.data.datasets[0].data = varData;
+
+            // Actualizar el gráfico
+            myChart.update();
+          } catch (error) {
+            console.error("Error en plottingData:", error);
+          }
+        }
+      });
+    </script>
+    <meta charset="utf-8" />
+    <title>Entrada Analógica A0</title>
+    <style>
+      body {
+        text-align: center;
+        font-family: Arial, sans-serif;
+        background-color: #69bff0;
+        margin: 0;
+        padding: 0;
+      }
+
+      h1 {
+        color: #ffffff;
+      }
+
+      .chart-container {
+        position: relative;
+        height: 40vh;
+        width: 80vw;
+        margin: auto;
+        margin-top: 20px;
+      }
+
+      img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        margin: 10px;
+        width: auto;
+        max-height: 80px;
+      }
+      /* Agregar reglas para el color del texto del gráfico */
+      #lineChart {
+        color: #e82d2d; /* Color del texto del gráfico */
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Imagen del logo -->
+    <img src="images/lampara_off.jpg" alt="Ejemplo de imagen" height="100" />
+    <!-- Título de la página -->
+    <h1>Entrada Analógica A0</h1>
+    <!-- Contenedor del gráfico -->
+    <div class="chart-container">
+      <canvas id="lineChart"></canvas>
+    </div>
+  </body>
+</html>

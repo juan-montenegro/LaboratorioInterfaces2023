@@ -1,0 +1,101 @@
+.author-names {
+    position: absolute;
+    top: 10px; /* Ajusta la distancia desde la parte superior */
+    left: 10px; /* Ajusta la distancia desde la derecha */
+    text-align: right; /* Alinea el texto a la derecha */
+    color: #ffffff; /* Color de texto en tonalidad de azul */
+    font-size: 0.8em;
+  }
+  
+  /* Resto de los estilos (mantén los estilos anteriores) */
+  body {
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    background-color: #63b4dd; /* Fondo en tonalidad de azul */
+    color: #333; /* Texto en tonalidad de azul oscuro */
+  }
+  
+  header {
+    background-color: #3b3b99; /* Color de fondo para el encabezado en tonalidad de azul */
+    padding: 10px;
+  }
+  
+  
+  img {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 10px;
+    width: auto;
+    max-height: 80px;
+  }
+  
+  h1 {
+    margin-top: 20px;
+    color: #ffff
+  }
+  
+  .content {
+    margin-left: 120px; /* Ajuste el margen izquierdo del contenido principal */
+    margin-right: 100;
+  }
+  
+  .category {
+    margin: 30px;
+    width: 150px;
+    margin-left: auto; /* Centrar horizontalmente */
+    margin-right: auto; /* Centrar horizontalmente */
+    font-size: 1.2em;
+    font-weight: bold;
+    text-align: center; /* Alinea los subtítulos a la izquierda */
+    background-color: #ffffff; /* Color de fondo para las categorías en tonalidad de azul claro */
+    padding: 10px;
+    border-radius: 50%;
+  }
+  
+  .pair {
+    display: inline-block; /* Hace que los contenedores sean en línea */
+    margin-right: 10px; /* Espacio entre los pares (ajusta según tus necesidades) */
+  }
+  
+  /* Estilos para la lista de enlaces */
+  .list {
+    list-style-type: none; /* Elimina los marcadores de lista */
+    padding: 0; /* Elimina el relleno de la lista */
+  }
+  
+  /* Estilos para los elementos de lista (li) */
+  .list li {
+    margin-bottom: 5px; /* Espacio entre los elementos dentro de cada par (ajusta según tus necesidades) */
+    color: #ffffff
+  }
+  
+  a {
+    display: block;
+    margin: 10px;
+    color: #0a5f99; /* Color de enlaces en tonalidad de azul */
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  
+
+  /* Media query para pantallas más pequeñas (hasta 768px) */
+  @media (max-width: 768px) {
+    .content {
+      margin-left: 10px; /* Cambia el margen izquierdo para pantallas más pequeñas */
+    }
+  
+    img {
+      max-height: 60px; /* Cambia el tamaño máximo de la imagen */
+    }
+  
+    footer {
+      text-align: center; /* Centra el pie de página para pantallas más pequeñas */
+    }
+  }
+  

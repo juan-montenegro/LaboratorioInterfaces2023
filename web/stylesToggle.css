@@ -1,0 +1,60 @@
+body {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    background-color: #dceaf5; /* Tonalidad de azul pastel */
+    color: #333; /* Color de texto oscuro para contraste */
+    margin: 0;
+    padding: 0;
+    position: relative;
+  }
+  
+  h1 {
+    color: #333; /* Color de texto oscuro para contraste */
+  }
+  
+  .logo-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 10px;
+  }
+  
+  .button-container {
+    margin-top: 20px;
+  }
+  
+  button {
+    margin: 5px;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #88c3d1; /* Tonalidad de azul pastel */
+    color: #333; /* Color de texto oscuro para contraste */
+    border: none;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #a6d7e3; /* Tonalidad de azul pastel más clara en el hover */
+    color: #333; /* Color de texto oscuro para contraste */
+  }
+  
+  #mensajeContainer {
+    margin-top: 10px;
+    font-size: 16px;
+    color: #4b834d; /* Tonalidad de verde pastel para contraste */
+  }
+  
+  img.logo {
+    width: auto;
+    max-height: 80px;
+  }
+  
+  #lamparaContainer {
+    margin-top: 20px;
+    text-align: center;
+  }
+  
+  #lampara {
+    width: auto;
+    height: 100px;
+  }

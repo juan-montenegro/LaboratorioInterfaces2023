@@ -1,9 +1,7 @@
 import { SerialPort } from 'serialport';
 import { ReadlineParser } from '@serialport/parser-readline';
 import { Buffer as _Buffer } from 'buffer';
-import { setTimeout } from "timers/promises";
 
-import sqlDB  from "./sqlController.js";
 import myEventEmitter from './eventController.js';
 
 const { Buffer } = _Buffer;
@@ -18,6 +16,7 @@ class SerialController {
     time = 0;
     data = 0;
     procesoId = 0;
+    ready = false;
 
     constructor(COM) {
         console.log('Creating serialPort');
@@ -46,13 +45,18 @@ class SerialController {
         this.serialPort.pipe(this.myParserSP);
 
         this.myParserSP.on('data', (data) => {
+            if(data == "<READY>\r"){
+                console.log("PORT IS READY....");
+                this.ready = true;
+                return;
+            }
             console.log('SERIAL PORT: Data received: ' + data);
     
-            if(this.id > 0){
+            if(this.id > 0 && this.ready){
+                data = +data.replace('\r','');
                 this.time += this.timeMus;
                 this.data = data;
-                
-                sqlDB.varsDataProcess(this.id, this.data, this.time);    
+                myEventEmitter.emit('data_arduino',this.id, this.data, this.time);
             }
             
         });
@@ -75,21 +79,11 @@ class SerialController {
     }
 
     /**
-     * @param {string} signal
-     */
-    set cmd(signal){
-        this.signal = signal;
-    }
-
-    get cmd(){
-        return this.signal;
-    }
-
-    /**
      * @param {number} procesoId
      */
     set id(procesoId){
         if (this.procesoId != procesoId) {
+            this.time = 0;
             console.log("NEW PROCESS: "+ procesoId);
             this.procesoId = procesoId;
         }
@@ -100,12 +94,10 @@ class SerialController {
     }
 
 
-    async write(command) {
+    write(command) {
         if (this.isOpen){
-            this.time = 0;
             console.log('Data to write: ', command);
-            this.serialPort.write(command +'\n'); 
-            await setTimeout(200);
+            this.serialPort.write(command + '\n'); 
         }       
     }
 

@@ -51,7 +51,6 @@ class SqlController {
         let clock = date.format(now, 'HH:mm:ss');
         
         let myQueryValues = [processId,value,time,today,clock];
-        console.log(JSON.stringify(myQueryValues));
         
         console.log("INSERT int_proceso_vars_data: " + JSON.stringify(myQueryValues));
 
@@ -89,15 +88,14 @@ class SqlController {
             const {id, nombre} = result;
 
             this.signal = nombre;
-            mySerial.cmd = nombre;            
 
-            if(this.signalTemp !== this.signal){
+            if(this.signalTemp !== this.signal && mySerial.ready){
                 console.log('SELECT FROM int_proceso_vars: '+ JSON.stringify(result));
                 console.log("SENDING DATA FROM " + nombre + " TO processId " + id);
                 mySerial.write("T500,"+this.signal);
                 myEventEmitter.emit('data_db', id);
+                this.signalTemp = this.signal;
             }
-            this.signalTemp = this.signal;
         });
     }
 
@@ -107,6 +105,7 @@ class SqlController {
         let myQueryValues = [processId];
 
         if(this.conn == null) return;
+        if(!mySerial.ready) return;
         this.conn.query(getQuery, myQueryValues, (error, results, fields) => {
             if (error) throw error;
 
@@ -114,28 +113,33 @@ class SqlController {
                 const {nombre, flag} = results[i];
                 this.#updateLedStatus(nombre, flag);
             }
-
+            
             if(this.stateDo0 != this.prevStateDo0){
-                console.log(JSON.stringify(results[0]));
+                console.log("int_proceso_refs: " + JSON.stringify(results[0]));
                 mySerial.write("DO0"+this.stateDo0);
-            }
-            if(this.stateDo1 != this.prevStateDo1){
-                console.log(JSON.stringify(results[1]));
-                mySerial.write("DO1"+this.stateDo1);                
-            }
-            if(this.stateDo2 != this.prevStateDo2){
-                console.log(JSON.stringify(results[2]));
-                mySerial.write("DO2"+this.stateDo2);                
-            }
-            if(this.stateDo3 != this.prevStateDo3){
-                console.log(JSON.stringify(results[3]));
-                mySerial.write("DO3"+this.stateDo3);                
-            }
+                this.prevStateDo0 = this.stateDo0;
+                return;
+            } 
 
-            this.prevStateDo0 = this.stateDo0;
-            this.prevStateDo1 = this.stateDo1;
-            this.prevStateDo2 = this.stateDo2;
-            this.prevStateDo3 = this.stateDo3;
+            if(this.stateDo1 != this.prevStateDo1){
+                console.log("int_proceso_refs: " + JSON.stringify(results[1]));
+                mySerial.write("DO1"+this.stateDo1); 
+                this.prevStateDo1 = this.stateDo1;
+                return;               
+            } 
+
+            if(this.stateDo2 != this.prevStateDo2){
+                console.log("int_proceso_refs: " + JSON.stringify(results[2]));
+                mySerial.write("DO2"+this.stateDo2);   
+                this.prevStateDo2 = this.stateDo2;  
+                return;           
+            } 
+            
+            if(this.stateDo3 != this.prevStateDo3){
+                console.log("int_proceso_refs: " + JSON.stringify(results[3]));
+                mySerial.write("DO3"+this.stateDo3);
+                this.prevStateDo3 = this.stateDo3;                
+            }                     
 
         });
     }     

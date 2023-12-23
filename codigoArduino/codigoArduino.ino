@@ -31,9 +31,9 @@ const int Led2 = 10;
 const int Led3 = 11;
 const int Led4 = 12;
 
-volatile unsigned muestreoActual=0;
-volatile unsigned muestreoAnterior=0;
-volatile unsigned deltaMuestreo=0;
+long double muestreoActual=0;
+long double muestreoAnterior=0;
+long double deltaMuestreo=0;
 
 const char START_DELIMITER = 'T';
 const char END_DELIMITER = ',';
@@ -70,9 +70,9 @@ void leerTiempo(String trama) {
 
     // Actualiza el tiempo de muestreo
     ts = nuevoValor;
-    digitalWrite(Led4, HIGH);
+    digitalWrite(ledPin, HIGH);
     delay(500);
-    digitalWrite(Led4, LOW);
+    digitalWrite(ledPin, LOW);
   }  
 }
 
@@ -108,7 +108,6 @@ void loop() {
       if (lectura.length() > 0){
         if (lectura.startsWith("DO")){
           digitalOutputs();
-          lectura = '\0';
         } else if (lectura.startsWith("A")){
           analogInputs();
         } else if (lectura.startsWith("D")){
