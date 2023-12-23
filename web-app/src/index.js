@@ -15,6 +15,9 @@ const data = {
 console.log("¡Aplicación en ejecución!\nSeleccione un canal...");
 
 // Manejadores del WebSocket
+/**
+ * @param {wss} client WebSocket
+ */
 function wsHandler(client) {
   console.log("WS: Nueva conexión...");
 
@@ -92,7 +95,6 @@ function wsHandler(client) {
     } else if (canal == "DO00") {
       console.log("Salida 0 Desactivada");
       processRefId = 4;
-      valorsalida = 0;
       actualizarSQL(valorsalida, processRefId);
     } else if (canal == "DO01") {
       console.log("Salida 0 Activada");
@@ -102,7 +104,6 @@ function wsHandler(client) {
     } else if (canal == "DO10") {
       console.log("Salida 1 Desactivada");
       processRefId = 5;
-      valorsalida = 0;
       actualizarSQL(valorsalida, processRefId);
     } else if (canal == "DO11") {
       console.log("Salida 1 Activada");
@@ -126,6 +127,10 @@ function wsHandler(client) {
 wss.on("connection", wsHandler);
 
 // Función para ejecutar consulta SQL y enviar resultados al cliente
+/**
+ * @param {wss} client WebSocket
+ * @param {number} processVarId int_proceso_vars_id
+ */
 function ejecutarConsultaYEnviar(client, processVarId) {
   consultaSQL(processVarId, (error, valores) => {
     if (error) {
@@ -142,6 +147,10 @@ function ejecutarConsultaYEnviar(client, processVarId) {
 }
 
 // Función para realizar consulta SQL a la base de datos
+/**
+ * @param {number} processVarsId The date
+ * @param {function()} callback The string
+ */
 function consultaSQL(processVarsId, callback) {
   console.log("La fk es:" + processVarsId);
 
@@ -180,6 +189,10 @@ function consultaSQL(processVarsId, callback) {
 }
 
 // Función para actualizar registros en la base de datos
+/**
+ * @param {number} valorsalida flag
+ * @param {number} processRefsId int_proceso_refs_id
+ */
 function actualizarSQL(valorsalida, processRefsId) {
   console.log("La fk es:" + processRefsId);
 
@@ -205,6 +218,10 @@ function actualizarSQL(valorsalida, processRefsId) {
 }
 
 // Función para actualizar registros en la base de datos
+/**
+ * @param {number} valorsalida flag
+ * @param {number} processVarsId int_proceso_vars_id
+ */
 function actualizarVarsFlag(valorsalida, processVarsId) {
   console.log("La fk es:" + processVarsId);
 

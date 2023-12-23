@@ -6,15 +6,13 @@
     <script type="text/javascript">
       document.addEventListener("DOMContentLoaded", function () {
         // Variables para almacenar los datos del gráfico
-        var valorCh = [];
-        var dato_Value = [];
-        var va_Time = [];
-        var Tiempo = [];
-        var myTime = 0;
-        var myWishLengh = 50;
-        var currLenght = 0;
+        let valorCh = [];
+        let dato_Value = [];
+        let va_Time = [];
+        let myTime = [];
+        let myWishLengh = 50;
         // Socket client y URL del servidor
-        var mySocket = new WebSocket("ws://localhost:8080");
+        let mySocket = new WebSocket("ws://localhost:8080");
 
         // Eventos del socket
         mySocket.onopen = mySocketOpen;
@@ -34,7 +32,7 @@
             // Supongamos que result.data contiene un objeto
             var obj = JSON.parse(result.data);
             var valoresArray = obj.valores;
-            var myTime = obj.tiempos;                
+            myTime = obj.tiempos;                
             console.log("socketData: " + JSON.stringify(obj));
             // Agregar datos a las variables de tiempo y valores
             for (var i = 0; i < valoresArray.length; i++) {
@@ -113,7 +111,7 @@
             }
 
             // Agregar el nuevo tiempo al final del vector de tiempos
-            varTime.push(myTime);
+            varTime.push(myTime[myTime.length - 1]);
 
             // Agregar el nuevo dato al final del vector de datos
             varData.push(valorCh);
