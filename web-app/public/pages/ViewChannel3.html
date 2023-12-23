@@ -15,7 +15,7 @@
         var currLenght = 0;
 
         // Socket client y URL del servidor
-        var mySocket = new WebSocket("ws://localhost/wsNJS");
+        var mySocket = new WebSocket("ws://localhost:8080");
 
         // Eventos del socket
         mySocket.onopen = mySocketOpen;
@@ -23,23 +23,24 @@
 
         // Función de callback al abrir el socket
         function mySocketOpen() {
-          mySocket.send("A1");
+          mySocket.send("A3");
           setInterval(function () {
-            mySocket.send("A1");
+            mySocket.send("A3");
           }, 1000);
         }
 
         // Función de callback al recibir datos del socket
         function mySocketShowData(result) {
           try {
-            // Supongamos que result.data contiene un array de números
-            var valoresArray = JSON.parse(result.data);
-            console.log(valoresArray);
+            // Supongamos que result.data contiene un objeto
+            var obj = JSON.parse(result.data);
+            var valoresArray = obj.valores;
+            var myTime = obj.tiempos;                
+            console.log("socketData: " + JSON.stringify(obj));
             // Agregar datos a las variables de tiempo y valores
             for (var i = 0; i < valoresArray.length; i++) {
               dato_Value.push(valoresArray[i]);
-              va_Time.push(myTime);
-              myTime += 1;
+              va_Time.push(myTime[i]);
             }
 
             // Ajustar la longitud de los datos si es necesario
@@ -70,7 +71,7 @@
             datasets: [
               {
                 data: [],
-                label: "A1",
+                label: "A3",
                 borderColor: "#8bc34a",
                 fill: false,
               },
@@ -79,7 +80,7 @@
           options: {
             title: {
               display: true,
-              text: "Valor del Canal 1 Vs. Tiempo",
+              text: "Valor del Canal 3 Vs. Tiempo",
               fontColor: "#ffffff", // Color del texto del título del gráfico
             },
             scales: {
@@ -100,6 +101,7 @@
             },
           },
         });
+
         // Función para agregar datos al gráfico
         function plottingData(varTime, varData) {
           try {
@@ -136,48 +138,15 @@
       });
     </script>
     <meta charset="utf-8" />
-    <title>Entrada Analógica A1</title>
-    <style>
-      body {
-        text-align: center;
-        font-family: Arial, sans-serif;
-        background-color: #69bff0;
-        margin: 0;
-        padding: 0;
-      }
-
-      h1 {
-        color: #ffffff;
-      }
-
-      .chart-container {
-        position: relative;
-        height: 40vh;
-        width: 80vw;
-        margin: auto;
-        margin-top: 20px;
-      }
-
-      img {
-        position: absolute;
-        top: 0;
-        left: 0;
-        margin: 10px;
-        width: auto;
-        max-height: 80px;
-      }
-      /* Agregar reglas para el color del texto del gráfico */
-      #lineChart {
-        color: #e82d2d; /* Color del texto del gráfico */
-      }
-    </style>
+    <title>Entrada Analógica A3</title>
+    <link rel="stylesheet" type="text/css" href="../styles/stylesView.css" />
   </head>
 
   <body>
     <!-- Imagen del logo -->
-    <img src="images/logo.jpg" alt="Ejemplo de imagen" height="80" />
+    <img src="../images/logo.jpg" alt="Ejemplo de imagen" height="80" />
     <!-- Título de la página -->
-    <h1>Entrada Analógica A1</h1>
+    <h1>Entrada Analógica A3</h1>
     <!-- Contenedor del gráfico -->
     <div class="chart-container">
       <canvas id="lineChart"></canvas>

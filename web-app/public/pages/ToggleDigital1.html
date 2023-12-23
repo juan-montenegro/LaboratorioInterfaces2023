@@ -1,35 +1,41 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
   <head>
     <meta charset="utf-8" />
-    <title>Salida digital DO0</title>
-    <link rel="stylesheet" type="text/css" href="stylesToggle.css" />
+    <title>Salida digital DO1</title>
+    <link rel="stylesheet" type="text/css" href="../styles/stylesToggle.css" />
   </head>
 
   <body>
-    <!-- Imagen del logotipo -->
+    <!-- Tu contenido HTML sigue aquí -->
     <div class="logo-container">
+      <!-- Imagen del logotipo -->
       <img
-        src="images/logo.jpg"
+        src="../images/logo.jpg"
         alt="Ejemplo de imagen"
         height="80"
         class="logo"
       />
     </div>
-    <h1>Salida digital DO0</h1>
+    <h1>Salida digital DO1</h1>
     <div class="button-container">
-      <button id="activarButton">Activar</button>
-      <button id="desactivarButton">Desactivar</button>
+      <button id="activarButton" onclick="cambiarEstadoLampara(true)">
+        Activar
+      </button>
+      <button id="desactivarButton" onclick="cambiarEstadoLampara(false)">
+        Desactivar
+      </button>
     </div>
     <div id="lamparaContainer">
-      <img id="lampara" src="images/lampara_off.jpg" alt="Lámpara apagada" />
+      <img id="lampara" src="../images/lampara_off.jpg" alt="Lámpara apagada" />
     </div>
     <div id="mensajeContainer"></div>
 
     <script>
+      // Tu JavaScript sigue aquí
       document.addEventListener("DOMContentLoaded", function () {
         // URL del socket para el cliente y el servidor
-        var mySocket = new WebSocket("ws://localhost/wsNJS");
+        var mySocket = new WebSocket("ws://localhost:8080");
 
         // Variable para el estado de la lámpara (inicialmente apagada)
         var lamparaEncendida = false;
@@ -40,7 +46,7 @@
 
         // Callbacks - Apertura
         function mySocketOpen() {
-          mySocket.send("DO0");
+          mySocket.send("DO1");
         }
 
         // Callbacks - Datos
@@ -52,7 +58,7 @@
         document
           .getElementById("activarButton")
           .addEventListener("click", function () {
-            mySocket.send("DO01");
+            mySocket.send("DO11");
             mostrarMensaje("Salida encendida");
           });
 
@@ -60,7 +66,7 @@
         document
           .getElementById("desactivarButton")
           .addEventListener("click", function () {
-            mySocket.send("DO00");
+            mySocket.send("DO10");
             mostrarMensaje("Salida apagada");
           });
 
@@ -77,10 +83,10 @@
           // Cambiar el estado de la lámpara y ajustar la apariencia
           if (estado === "1") {
             lamparaEncendida = true;
-            lampara.src = "images/lampara_on.jpg"; // Imagen encendida
+            lampara.src = "../images/lampara_on.jpg"; // Imagen encendida
           } else {
             lamparaEncendida = false;
-            lampara.src = "images/lampara_off.jpg"; // Imagen apagada
+            lampara.src = "../images/lampara_off.jpg"; // Imagen apagada
           }
         }
 

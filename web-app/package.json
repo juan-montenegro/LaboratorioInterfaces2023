@@ -1,16 +1,17 @@
 {
-  "name": "prubas",
+  "name": "web-app",
   "version": "1.0.0",
-  "description": "",
-  "main": "wsServidor_Clieente.js",
+  "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Juan Montenegro",
   "license": "ISC",
   "dependencies": {
     "mysql": "^2.18.1",
     "serialport": "^12.0.0",
     "ws": "^8.15.1"
-  }
+  },
+  "description": ""
 }

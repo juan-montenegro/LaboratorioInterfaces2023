@@ -69,7 +69,8 @@ class SqlController {
         let getQuery =  "SELECT id, int_proceso_id, nombre, descripcion, max_2, min, flag FROM int_proceso_vars WHERE flag=?";
         let result = {};   
         let myQueryValues = [flagg];
-        if(this.conn == null) return;
+        if (this.conn == null) return;
+        if (!mySerial.ready) return;
 
         this.conn.query(getQuery, myQueryValues, (error, results, fields) => {
             if (error) throw error;
@@ -89,7 +90,7 @@ class SqlController {
 
             this.signal = nombre;
 
-            if(this.signalTemp !== this.signal && mySerial.ready){
+            if (this.signalTemp !== this.signal){
                 console.log('SELECT FROM int_proceso_vars: '+ JSON.stringify(result));
                 console.log("SENDING DATA FROM " + nombre + " TO processId " + id);
                 mySerial.write("T500,"+this.signal);
@@ -134,7 +135,7 @@ class SqlController {
                 this.prevStateDo2 = this.stateDo2;  
                 return;           
             } 
-            
+
             if(this.stateDo3 != this.prevStateDo3){
                 console.log("int_proceso_refs: " + JSON.stringify(results[3]));
                 mySerial.write("DO3"+this.stateDo3);
