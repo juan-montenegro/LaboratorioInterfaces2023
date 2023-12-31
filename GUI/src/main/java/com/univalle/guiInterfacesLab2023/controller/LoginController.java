@@ -10,8 +10,9 @@ import com.univalle.labapi.LabAPI;
 import com.univalle.labapi.int_usuarios.int_usuarios;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.sql.SQLException;
-import java.sql.SQLInvalidAuthorizationSpecException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.logging.Level;
@@ -22,7 +23,7 @@ import javax.swing.JOptionPane;
  *
  * @author juane
  */
-public class LoginController implements ActionListener {
+public class LoginController extends WindowAdapter implements ActionListener {
     private final LoginView loginView;
     private final MainView mainView;
     
@@ -34,7 +35,12 @@ public class LoginController implements ActionListener {
     public LoginController(LoginView loginView, MainView mainView){
         this.loginView = loginView;
         this.mainView = mainView;
+        addWindowListener();
         
+    }
+
+    private void addWindowListener() {
+        this.loginView.addWindowListener(this);
     }
 
     @Override
@@ -80,6 +86,12 @@ public class LoginController implements ActionListener {
         } 
         
         return usuario;
+    }
+
+    @Override
+    public void windowClosing(WindowEvent e) {
+        super.windowClosing(e);
+        System.exit(0);
     }
     
 }
